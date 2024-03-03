@@ -34,6 +34,10 @@ func New(format string) *Formatter {
 	return &Formatter{format: format}
 }
 
+func (formatter *Formatter) IsEqual(anotherFormatter *Formatter) bool {
+	return formatter.format == anotherFormatter.format
+}
+
 func (formatter *Formatter) EvaluatePreset(message string, loggerName string, level loglevel.LogLevel) map[string]string {
 	_, functionName, functionLine, _ := runtime.Caller(2)
 	var presets = map[string]string{

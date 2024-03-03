@@ -27,6 +27,27 @@ func BenchmarkNew(b *testing.B) {
 	}
 }
 
+// TestFormatter_IsEqual tests that Formatter.IsEqual returns true, if two
+// Formatter(s) are the same.
+func TestFormatter_IsEqual(t *testing.T) {
+	newFormatter := New(format)
+
+	isEqual := newFormatter.IsEqual(newFormatter)
+
+	if !isEqual {
+		t.Fatalf("expected: %t, actual: %t", true, isEqual)
+	}
+}
+
+// BenchmarkFormatter_IsEqual performs benchmarking of the Formatter.IsEqual().
+func BenchmarkFormatter_IsEqual(b *testing.B) {
+	newFormatter := New(format)
+
+	for index := 0; index < b.N; index++ {
+		newFormatter.IsEqual(newFormatter)
+	}
+}
+
 // TestFormatter_EvaluatePreset tests that Formatter.EvaluatePreset correctly
 // evaluates tags.
 func TestFormatter_EvaluatePreset(t *testing.T) {
