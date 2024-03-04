@@ -3,6 +3,7 @@ package formatter
 
 import (
 	"fmt"
+	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/logger/loglevel"
 	"testing"
 )
@@ -16,9 +17,7 @@ var loggingLevel = loglevel.LogLevel(loglevel.Debug)
 func TestNew(t *testing.T) {
 	newFormatter := New(format)
 
-	if newFormatter.format != format {
-		t.Fatalf("expected: %s, actual: %s", format, newFormatter.format)
-	}
+	testutils.AssertEquals(t, format, newFormatter.format)
 }
 
 // BenchmarkNew performs benchmarking of the New().
@@ -56,17 +55,9 @@ func TestFormatter_EvaluatePreset(t *testing.T) {
 
 	preset := newFormatter.EvaluatePreset(message, loggerName, loggingLevel)
 
-	if preset["%(message)"] != message {
-		t.Fatalf("%%(message) is incorrect. expected: %s, actual: %s", format, newFormatter.format)
-	}
-
-	if preset["%(name)"] != loggerName {
-		t.Fatalf("%%(name) is incorrect. expected: %s, actual: %s", format, newFormatter.format)
-	}
-
-	if preset["%(level)"] != loggingLevel.String() {
-		t.Fatalf("%%(level) is incorrect. expected: %s, actual: %s", format, newFormatter.format)
-	}
+	testutils.AssertEquals(t, message, preset["%(message)"])
+	testutils.AssertEquals(t, loggerName, preset["%(name)"])
+	testutils.AssertEquals(t, loggingLevel.String(), preset["%(level)"])
 }
 
 // BenchmarkFormatter_EvaluatePreset performs benchmarking of the Formatter.EvaluatePreset().
@@ -93,9 +84,7 @@ func TestFormatter_Format(t *testing.T) {
 	for index := range parameters {
 		actual := newFormatter.Format(message, loggerName, loggingLevel, parameters[index].colored)
 
-		if actual != parameters[index].expected {
-			t.Fatalf("expected: %s, actual: %s", parameters[index].expected, actual)
-		}
+		testutils.AssertEquals(t, parameters[index].expected, actual)
 	}
 }
 

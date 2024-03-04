@@ -4,6 +4,7 @@ package handler
 import (
 	"bytes"
 	"fmt"
+	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/loglevel"
 	"io"
@@ -20,13 +21,8 @@ func TestNew(t *testing.T) {
 
 	newHandler := New(loglevel.Debug, *newFormatter, os.Stdout, os.Stderr)
 
-	if newHandler.level != loglevel.Debug {
-		t.Fatalf("log level is not the same. expected: %v, actual: %v", loglevel.Debug, newHandler.level)
-	}
-
-	if !newHandler.formatter.IsEqual(newFormatter) {
-		t.Fatalf("formatter is not the same. expected: %v, actual: %v", newFormatter, newHandler.formatter)
-	}
+	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
+	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -53,13 +49,8 @@ func TestNewConsoleHandler(t *testing.T) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
 
-	if newHandler.level != loglevel.Debug {
-		t.Fatalf("log level is not the same. expected: %v, actual: %v", loglevel.Debug, newHandler.level)
-	}
-
-	if !newHandler.formatter.IsEqual(newFormatter) {
-		t.Fatalf("formatter is not the same. expected: %v, actual: %v", newFormatter, newHandler.formatter)
-	}
+	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
+	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -93,13 +84,8 @@ func TestNewFileHandler(t *testing.T) {
 
 	newHandler := NewFileHandler(loglevel.Debug, *newFormatter, testFile)
 
-	if newHandler.level != loglevel.Debug {
-		t.Fatalf("log level is not the same. expected: %v, actual: %v", loglevel.Debug, newHandler.level)
-	}
-
-	if !newHandler.formatter.IsEqual(newFormatter) {
-		t.Fatalf("formatter is not the same. expected: %v, actual: %v", newFormatter, newHandler.formatter)
-	}
+	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
+	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -127,9 +113,7 @@ func TestHandler_Level(t *testing.T) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
 
-	if newHandler.Level() != newHandler.level {
-		t.Fatalf("expected: %v, actual: %v", newHandler.level, newHandler.Level())
-	}
+	testutils.AssertEquals(t, newHandler.level, newHandler.Level())
 }
 
 // BenchmarkHandler_Level performs benchmarking of the Handler.Level().
@@ -154,9 +138,7 @@ func TestHandler_SetLevel(t *testing.T) {
 
 	newHandler.SetLevel(newLevel)
 
-	if newHandler.level != newLevel {
-		t.Fatalf("expected: %v, actual: %v", newLevel, newHandler.level)
-	}
+	testutils.AssertEquals(t, newLevel, newHandler.level)
 }
 
 // BenchmarkHandler_Level performs benchmarking of the Handler.SetLevel().
@@ -211,13 +193,8 @@ func TestHandler_Write(t *testing.T) {
 	osStdout = originalStdout
 	osStderr = originalStderr
 
-	if bufferStdout.String() != formattedStdoutMessage {
-		t.Fatalf("expected: %s, actual: %s", formattedStdoutMessage, bufferStdout.String())
-	}
-
-	if bufferStderr.String() != formattedStderrMessage {
-		t.Fatalf("expected: %s, actual: %s", formattedStderrMessage, bufferStderr.String())
-	}
+	testutils.AssertEquals(t, formattedStdoutMessage, bufferStdout.String())
+	testutils.AssertEquals(t, formattedStderrMessage, bufferStderr.String())
 }
 
 // BenchmarkHandler_Write performs benchmarking of the Handler.Write().

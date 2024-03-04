@@ -2,6 +2,7 @@
 package loglevel
 
 import (
+	"github.com/dl1998/go-logging/internal/testutils"
 	"testing"
 )
 
@@ -26,10 +27,7 @@ func TestLogLevel_String(t *testing.T) {
 	}
 
 	for index := range parameters {
-		actual := parameters[index].input.String()
-		if actual != parameters[index].expected {
-			t.Fatalf("expected: %s, actual: %s", parameters[index].expected, actual)
-		}
+		testutils.AssertEquals(t, parameters[index].expected, parameters[index].input.String())
 	}
 }
 
@@ -65,9 +63,7 @@ func TestLogLevel_DigitRepresentation(t *testing.T) {
 
 	for index := range parameters {
 		actual := parameters[index].input.DigitRepresentation()
-		if actual != parameters[index].expected {
-			t.Fatalf("expected: %d, actual: %d", parameters[index].expected, actual)
-		}
+		testutils.AssertEquals(t, parameters[index].expected, actual)
 	}
 }
 
