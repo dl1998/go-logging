@@ -1,3 +1,4 @@
+// Package formatter_test has tests for formatter package.
 package formatter
 
 import (

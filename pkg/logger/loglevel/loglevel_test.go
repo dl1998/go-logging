@@ -1,3 +1,4 @@
+// Package loglevel_test has tests for loglevel package.
 package loglevel
 
 import (
