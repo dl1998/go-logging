@@ -13,14 +13,21 @@ var osOpenFile = os.OpenFile
 var osStdout = os.Stdout
 var osStderr = os.Stderr
 
+type HandlerInterface interface {
+	Level() loglevel.LogLevel
+	SetLevel(level loglevel.LogLevel)
+	Formatter() formatter.FormatterInterface
+	Write(logName string, level loglevel.LogLevel, message string, parameters ...any)
+}
+
 type Handler struct {
 	level       loglevel.LogLevel
-	formatter   formatter.Formatter
+	formatter   formatter.FormatterInterface
 	writer      io.Writer
 	errorWriter io.Writer
 }
 
-func New(level loglevel.LogLevel, newFormatter formatter.Formatter, writer io.Writer, errorWriter io.Writer) *Handler {
+func New(level loglevel.LogLevel, newFormatter formatter.FormatterInterface, writer io.Writer, errorWriter io.Writer) *Handler {
 	return &Handler{
 		level:       level,
 		formatter:   newFormatter,
@@ -29,11 +36,11 @@ func New(level loglevel.LogLevel, newFormatter formatter.Formatter, writer io.Wr
 	}
 }
 
-func NewConsoleHandler(level loglevel.LogLevel, newFormatter formatter.Formatter) *Handler {
+func NewConsoleHandler(level loglevel.LogLevel, newFormatter formatter.FormatterInterface) *Handler {
 	return New(level, newFormatter, osStdout, osStderr)
 }
 
-func NewFileHandler(level loglevel.LogLevel, newFormatter formatter.Formatter, file string) *Handler {
+func NewFileHandler(level loglevel.LogLevel, newFormatter formatter.FormatterInterface, file string) *Handler {
 	writer, err := osOpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
@@ -49,6 +56,10 @@ func (handler *Handler) Level() loglevel.LogLevel {
 
 func (handler *Handler) SetLevel(level loglevel.LogLevel) {
 	handler.level = level
+}
+
+func (handler *Handler) Formatter() formatter.FormatterInterface {
+	return handler.formatter
 }
 
 func (handler *Handler) Write(logName string, level loglevel.LogLevel, message string, parameters ...any) {

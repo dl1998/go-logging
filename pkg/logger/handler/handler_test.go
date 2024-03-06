@@ -12,17 +12,18 @@ import (
 	"testing"
 )
 
-var format = "%(level):%(name):%(message)"
+var template = "%(level):%(name):%(message)"
 var testFile = "/tmp/test_file.log"
 
 // TestNew tests that New creates a new Handler instance.
 func TestNew(t *testing.T) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := New(loglevel.Debug, *newFormatter, os.Stdout, os.Stderr)
+	newHandler := New(loglevel.Debug, newFormatter, os.Stdout, os.Stderr)
 
 	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
-	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
+	_, ok := newHandler.formatter.(formatter.FormatterInterface)
+	testutils.AssertEquals(t, true, ok)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -35,22 +36,23 @@ func TestNew(t *testing.T) {
 
 // BenchmarkNew performs benchmarking of the New().
 func BenchmarkNew(b *testing.B) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
 	for index := 0; index < b.N; index++ {
-		New(loglevel.Debug, *newFormatter, os.Stdout, os.Stderr)
+		New(loglevel.Debug, newFormatter, os.Stdout, os.Stderr)
 	}
 }
 
 // TestNewConsoleHandler tests that NewConsoleHandler creates a new Handler
 // instance that writes on the console.
 func TestNewConsoleHandler(t *testing.T) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
-	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
+	_, ok := newHandler.formatter.(formatter.FormatterInterface)
+	testutils.AssertEquals(t, true, ok)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -63,10 +65,10 @@ func TestNewConsoleHandler(t *testing.T) {
 
 // BenchmarkNewConsoleHandler performs benchmarking of the NewConsoleHandler().
 func BenchmarkNewConsoleHandler(b *testing.B) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
 	for index := 0; index < b.N; index++ {
-		NewConsoleHandler(loglevel.Debug, *newFormatter)
+		NewConsoleHandler(loglevel.Debug, newFormatter)
 	}
 }
 
@@ -78,14 +80,15 @@ func mockOpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
 // TestNewFileHandler test that NewFileHandler creates a new Handler instance
 // that writes to the file.
 func TestNewFileHandler(t *testing.T) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
 	osOpenFile = mockOpenFile
 
-	newHandler := NewFileHandler(loglevel.Debug, *newFormatter, testFile)
+	newHandler := NewFileHandler(loglevel.Debug, newFormatter, testFile)
 
 	testutils.AssertEquals(t, loglevel.Debug, newHandler.level)
-	testutils.AssertEquals(t, newFormatter, &newHandler.formatter)
+	_, ok := newHandler.formatter.(formatter.FormatterInterface)
+	testutils.AssertEquals(t, true, ok)
 
 	if newHandler.writer != os.Stdout {
 		t.Fatalf("writer is not the same. expected: %v, actual: %v", os.Stdout, newHandler.writer)
@@ -98,29 +101,29 @@ func TestNewFileHandler(t *testing.T) {
 
 // BenchmarkNewFileHandler performs benchmarking of the NewFileHandler().
 func BenchmarkNewFileHandler(b *testing.B) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
 	osOpenFile = mockOpenFile
 
 	for index := 0; index < b.N; index++ {
-		NewFileHandler(loglevel.Debug, *newFormatter, testFile)
+		NewFileHandler(loglevel.Debug, newFormatter, testFile)
 	}
 }
 
 // TestHandler_Level test that Handler.Level() returns log level for the Handler.
 func TestHandler_Level(t *testing.T) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	testutils.AssertEquals(t, newHandler.level, newHandler.Level())
 }
 
 // BenchmarkHandler_Level performs benchmarking of the Handler.Level().
 func BenchmarkHandler_Level(b *testing.B) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	for index := 0; index < b.N; index++ {
 		newHandler.Level()
@@ -130,9 +133,9 @@ func BenchmarkHandler_Level(b *testing.B) {
 // TestHandler_Level test that Handler.SetLevel() set a new log level for the
 // Handler.
 func TestHandler_SetLevel(t *testing.T) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	newLevel := loglevel.LogLevel(loglevel.Info)
 
@@ -143,14 +146,35 @@ func TestHandler_SetLevel(t *testing.T) {
 
 // BenchmarkHandler_Level performs benchmarking of the Handler.SetLevel().
 func BenchmarkHandler_SetLevel(b *testing.B) {
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	newLevel := loglevel.LogLevel(loglevel.Info)
 
 	for index := 0; index < b.N; index++ {
 		newHandler.SetLevel(newLevel)
+	}
+}
+
+// TestHandler_Formatter test that Handler.Formatter() returns assigned
+// Formatter.
+func TestHandler_Formatter(t *testing.T) {
+	var newFormatter formatter.FormatterInterface = formatter.New(template)
+
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
+
+	testutils.AssertEquals(t, newFormatter, newHandler.Formatter())
+}
+
+// BenchmarkHandler_Formatter performs benchmarking of the Handler.Formatter().
+func BenchmarkHandler_Formatter(b *testing.B) {
+	var newFormatter formatter.FormatterInterface = formatter.New(template)
+
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
+
+	for index := 0; index < b.N; index++ {
+		newHandler.Formatter()
 	}
 }
 
@@ -165,7 +189,7 @@ func TestHandler_Write(t *testing.T) {
 	formattedStdoutMessage := fmt.Sprintf("%s%s:%s:%s%s\n", "\033[36m", logLevel.String(), logName, message, "\033[0m")
 	formattedStderrMessage := fmt.Sprintf("%s%s:%s:%s%s\n", "\033[31m", logLevelError.String(), logName, message, "\033[0m")
 
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
 	var bufferStdout bytes.Buffer
 	var bufferStderr bytes.Buffer
@@ -179,7 +203,7 @@ func TestHandler_Write(t *testing.T) {
 	osStdout = writerStdout
 	osStderr = writerStderr
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	newHandler.Write(logName, logLevel, message)
 	newHandler.Write(logName, logLevelError, message)
@@ -203,9 +227,9 @@ func BenchmarkHandler_Write(b *testing.B) {
 	logLevel := loglevel.LogLevel(loglevel.Debug)
 	message := "Test message."
 
-	newFormatter := formatter.New(format)
+	newFormatter := formatter.New(template)
 
-	newHandler := NewConsoleHandler(loglevel.Debug, *newFormatter)
+	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
 	newHandler.writer = io.Discard
 
