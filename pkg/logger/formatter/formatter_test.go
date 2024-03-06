@@ -8,29 +8,29 @@ import (
 	"testing"
 )
 
-var format = "%(level):%(name):%(message)"
+var template = "%(level):%(name):%(message)"
 var message = "Test message."
 var loggerName = "test"
 var loggingLevel = loglevel.LogLevel(loglevel.Debug)
 
 // TestNew tests that New create correct Formatter instance.
 func TestNew(t *testing.T) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
-	testutils.AssertEquals(t, format, newFormatter.format)
+	testutils.AssertEquals(t, template, newFormatter.template)
 }
 
 // BenchmarkNew performs benchmarking of the New().
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		New(format)
+		New(template)
 	}
 }
 
 // TestFormatter_IsEqual tests that Formatter.IsEqual returns true, if two
 // Formatter(s) are the same.
 func TestFormatter_IsEqual(t *testing.T) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	isEqual := newFormatter.IsEqual(newFormatter)
 
@@ -41,7 +41,7 @@ func TestFormatter_IsEqual(t *testing.T) {
 
 // BenchmarkFormatter_IsEqual performs benchmarking of the Formatter.IsEqual().
 func BenchmarkFormatter_IsEqual(b *testing.B) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	for index := 0; index < b.N; index++ {
 		newFormatter.IsEqual(newFormatter)
@@ -51,7 +51,7 @@ func BenchmarkFormatter_IsEqual(b *testing.B) {
 // TestFormatter_EvaluatePreset tests that Formatter.EvaluatePreset correctly
 // evaluates tags.
 func TestFormatter_EvaluatePreset(t *testing.T) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	preset := newFormatter.EvaluatePreset(message, loggerName, loggingLevel)
 
@@ -62,16 +62,32 @@ func TestFormatter_EvaluatePreset(t *testing.T) {
 
 // BenchmarkFormatter_EvaluatePreset performs benchmarking of the Formatter.EvaluatePreset().
 func BenchmarkFormatter_EvaluatePreset(b *testing.B) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	for index := 0; index < b.N; index++ {
 		newFormatter.EvaluatePreset(message, loggerName, loggingLevel)
 	}
 }
 
+// TestFormatter_Template tests that Formatter.Template return assigned template.
+func TestFormatter_Template(t *testing.T) {
+	newFormatter := New(template)
+
+	testutils.AssertEquals(t, template, newFormatter.Template())
+}
+
+// BenchmarkFormatter_Template performs benchmarking of the Formatter.Template().
+func BenchmarkFormatter_Template(b *testing.B) {
+	newFormatter := New(template)
+
+	for index := 0; index < b.N; index++ {
+		newFormatter.Template()
+	}
+}
+
 // TestFormatter_Format tests that Formatter.Format correctly formats string.
 func TestFormatter_Format(t *testing.T) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	parameters := []struct {
 		colored  bool
@@ -90,7 +106,7 @@ func TestFormatter_Format(t *testing.T) {
 
 // BenchmarkFormatter_Format performs benchmarking of the Formatter.Format().
 func BenchmarkFormatter_Format(b *testing.B) {
-	newFormatter := New(format)
+	newFormatter := New(template)
 
 	for index := 0; index < b.N; index++ {
 		newFormatter.Format(message, loggerName, loggingLevel, true)

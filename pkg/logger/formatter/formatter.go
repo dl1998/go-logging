@@ -26,16 +26,21 @@ var logLevelColors = map[loglevel.LogLevel]string{
 // Reset color
 const resetColor = "\033[0m"
 
-type Formatter struct {
-	format string
+type FormatterInterface interface {
+	Template() string
+	Format(message string, loggerName string, level loglevel.LogLevel, colored bool) string
 }
 
-func New(format string) *Formatter {
-	return &Formatter{format: format}
+type Formatter struct {
+	template string
+}
+
+func New(template string) *Formatter {
+	return &Formatter{template: template}
 }
 
 func (formatter *Formatter) IsEqual(anotherFormatter *Formatter) bool {
-	return formatter.format == anotherFormatter.format
+	return formatter.template == anotherFormatter.template
 }
 
 func (formatter *Formatter) EvaluatePreset(message string, loggerName string, level loglevel.LogLevel) map[string]string {
@@ -55,10 +60,14 @@ func (formatter *Formatter) EvaluatePreset(message string, loggerName string, le
 	return presets
 }
 
+func (formatter *Formatter) Template() string {
+	return formatter.template
+}
+
 func (formatter *Formatter) Format(message string, loggerName string, level loglevel.LogLevel, colored bool) string {
 	var presets = formatter.EvaluatePreset(message, loggerName, level)
 
-	format := formatter.format
+	format := formatter.template
 
 	for key, value := range presets {
 		format = strings.ReplaceAll(format, key, value)
