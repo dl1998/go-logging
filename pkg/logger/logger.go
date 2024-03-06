@@ -8,15 +8,70 @@ import (
 
 var rootLogger = GetDefaultLogger()
 
+type baseLoggerInterface interface {
+	Log(level loglevel.LogLevel, message string, parameters ...any)
+	Name() string
+	SetName(name string)
+	Handlers() []handler.HandlerInterface
+	AddHandler(handler handler.HandlerInterface)
+}
+
+type baseLogger struct {
+	name     string
+	handlers []handler.HandlerInterface
+}
+
+func (logger *baseLogger) Log(level loglevel.LogLevel, message string, parameters ...any) {
+	for _, registeredHandler := range logger.handlers {
+		if level >= registeredHandler.Level() {
+			registeredHandler.Write(logger.name, level, message, parameters...)
+		}
+	}
+}
+
+func (logger *baseLogger) Name() string {
+	return logger.name
+}
+
+func (logger *baseLogger) SetName(name string) {
+	logger.name = name
+}
+
+func (logger *baseLogger) Handlers() []handler.HandlerInterface {
+	return logger.handlers
+}
+
+func (logger *baseLogger) AddHandler(handler handler.HandlerInterface) {
+	logger.handlers = append(logger.handlers, handler)
+}
+
+type LoggerInterface interface {
+	Name() string
+	Handlers() []handler.HandlerInterface
+	AddHandler(handler handler.HandlerInterface)
+	Trace(message string, parameters ...any)
+	Debug(message string, parameters ...any)
+	Verbose(message string, parameters ...any)
+	Info(message string, parameters ...any)
+	Notice(message string, parameters ...any)
+	Warning(message string, parameters ...any)
+	Severe(message string, parameters ...any)
+	Error(message string, parameters ...any)
+	Alert(message string, parameters ...any)
+	Critical(message string, parameters ...any)
+	Emergency(message string, parameters ...any)
+}
+
 type Logger struct {
-	Name     string
-	Handlers []*handler.Handler
+	baseLogger baseLoggerInterface
 }
 
 func New(name string) *Logger {
 	return &Logger{
-		Name:     name,
-		Handlers: make([]*handler.Handler, 0),
+		baseLogger: &baseLogger{
+			name:     name,
+			handlers: make([]handler.HandlerInterface, 0),
+		},
 	}
 }
 
@@ -25,72 +80,73 @@ func GetDefaultLogger() *Logger {
 
 	newFormatter := formatter.New("%(level):%(name):%(message)")
 
-	newHandler := handler.NewConsoleHandler(loglevel.Warning, *newFormatter)
+	newHandler := handler.NewConsoleHandler(loglevel.Warning, newFormatter)
 
-	newLogger.AddHandler(newHandler)
+	newLogger.baseLogger.AddHandler(newHandler)
 
 	return newLogger
 }
 
-func (logger *Logger) log(level loglevel.LogLevel, message string, parameters ...any) {
-	for _, registeredHandler := range logger.Handlers {
-		if level >= registeredHandler.Level() {
-			registeredHandler.Write(logger.Name, level, message, parameters...)
-		}
-	}
+func (logger *Logger) Name() string {
+	return logger.baseLogger.Name()
+}
+
+func (logger *Logger) Handlers() []handler.HandlerInterface {
+	return logger.baseLogger.Handlers()
+}
+
+func (logger *Logger) AddHandler(handler handler.HandlerInterface) {
+	logger.baseLogger.AddHandler(handler)
 }
 
 func (logger *Logger) Trace(message string, parameters ...any) {
-	logger.log(loglevel.Trace, message, parameters...)
+	logger.baseLogger.Log(loglevel.Trace, message, parameters...)
 }
 
 func (logger *Logger) Debug(message string, parameters ...any) {
-	logger.log(loglevel.Debug, message, parameters...)
+	logger.baseLogger.Log(loglevel.Debug, message, parameters...)
 }
 
 func (logger *Logger) Verbose(message string, parameters ...any) {
-	logger.log(loglevel.Verbose, message, parameters...)
+	logger.baseLogger.Log(loglevel.Verbose, message, parameters...)
 }
 
 func (logger *Logger) Info(message string, parameters ...any) {
-	logger.log(loglevel.Info, message, parameters...)
+	logger.baseLogger.Log(loglevel.Info, message, parameters...)
 }
 
 func (logger *Logger) Notice(message string, parameters ...any) {
-	logger.log(loglevel.Notice, message, parameters...)
+	logger.baseLogger.Log(loglevel.Notice, message, parameters...)
 }
 
 func (logger *Logger) Warning(message string, parameters ...any) {
-	logger.log(loglevel.Warning, message, parameters...)
+	logger.baseLogger.Log(loglevel.Warning, message, parameters...)
 }
 
 func (logger *Logger) Severe(message string, parameters ...any) {
-	logger.log(loglevel.Severe, message, parameters...)
+	logger.baseLogger.Log(loglevel.Severe, message, parameters...)
 }
 
 func (logger *Logger) Error(message string, parameters ...any) {
-	logger.log(loglevel.Error, message, parameters...)
+	logger.baseLogger.Log(loglevel.Error, message, parameters...)
 }
 
 func (logger *Logger) Alert(message string, parameters ...any) {
-	logger.log(loglevel.Alert, message, parameters...)
+	logger.baseLogger.Log(loglevel.Alert, message, parameters...)
 }
 
 func (logger *Logger) Critical(message string, parameters ...any) {
-	logger.log(loglevel.Critical, message, parameters...)
+	logger.baseLogger.Log(loglevel.Critical, message, parameters...)
 }
 
 func (logger *Logger) Emergency(message string, parameters ...any) {
-	logger.log(loglevel.Emergency, message, parameters...)
-}
-
-func (logger *Logger) AddHandler(handler *handler.Handler) {
-	logger.Handlers = append(logger.Handlers, handler)
+	logger.baseLogger.Log(loglevel.Emergency, message, parameters...)
 }
 
 func SetLevel(level loglevel.LogLevel) {
-	if rootLogger.Handlers[0] != nil {
-		rootLogger.Handlers[0].SetLevel(level)
+	handlerInterface := rootLogger.baseLogger.Handlers()[0]
+	if handlerInterface != nil {
+		handlerInterface.SetLevel(level)
 	}
 }
 
