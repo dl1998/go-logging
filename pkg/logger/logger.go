@@ -12,13 +12,13 @@ type baseLoggerInterface interface {
 	Log(level loglevel.LogLevel, message string, parameters ...any)
 	Name() string
 	SetName(name string)
-	Handlers() []handler.HandlerInterface
-	AddHandler(handler handler.HandlerInterface)
+	Handlers() []handler.Interface
+	AddHandler(handler handler.Interface)
 }
 
 type baseLogger struct {
 	name     string
-	handlers []handler.HandlerInterface
+	handlers []handler.Interface
 }
 
 func (logger *baseLogger) Log(level loglevel.LogLevel, message string, parameters ...any) {
@@ -37,18 +37,18 @@ func (logger *baseLogger) SetName(name string) {
 	logger.name = name
 }
 
-func (logger *baseLogger) Handlers() []handler.HandlerInterface {
+func (logger *baseLogger) Handlers() []handler.Interface {
 	return logger.handlers
 }
 
-func (logger *baseLogger) AddHandler(handler handler.HandlerInterface) {
+func (logger *baseLogger) AddHandler(handler handler.Interface) {
 	logger.handlers = append(logger.handlers, handler)
 }
 
-type LoggerInterface interface {
+type Interface interface {
 	Name() string
-	Handlers() []handler.HandlerInterface
-	AddHandler(handler handler.HandlerInterface)
+	Handlers() []handler.Interface
+	AddHandler(handler handler.Interface)
 	Trace(message string, parameters ...any)
 	Debug(message string, parameters ...any)
 	Verbose(message string, parameters ...any)
@@ -70,7 +70,7 @@ func New(name string) *Logger {
 	return &Logger{
 		baseLogger: &baseLogger{
 			name:     name,
-			handlers: make([]handler.HandlerInterface, 0),
+			handlers: make([]handler.Interface, 0),
 		},
 	}
 }
@@ -91,11 +91,11 @@ func (logger *Logger) Name() string {
 	return logger.baseLogger.Name()
 }
 
-func (logger *Logger) Handlers() []handler.HandlerInterface {
+func (logger *Logger) Handlers() []handler.Interface {
 	return logger.baseLogger.Handlers()
 }
 
-func (logger *Logger) AddHandler(handler handler.HandlerInterface) {
+func (logger *Logger) AddHandler(handler handler.Interface) {
 	logger.baseLogger.AddHandler(handler)
 }
 

@@ -26,7 +26,7 @@ var logLevelColors = map[loglevel.LogLevel]string{
 // Reset color
 const resetColor = "\033[0m"
 
-type FormatterInterface interface {
+type Interface interface {
 	Template() string
 	Format(message string, loggerName string, level loglevel.LogLevel, colored bool) string
 }

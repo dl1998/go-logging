@@ -20,7 +20,7 @@ var (
 
 // MockLogger is used to mock baseLogger.
 type MockLogger struct {
-	handlers   []handler.HandlerInterface
+	handlers   []handler.Interface
 	CalledName string
 	Called     bool
 	Parameters []any
@@ -55,20 +55,20 @@ func (mock *MockLogger) SetName(name string) {
 }
 
 // Handlers mocks Handlers from baseLogger.
-func (mock *MockLogger) Handlers() []handler.HandlerInterface {
+func (mock *MockLogger) Handlers() []handler.Interface {
 	mock.CalledName = "Handlers"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
 	returnValue := mock.handlers
 	if mock.handlers == nil {
-		returnValue = make([]handler.HandlerInterface, 0)
+		returnValue = make([]handler.Interface, 0)
 	}
 	mock.Return = returnValue
 	return returnValue
 }
 
 // AddHandler mocks AddHandler from baseLogger.
-func (mock *MockLogger) AddHandler(handler handler.HandlerInterface) {
+func (mock *MockLogger) AddHandler(handler handler.Interface) {
 	mock.CalledName = "AddHandler"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), handler)
@@ -102,7 +102,7 @@ func (mock *MockHandler) SetLevel(level loglevel.LogLevel) {
 }
 
 // Formatter mocks Formatter from Handler.
-func (mock *MockHandler) Formatter() formatter.FormatterInterface {
+func (mock *MockHandler) Formatter() formatter.Interface {
 	mock.CalledName = "Formatter"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
@@ -126,7 +126,7 @@ func TestBaseLogger_Log(t *testing.T) {
 
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			newHandler,
 		},
 	}
@@ -145,7 +145,7 @@ func TestBaseLogger_Log(t *testing.T) {
 func BenchmarkBaseLogger_Log(b *testing.B) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			&MockHandler{},
 		},
 	}
@@ -161,7 +161,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 func TestBaseLogger_Name(t *testing.T) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			&MockHandler{},
 		},
 	}
@@ -173,7 +173,7 @@ func TestBaseLogger_Name(t *testing.T) {
 func BenchmarkBaseLogger_Name(b *testing.B) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			&MockHandler{},
 		},
 	}
@@ -188,7 +188,7 @@ func BenchmarkBaseLogger_Name(b *testing.B) {
 func TestBaseLogger_SetName(t *testing.T) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			&MockHandler{},
 		},
 	}
@@ -204,7 +204,7 @@ func TestBaseLogger_SetName(t *testing.T) {
 func BenchmarkBaseLogger_SetName(b *testing.B) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
-		handlers: []handler.HandlerInterface{
+		handlers: []handler.Interface{
 			&MockHandler{},
 		},
 	}
@@ -219,7 +219,7 @@ func BenchmarkBaseLogger_SetName(b *testing.B) {
 // TestBaseLogger_Handlers tests that baseLogger.Handlers returns a list of
 // handlers for the logger.
 func TestBaseLogger_Handlers(t *testing.T) {
-	handlers := []handler.HandlerInterface{
+	handlers := []handler.Interface{
 		&MockHandler{},
 	}
 
@@ -233,7 +233,7 @@ func TestBaseLogger_Handlers(t *testing.T) {
 
 // BenchmarkBaseLogger_Handlers perform benchmarking of the baseLogger.Handlers().
 func BenchmarkBaseLogger_Handlers(b *testing.B) {
-	handlers := []handler.HandlerInterface{
+	handlers := []handler.Interface{
 		&MockHandler{},
 	}
 
@@ -254,12 +254,12 @@ func TestBaseLogger_AddHandler(t *testing.T) {
 
 	newBaseLogger := &baseLogger{
 		name:     loggerName,
-		handlers: make([]handler.HandlerInterface, 0),
+		handlers: make([]handler.Interface, 0),
 	}
 
 	newBaseLogger.AddHandler(newHandler)
 
-	testutils.AssertEquals(t, []handler.HandlerInterface{newHandler}, newBaseLogger.handlers)
+	testutils.AssertEquals(t, []handler.Interface{newHandler}, newBaseLogger.handlers)
 }
 
 // BenchmarkBaseLogger_AddHandler perform benchmarking of the baseLogger.AddHandler().
@@ -268,7 +268,7 @@ func BenchmarkBaseLogger_AddHandler(b *testing.B) {
 
 	newBaseLogger := &baseLogger{
 		name:     loggerName,
-		handlers: make([]handler.HandlerInterface, 0),
+		handlers: make([]handler.Interface, 0),
 	}
 
 	for index := 0; index < b.N; index++ {
@@ -346,7 +346,7 @@ func TestLogger_Handlers(t *testing.T) {
 
 	newLogger := &Logger{baseLogger: mockLogger}
 
-	testutils.AssertEquals(t, make([]handler.HandlerInterface, 0), newLogger.Handlers())
+	testutils.AssertEquals(t, make([]handler.Interface, 0), newLogger.Handlers())
 }
 
 // BenchmarkLogger_Handlers perform benchmarking of the Logger.Handlers().
@@ -367,12 +367,12 @@ func TestLogger_AddHandler(t *testing.T) {
 
 	newLogger := &Logger{baseLogger: &baseLogger{
 		name:     loggerName,
-		handlers: make([]handler.HandlerInterface, 0),
+		handlers: make([]handler.Interface, 0),
 	}}
 
 	newLogger.AddHandler(mockHandler)
 
-	testutils.AssertEquals(t, []handler.HandlerInterface{mockHandler}, newLogger.baseLogger.Handlers())
+	testutils.AssertEquals(t, []handler.Interface{mockHandler}, newLogger.baseLogger.Handlers())
 }
 
 // BenchmarkLogger_AddHandler perform benchmarking of the Logger.AddHandler().
@@ -381,7 +381,7 @@ func BenchmarkLogger_AddHandler(b *testing.B) {
 
 	newLogger := &Logger{baseLogger: &baseLogger{
 		name:     loggerName,
-		handlers: make([]handler.HandlerInterface, 0),
+		handlers: make([]handler.Interface, 0),
 	}}
 
 	for index := 0; index < b.N; index++ {
@@ -668,7 +668,7 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 func TestSetLevel(t *testing.T) {
 	mockHandler := &MockHandler{}
 	mockLogger := &MockLogger{}
-	mockLogger.handlers = []handler.HandlerInterface{mockHandler}
+	mockLogger.handlers = []handler.Interface{mockHandler}
 
 	rootLogger = &Logger{baseLogger: mockLogger}
 
@@ -683,7 +683,7 @@ func TestSetLevel(t *testing.T) {
 func BenchmarkSetLevel(b *testing.B) {
 	mockHandler := &MockHandler{}
 	mockLogger := &MockLogger{}
-	mockLogger.handlers = []handler.HandlerInterface{mockHandler}
+	mockLogger.handlers = []handler.Interface{mockHandler}
 
 	rootLogger = &Logger{baseLogger: mockLogger}
 

@@ -36,7 +36,7 @@ func BenchmarkLogLevel_String(b *testing.B) {
 	level := LogLevel(Debug)
 
 	for index := 0; index < b.N; index++ {
-		level.String()
+		_ = level.String()
 	}
 }
 
