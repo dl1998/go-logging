@@ -26,11 +26,7 @@ jobs:
       - name: Check tests coverage
         uses: vladopajic/go-test-coverage@v2
         with:
-          profile: cover.out
-          local-prefix: github.com/dl1998/go-logging
-          threshold-file: 80
-          threshold-package: 80
-          threshold-total: 95
+          config: ./.testcoverage.yml
   benchmark:
     runs-on: ubuntu-latest
     steps:
