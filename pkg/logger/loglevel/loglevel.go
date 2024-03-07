@@ -1,3 +1,4 @@
+// Package loglevel contains LogLevel definition with supported levels.
 package loglevel
 
 type LogLevel int
@@ -17,6 +18,7 @@ const (
 	Emergency
 )
 
+// String returns string representation of the LogLevel.
 func (level *LogLevel) String() string {
 	mapping := map[LogLevel]string{
 		None:      "none",
@@ -35,6 +37,7 @@ func (level *LogLevel) String() string {
 	return mapping[*level]
 }
 
+// DigitRepresentation returns digit representations of the LogLevel.
 func (level *LogLevel) DigitRepresentation() int {
 	return int(*level)
 }
