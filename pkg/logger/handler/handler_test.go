@@ -235,3 +235,35 @@ func BenchmarkHandler_Write(b *testing.B) {
 		newHandler.Write(logName, logLevel, message)
 	}
 }
+
+// TestConsoleSupportsANSIColors tests that consoleSupportsANSIColors returns
+// true if console supports ANSI colors, or otherwise it returns false.
+func TestConsoleSupportsANSIColors(t *testing.T) {
+	parameters := map[string]struct {
+		Expected bool
+		Term     string
+	}{
+		"Console supports ANSI colors": {
+			true, "xterm-256color",
+		},
+		"Console don't support ANSI colors": {
+			false, "",
+		},
+	}
+	for name, parameter := range parameters {
+		t.Run(name, func(t *testing.T) {
+			_ = os.Setenv("TERM", parameter.Term)
+			result := consoleSupportsANSIColors()
+			testutils.AssertEquals(t, parameter.Expected, result)
+		})
+	}
+	_ = os.Setenv("TERM", "xterm-256color")
+}
+
+// BenchmarkConsoleSupportsANSIColors performs benchmarking of the
+// consoleSupportsANSIColors().
+func BenchmarkConsoleSupportsANSIColors(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		consoleSupportsANSIColors()
+	}
+}
