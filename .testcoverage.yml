@@ -36,6 +36,7 @@ exclude:
   paths:
     - \.pb\.go$    # excludes all protobuf generated files
     - ^internal/testutils     # exclude package `pkg/bar`
+    - ^examples   # exclude examples
 
 # NOTES:
 # - symbol `/` in all path regexps will be replaced by
