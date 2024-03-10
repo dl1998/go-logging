@@ -11,7 +11,7 @@ permissions:
   contents: read
   # Optional: allow read access to pull request. Use with `only-new-issues` option.
   pull-requests: read
-  # Optional: Allow write access to checks to allow the action to annotate code in the PR.
+  # Optional: allow write access to checks to allow the action to annotate code in the PR.
   checks: write
 
 jobs:
@@ -42,8 +42,6 @@ jobs:
           go-version: '1.22'
 
       - name: Run tests with coverage
-        env:
-          TERM: "xterm-256color"
         run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 
       - name: Check tests coverage
@@ -62,6 +60,4 @@ jobs:
           go-version: '1.22'
 
       - name: Run benchmarks
-        env:
-          TERM: "xterm-256color"
         run: go test -bench=. ./...

@@ -26,19 +26,21 @@ type Interface interface {
 // Handler struct contains information where it shall write log message, how to
 // format them and their log level.
 type Handler struct {
-	level       loglevel.LogLevel
-	formatter   formatter.Interface
-	writer      io.Writer
-	errorWriter io.Writer
+	level                     loglevel.LogLevel
+	formatter                 formatter.Interface
+	writer                    io.Writer
+	errorWriter               io.Writer
+	consoleSupportsANSIColors func() bool
 }
 
 // New create a new instance of the Handler.
 func New(level loglevel.LogLevel, newFormatter formatter.Interface, writer io.Writer, errorWriter io.Writer) *Handler {
 	return &Handler{
-		level:       level,
-		formatter:   newFormatter,
-		writer:      writer,
-		errorWriter: errorWriter,
+		level:                     level,
+		formatter:                 newFormatter,
+		writer:                    writer,
+		errorWriter:               errorWriter,
+		consoleSupportsANSIColors: consoleSupportsANSIColors,
 	}
 }
 
@@ -87,7 +89,7 @@ func (handler *Handler) Write(logName string, level loglevel.LogLevel, message s
 
 	var colored = false
 
-	if consoleSupportsANSIColors() && (writer == osStdout || writer == osStderr) {
+	if handler.consoleSupportsANSIColors() && (writer == osStdout || writer == osStderr) {
 		colored = true
 	}
 

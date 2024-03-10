@@ -131,7 +131,7 @@ func TestHandler_SetLevel(t *testing.T) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
-	newLevel := loglevel.LogLevel(loglevel.Info)
+	newLevel := loglevel.Info
 
 	newHandler.SetLevel(newLevel)
 
@@ -144,7 +144,7 @@ func BenchmarkHandler_SetLevel(b *testing.B) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
-	newLevel := loglevel.LogLevel(loglevel.Info)
+	newLevel := loglevel.Info
 
 	for index := 0; index < b.N; index++ {
 		newHandler.SetLevel(newLevel)
@@ -176,8 +176,8 @@ func BenchmarkHandler_Formatter(b *testing.B) {
 // correct writer.
 func TestHandler_Write(t *testing.T) {
 	logName := "test"
-	logLevel := loglevel.LogLevel(loglevel.Debug)
-	logLevelError := loglevel.LogLevel(loglevel.Error)
+	logLevel := loglevel.Debug
+	logLevelError := loglevel.Error
 	message := "Test message."
 
 	formattedStdoutMessage := fmt.Sprintf("%s%s:%s:%s%s\n", "\033[36m", logLevel.String(), logName, message, "\033[0m")
@@ -199,6 +199,10 @@ func TestHandler_Write(t *testing.T) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
+	newHandler.consoleSupportsANSIColors = func() bool {
+		return true
+	}
+
 	newHandler.Write(logName, logLevel, message)
 	newHandler.Write(logName, logLevelError, message)
 
@@ -218,7 +222,7 @@ func TestHandler_Write(t *testing.T) {
 // BenchmarkHandler_Write performs benchmarking of the Handler.Write().
 func BenchmarkHandler_Write(b *testing.B) {
 	logName := "test"
-	logLevel := loglevel.LogLevel(loglevel.Debug)
+	logLevel := loglevel.Debug
 	message := "Test message."
 
 	newFormatter := formatter.New(template)
@@ -229,5 +233,37 @@ func BenchmarkHandler_Write(b *testing.B) {
 
 	for index := 0; index < b.N; index++ {
 		newHandler.Write(logName, logLevel, message)
+	}
+}
+
+// TestConsoleSupportsANSIColors tests that consoleSupportsANSIColors returns
+// true if console supports ANSI colors, or otherwise it returns false.
+func TestConsoleSupportsANSIColors(t *testing.T) {
+	parameters := map[string]struct {
+		Expected bool
+		Term     string
+	}{
+		"Console supports ANSI colors": {
+			true, "xterm-256color",
+		},
+		"Console don't support ANSI colors": {
+			false, "",
+		},
+	}
+	for name, parameter := range parameters {
+		t.Run(name, func(t *testing.T) {
+			_ = os.Setenv("TERM", parameter.Term)
+			result := consoleSupportsANSIColors()
+			testutils.AssertEquals(t, parameter.Expected, result)
+		})
+	}
+	_ = os.Setenv("TERM", "xterm-256color")
+}
+
+// BenchmarkConsoleSupportsANSIColors performs benchmarking of the
+// consoleSupportsANSIColors().
+func BenchmarkConsoleSupportsANSIColors(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		consoleSupportsANSIColors()
 	}
 }

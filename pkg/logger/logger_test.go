@@ -88,7 +88,7 @@ func (mock *MockHandler) Level() loglevel.LogLevel {
 	mock.CalledName = "Level"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := loglevel.LogLevel(loglevel.Debug)
+	returnValue := loglevel.Debug
 	mock.Return = returnValue
 	return returnValue
 }
@@ -131,7 +131,7 @@ func TestBaseLogger_Log(t *testing.T) {
 		},
 	}
 
-	logLevel := loglevel.LogLevel(loglevel.Debug)
+	logLevel := loglevel.Debug
 
 	newBaseLogger.Log(logLevel, message, parameters...)
 
@@ -150,7 +150,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 		},
 	}
 
-	logLevel := loglevel.LogLevel(loglevel.Debug)
+	logLevel := loglevel.Debug
 
 	for index := 0; index < b.N; index++ {
 		newBaseLogger.Log(logLevel, message, parameters...)
@@ -672,7 +672,7 @@ func TestSetLevel(t *testing.T) {
 
 	rootLogger = &Logger{baseLogger: mockLogger}
 
-	newLevel := loglevel.LogLevel(loglevel.Error)
+	newLevel := loglevel.Error
 
 	SetLevel(newLevel)
 
@@ -687,7 +687,7 @@ func BenchmarkSetLevel(b *testing.B) {
 
 	rootLogger = &Logger{baseLogger: mockLogger}
 
-	newLevel := loglevel.LogLevel(loglevel.Error)
+	newLevel := loglevel.Error
 
 	for index := 0; index < b.N; index++ {
 		SetLevel(newLevel)
