@@ -36,6 +36,8 @@ Logger supports 11 logging levels + 1 (when non set):
 - Critical
 - Emergency
 
+### Default Logger
+
 Default logger could be used like in the following example:
 
 ```go
@@ -51,6 +53,8 @@ logging.SetLevel(loglevel.None)
 
 After changing log level to "None" it will print messages for any level.
 
+### Custom Logger
+
 Alternatively you could create application logger. To do this you would need to create a new logger.
 
 ```go
@@ -60,11 +64,15 @@ applicationLogger := logger.New("application-logger")
 After this you need to set up it, for this create a new formatter that says how to log the message by providing a
 template.
 
+#### Formatter
+
 ```go
 applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
 ```
 
 After creation of the formatter, you need to create a new handler that tells where to write log messages.
+
+#### Handler
 
 There are two predefined types of handler:
 
@@ -81,6 +89,15 @@ and path to the file where to log those data.
 ```go
 newFileHandler := handler.NewFileHandler(loglevel.Debug, applicationFormatter, "system.log")
 ```
+
+You could create your custom handler:
+
+```go
+customHandler := handler.New(loglevel.Debug, applicationFormatter, os.Stdout, os.Stderr)
+```
+
+It takes two additional arguments writer for standard messages and for error messages. Standard message logs till
+"Error" level, after this error writer is used.
 
 After handler has been created it shall be registered.
 
