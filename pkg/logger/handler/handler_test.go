@@ -199,6 +199,10 @@ func TestHandler_Write(t *testing.T) {
 
 	newHandler := NewConsoleHandler(loglevel.Debug, newFormatter)
 
+	newHandler.consoleSupportsANSIColors = func() bool {
+		return true
+	}
+
 	newHandler.Write(logName, logLevel, message)
 	newHandler.Write(logName, logLevelError, message)
 
