@@ -33,7 +33,7 @@ func TestLogLevel_String(t *testing.T) {
 
 // BenchmarkLogLevel_String performs benchmarking of the LogLevel.String().
 func BenchmarkLogLevel_String(b *testing.B) {
-	level := LogLevel(Debug)
+	level := Debug
 
 	for index := 0; index < b.N; index++ {
 		_ = level.String()
@@ -69,7 +69,7 @@ func TestLogLevel_DigitRepresentation(t *testing.T) {
 
 // BenchmarkLogLevel_DigitRepresentation performs benchmarking of the LogLevel.DigitRepresentation().
 func BenchmarkLogLevel_DigitRepresentation(b *testing.B) {
-	level := LogLevel(Debug)
+	level := Debug
 
 	for index := 0; index < b.N; index++ {
 		level.DigitRepresentation()

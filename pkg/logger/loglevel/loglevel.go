@@ -4,7 +4,7 @@ package loglevel
 type LogLevel int
 
 const (
-	None = iota * 5
+	None = LogLevel(iota * 5)
 	Trace
 	Debug
 	Verbose
