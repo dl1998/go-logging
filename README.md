@@ -116,3 +116,7 @@ applicationLogger.Info("My message: %s.", "logged using application logger")
 ## Class Diagram
 
 ![Class Diagram](./docs/architecture/diagrams/png/class_diagram.png)
+
+## Sequence Diagram - Create A New Logger
+
+![Sequence Diagram](./docs/architecture/diagrams/png/create_new_logger.png)

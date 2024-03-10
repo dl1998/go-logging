@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant main
+participant logger
+participant formatter
+participant handler
+
+main -> logger: New(name)
+activate logger
+deactivate logger
+
+main -> formatter: New(template)
+activate formatter
+deactivate formatter
+
+main -> handler: NewConsoleHandler(level, formatter)
+activate handler
+handler -> handler: New(level, formatter, writer, errorWriter)
+deactivate handler
+
+note right of main: Calling AddHandler on the instance of Logger returned by New
+main -> logger: AddHandler(handler)
+@enduml
