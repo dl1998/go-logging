@@ -14,7 +14,7 @@ func main() {
 	applicationLogger.Debug("This message will not be displayed, because there are no handlers registered.")
 
 	applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
-	consoleHandler := handler.NewConsoleHandler(loglevel.Debug, applicationFormatter)
+	consoleHandler := handler.NewConsoleHandler(loglevel.Debug, loglevel.Null, applicationFormatter)
 	applicationLogger.AddHandler(consoleHandler)
 
 	applicationLogger.Warning("This message will be displayed.")
@@ -23,7 +23,7 @@ func main() {
 
 	applicationLogger.Trace("This message will not be displayed, because Trace has lower level than Debug.")
 
-	consoleHandler.SetLevel(loglevel.Trace)
+	consoleHandler.SetFromLevel(loglevel.Trace)
 
 	applicationLogger.Trace("This message will be displayed, because LogLevel has been changed to Trace.")
 }

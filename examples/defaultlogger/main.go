@@ -11,7 +11,7 @@ func main() {
 
 	logger.Warning("This message will be displayed.")
 
-	logger.SetLevel(loglevel.None)
+	logger.Configure(logger.NewConfiguration(logger.WithFromLevel(loglevel.All)))
 
 	logger.Debug("This message will be displayed, because LogLevel has been changed.")
 }

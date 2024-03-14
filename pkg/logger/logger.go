@@ -7,7 +7,14 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/loglevel"
 )
 
-var rootLogger = GetDefaultLogger()
+var rootLogger *Logger
+var fromLevel loglevel.LogLevel
+var toLevel loglevel.LogLevel
+var template string
+
+func init() {
+	Configure(NewConfiguration())
+}
 
 // baseLoggerInterface defines low level logging interface.
 type baseLoggerInterface interface {
@@ -15,7 +22,8 @@ type baseLoggerInterface interface {
 	Name() string
 	SetName(name string)
 	Handlers() []handler.Interface
-	AddHandler(handler handler.Interface)
+	AddHandler(handlerInterface handler.Interface)
+	RemoveHandler(handlerInterface handler.Interface)
 }
 
 // baseLogger struct contains basic fields for the logger.
@@ -27,9 +35,7 @@ type baseLogger struct {
 // Log logs interpolated message with the provided loglevel.LogLevel.
 func (logger *baseLogger) Log(level loglevel.LogLevel, message string, parameters ...any) {
 	for _, registeredHandler := range logger.handlers {
-		if level >= registeredHandler.Level() {
-			registeredHandler.Write(logger.name, level, message, parameters...)
-		}
+		registeredHandler.Write(logger.name, level, message, parameters...)
 	}
 }
 
@@ -50,15 +56,27 @@ func (logger *baseLogger) Handlers() []handler.Interface {
 }
 
 // AddHandler register a new handler.Interface for the baseLogger.
-func (logger *baseLogger) AddHandler(handler handler.Interface) {
-	logger.handlers = append(logger.handlers, handler)
+func (logger *baseLogger) AddHandler(handlerInterface handler.Interface) {
+	logger.handlers = append(logger.handlers, handlerInterface)
+}
+
+// RemoveHandler removes a handler.Interface from the baseLogger handlers.
+func (logger *baseLogger) RemoveHandler(handlerInterface handler.Interface) {
+	newSlice := make([]handler.Interface, 0)
+	for _, element := range logger.handlers {
+		if element != handlerInterface {
+			newSlice = append(newSlice, element)
+		}
+	}
+	logger.handlers = newSlice
 }
 
 // Interface represents interface that shall be satisfied by Logger.
 type Interface interface {
 	Name() string
 	Handlers() []handler.Interface
-	AddHandler(handler handler.Interface)
+	AddHandler(handlerInterface handler.Interface)
+	RemoveHandler(handlerInterface handler.Interface)
 	Trace(message string, parameters ...any)
 	Debug(message string, parameters ...any)
 	Verbose(message string, parameters ...any)
@@ -87,19 +105,6 @@ func New(name string) *Logger {
 	}
 }
 
-// GetDefaultLogger creates a new default logger.
-func GetDefaultLogger() *Logger {
-	newLogger := New("root")
-
-	newFormatter := formatter.New("%(level):%(name):%(message)")
-
-	newHandler := handler.NewConsoleHandler(loglevel.Warning, newFormatter)
-
-	newLogger.baseLogger.AddHandler(newHandler)
-
-	return newLogger
-}
-
 // Name returns logger name for the Logger.
 func (logger *Logger) Name() string {
 	return logger.baseLogger.Name()
@@ -112,8 +117,13 @@ func (logger *Logger) Handlers() []handler.Interface {
 }
 
 // AddHandler registers a new handler.Interface for the Logger.
-func (logger *Logger) AddHandler(handler handler.Interface) {
-	logger.baseLogger.AddHandler(handler)
+func (logger *Logger) AddHandler(handlerInterface handler.Interface) {
+	logger.baseLogger.AddHandler(handlerInterface)
+}
+
+// RemoveHandler removes a handler.Interface from the Logger handlers.
+func (logger *Logger) RemoveHandler(handlerInterface handler.Interface) {
+	logger.baseLogger.RemoveHandler(handlerInterface)
 }
 
 // Trace logs a new message using Logger with loglevel.Trace level.
@@ -171,12 +181,132 @@ func (logger *Logger) Emergency(message string, parameters ...any) {
 	logger.baseLogger.Log(loglevel.Emergency, message, parameters...)
 }
 
-// SetLevel sets a new loglevel.LogLevel for the default logger.
-func SetLevel(level loglevel.LogLevel) {
-	handlerInterface := rootLogger.baseLogger.Handlers()[0]
-	if handlerInterface != nil {
-		handlerInterface.SetLevel(level)
+// Configuration struct contains configuration for the logger.
+type Configuration struct {
+	fromLevel loglevel.LogLevel
+	toLevel   loglevel.LogLevel
+	template  string
+	file      string
+	name      string
+}
+
+// Option represents option for the Configuration.
+type Option func(*Configuration)
+
+// WithFromLevel sets fromLevel for the Configuration.
+func WithFromLevel(fromLevel loglevel.LogLevel) Option {
+	return func(configuration *Configuration) {
+		configuration.fromLevel = fromLevel
 	}
+}
+
+// WithToLevel sets toLevel for the Configuration.
+func WithToLevel(toLevel loglevel.LogLevel) Option {
+	return func(configuration *Configuration) {
+		configuration.toLevel = toLevel
+	}
+}
+
+// WithTemplate sets template for the Configuration.
+func WithTemplate(template string) Option {
+	return func(configuration *Configuration) {
+		configuration.template = template
+	}
+}
+
+// WithFile sets file for the Configuration.
+func WithFile(file string) Option {
+	return func(configuration *Configuration) {
+		configuration.file = file
+	}
+}
+
+// WithName sets name for the Configuration.
+func WithName(name string) Option {
+	return func(configuration *Configuration) {
+		configuration.name = name
+	}
+}
+
+// NewConfiguration creates a new instance of the Configuration.
+func NewConfiguration(options ...Option) *Configuration {
+	newConfiguration := &Configuration{
+		fromLevel: loglevel.Warning,
+		toLevel:   loglevel.Null,
+		template:  "%(level):%(name):%(message)",
+		file:      "",
+		name:      "root",
+	}
+
+	for _, option := range options {
+		option(newConfiguration)
+	}
+
+	return newConfiguration
+}
+
+// Configure configures the logger with the provided configuration.
+func Configure(configuration *Configuration) {
+	if configuration.fromLevel.DigitRepresentation() > configuration.toLevel.DigitRepresentation() {
+		panic("fromLevel cannot be higher than toLevel")
+	}
+
+	fromLevel = configuration.fromLevel
+	toLevel = configuration.toLevel
+	template = configuration.template
+
+	newLogger := New(configuration.name)
+
+	defaultFormatter := formatter.New(configuration.template)
+
+	var createStdoutHandler = configuration.fromLevel.DigitRepresentation() <= loglevel.Severe.DigitRepresentation()
+	var createStderrHandler = configuration.toLevel.DigitRepresentation() >= loglevel.Error.DigitRepresentation()
+	var createFileHandler = configuration.file != ""
+
+	if createStdoutHandler {
+		stdoutToLevel := toLevel
+		if stdoutToLevel > loglevel.Severe {
+			stdoutToLevel = loglevel.Severe
+		}
+		newHandler := handler.NewConsoleHandler(configuration.fromLevel, stdoutToLevel, defaultFormatter)
+		newLogger.baseLogger.AddHandler(newHandler)
+	}
+
+	if createStderrHandler {
+		stderrFromLevel := fromLevel
+		if stderrFromLevel < loglevel.Error {
+			stderrFromLevel = loglevel.Error
+		}
+		newHandler := handler.NewConsoleErrorHandler(stderrFromLevel, configuration.toLevel, defaultFormatter)
+		newLogger.baseLogger.AddHandler(newHandler)
+	}
+
+	if createFileHandler {
+		newHandler := handler.NewFileHandler(configuration.fromLevel, configuration.toLevel, defaultFormatter, configuration.file)
+		newLogger.baseLogger.AddHandler(newHandler)
+	}
+
+	rootLogger = newLogger
+}
+
+// Name returns name of the rootLogger.
+func Name() string {
+	return rootLogger.Name()
+}
+
+// Template returns template of the rootLogger.
+func Template() string {
+	return template
+}
+
+// FromLevel returns fromLevel of the rootLogger.
+func FromLevel() loglevel.LogLevel {
+	return fromLevel
+}
+
+// ToLevel returns toLevel of the rootLogger.
+func ToLevel() loglevel.LogLevel {
+	return toLevel
 }
 
 // Trace logs a new message using default logger with loglevel.Trace level.

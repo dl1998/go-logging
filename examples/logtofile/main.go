@@ -24,7 +24,7 @@ func main() {
 	applicationLogger := logger.New("file-logger")
 
 	applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
-	fileHandler := handler.NewFileHandler(loglevel.Warning, applicationFormatter, fmt.Sprintf("%s/file.log", directory))
+	fileHandler := handler.NewFileHandler(loglevel.Warning, loglevel.Null, applicationFormatter, fmt.Sprintf("%s/file.log", directory))
 	applicationLogger.AddHandler(fileHandler)
 
 	applicationLogger.Warning("This file has only Warning level logs or higher.")
