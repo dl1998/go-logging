@@ -6,6 +6,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
 	"github.com/dl1998/go-logging/pkg/logger/loglevel"
+	"io"
 	"testing"
 )
 
@@ -68,24 +69,42 @@ func (mock *MockLogger) Handlers() []handler.Interface {
 }
 
 // AddHandler mocks AddHandler from baseLogger.
-func (mock *MockLogger) AddHandler(handler handler.Interface) {
+func (mock *MockLogger) AddHandler(handlerInterface handler.Interface) {
 	mock.CalledName = "AddHandler"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), handler)
+	mock.Parameters = append(make([]any, 0), handlerInterface)
+	mock.Return = nil
+}
+
+// RemoveHandler mocks RemoveHandler from baseLogger.
+func (mock *MockLogger) RemoveHandler(handlerInterface handler.Interface) {
+	mock.CalledName = "RemoveHandler"
+	mock.Called = true
+	mock.Parameters = append(make([]any, 0), handlerInterface)
 	mock.Return = nil
 }
 
 // MockHandler is used to mock Handler.
 type MockHandler struct {
+	writer     io.Writer
 	CalledName string
 	Called     bool
 	Parameters []any
 	Return     any
 }
 
-// Level mocks Level from Handler.
-func (mock *MockHandler) Level() loglevel.LogLevel {
-	mock.CalledName = "Level"
+// Writer mocks Writer from Handler.
+func (mock *MockHandler) Writer() io.Writer {
+	mock.CalledName = "Writer"
+	mock.Called = true
+	mock.Parameters = make([]any, 0)
+	mock.Return = mock.writer
+	return mock.writer
+}
+
+// FromLevel mocks FromLevel from Handler.
+func (mock *MockHandler) FromLevel() loglevel.LogLevel {
+	mock.CalledName = "FromLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
 	returnValue := loglevel.Debug
@@ -93,9 +112,27 @@ func (mock *MockHandler) Level() loglevel.LogLevel {
 	return returnValue
 }
 
-// SetLevel mocks SetLevel from Handler.
-func (mock *MockHandler) SetLevel(level loglevel.LogLevel) {
-	mock.CalledName = "SetLevel"
+// SetFromLevel mocks SetFromLevel from Handler.
+func (mock *MockHandler) SetFromLevel(level loglevel.LogLevel) {
+	mock.CalledName = "SetFromLevel"
+	mock.Called = true
+	mock.Parameters = append(make([]any, 0), level)
+	mock.Return = nil
+}
+
+// ToLevel mocks ToLevel from Handler.
+func (mock *MockHandler) ToLevel() loglevel.LogLevel {
+	mock.CalledName = "ToLevel"
+	mock.Called = true
+	mock.Parameters = make([]any, 0)
+	returnValue := loglevel.Debug
+	mock.Return = returnValue
+	return returnValue
+}
+
+// SetToLevel mocks SetToLevel from Handler.
+func (mock *MockHandler) SetToLevel(level loglevel.LogLevel) {
+	mock.CalledName = "SetToLevel"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), level)
 	mock.Return = nil
@@ -276,6 +313,35 @@ func BenchmarkBaseLogger_AddHandler(b *testing.B) {
 	}
 }
 
+// TestBaseLogger_RemoveHandler tests that baseLogger.RemoveHandler removes a
+// Handler from the list of handlers.
+func TestBaseLogger_RemoveHandler(t *testing.T) {
+	newHandler := &MockHandler{}
+
+	newBaseLogger := &baseLogger{
+		name:     loggerName,
+		handlers: []handler.Interface{newHandler},
+	}
+
+	newBaseLogger.RemoveHandler(newHandler)
+
+	testutils.AssertEquals(t, make([]handler.Interface, 0), newBaseLogger.handlers)
+}
+
+// BenchmarkBaseLogger_RemoveHandler perform benchmarking of the baseLogger.RemoveHandler().
+func BenchmarkBaseLogger_RemoveHandler(b *testing.B) {
+	newHandler := &MockHandler{}
+
+	newBaseLogger := &baseLogger{
+		name:     loggerName,
+		handlers: []handler.Interface{newHandler},
+	}
+
+	for index := 0; index < b.N; index++ {
+		newBaseLogger.RemoveHandler(newHandler)
+	}
+}
+
 // TestNew tests that New creates a new logger.
 func TestNew(t *testing.T) {
 	newLogger := New(loggerName)
@@ -291,31 +357,6 @@ func TestNew(t *testing.T) {
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
 		New(loggerName)
-	}
-}
-
-// TestGetDefaultLogger tests that GetDefaultLogger returns default logger
-// instance.
-func TestGetDefaultLogger(t *testing.T) {
-	rootLoggerName := "root"
-
-	rootLogger := GetDefaultLogger()
-
-	testutils.AssertEquals(t, rootLoggerName, rootLogger.Name())
-
-	handlersSize := len(rootLogger.Handlers())
-
-	handlerInterface := rootLogger.Handlers()[0]
-
-	testutils.AssertEquals(t, 1, handlersSize)
-	testutils.AssertEquals(t, loglevel.Warning, handlerInterface.Level())
-	testutils.AssertEquals(t, "%(level):%(name):%(message)", handlerInterface.Formatter().Template())
-}
-
-// BenchmarkGetDefaultLogger perform benchmarking of the GetDefaultLogger().
-func BenchmarkGetDefaultLogger(b *testing.B) {
-	for index := 0; index < b.N; index++ {
-		GetDefaultLogger()
 	}
 }
 
@@ -386,6 +427,36 @@ func BenchmarkLogger_AddHandler(b *testing.B) {
 
 	for index := 0; index < b.N; index++ {
 		newLogger.AddHandler(mockHandler)
+	}
+}
+
+// TestLogger_RemoveHandler tests that Logger.RemoveHandler removes a Handler from the list of handlers.
+func TestLogger_RemoveHandler(t *testing.T) {
+	mockHandler1 := &MockHandler{}
+	mockHandler2 := &MockHandler{}
+
+	newLogger := &Logger{baseLogger: &baseLogger{
+		name:     loggerName,
+		handlers: []handler.Interface{mockHandler1, mockHandler2},
+	}}
+
+	newLogger.RemoveHandler(mockHandler1)
+	newLogger.RemoveHandler(mockHandler2)
+
+	testutils.AssertEquals(t, make([]handler.Interface, 0), newLogger.baseLogger.Handlers())
+}
+
+// BenchmarkLogger_RemoveHandler perform benchmarking of the Logger.RemoveHandler().
+func BenchmarkLogger_RemoveHandler(b *testing.B) {
+	mockHandler := &MockHandler{}
+
+	newLogger := &Logger{baseLogger: &baseLogger{
+		name:     loggerName,
+		handlers: []handler.Interface{mockHandler},
+	}}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.RemoveHandler(mockHandler)
 	}
 }
 
@@ -664,33 +735,292 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 	}
 }
 
-// TestSetLevel tests that SetLevel set a new log level for the default logger.
-func TestSetLevel(t *testing.T) {
-	mockHandler := &MockHandler{}
-	mockLogger := &MockLogger{}
-	mockLogger.handlers = []handler.Interface{mockHandler}
+// TestWithFromLevel tests that WithFromLevel sets the from level in the Configuration.
+func TestWithFromLevel(t *testing.T) {
+	configuration := NewConfiguration()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	option := WithFromLevel(loglevel.Trace)
 
-	newLevel := loglevel.Error
+	option(configuration)
 
-	SetLevel(newLevel)
-
-	testutils.AssertEquals(t, newLevel, mockHandler.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, configuration.fromLevel, loglevel.Trace)
 }
 
-// BenchmarkSetLevel perform benchmarking of the SetLevel().
-func BenchmarkSetLevel(b *testing.B) {
-	mockHandler := &MockHandler{}
-	mockLogger := &MockLogger{}
-	mockLogger.handlers = []handler.Interface{mockHandler}
+// BenchmarkWithFromLevel perform benchmarking of the WithFromLevel().
+func BenchmarkWithFromLevel(b *testing.B) {
+	configuration := NewConfiguration()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	newLevel := loglevel.Error
+	option := WithFromLevel(loglevel.Trace)
 
 	for index := 0; index < b.N; index++ {
-		SetLevel(newLevel)
+		option(configuration)
+	}
+}
+
+// TestWithToLevel tests that WithToLevel sets the to level in the Configuration.
+func TestWithToLevel(t *testing.T) {
+	configuration := NewConfiguration()
+
+	option := WithToLevel(loglevel.Trace)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.toLevel, loglevel.Trace)
+}
+
+// BenchmarkWithToLevel perform benchmarking of the WithToLevel().
+func BenchmarkWithToLevel(b *testing.B) {
+	configuration := NewConfiguration()
+
+	option := WithToLevel(loglevel.Trace)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithTemplate tests that WithTemplate sets the template in the
+// Configuration.
+func TestWithTemplate(t *testing.T) {
+	configuration := NewConfiguration()
+
+	template := "%(message):%(name):%(level)"
+
+	option := WithTemplate(template)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.template, template)
+}
+
+// BenchmarkWithTemplate perform benchmarking of the WithTemplate().
+func BenchmarkWithTemplate(b *testing.B) {
+	configuration := NewConfiguration()
+
+	template := "%(message):%(name):%(level)"
+
+	option := WithTemplate(template)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithFile tests that WithFile sets the file in the Configuration.
+func TestWithFile(t *testing.T) {
+	configuration := NewConfiguration()
+
+	file := "file.log"
+
+	option := WithFile(file)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.file, file)
+}
+
+// BenchmarkWithFile perform benchmarking of the WithFile().
+func BenchmarkWithFile(b *testing.B) {
+	configuration := NewConfiguration()
+
+	file := "file.log"
+
+	option := WithFile(file)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithName tests that WithName sets the name in the Configuration.
+func TestWithName(t *testing.T) {
+	configuration := NewConfiguration()
+
+	name := "test"
+
+	option := WithName(name)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.name, name)
+}
+
+// BenchmarkWithName perform benchmarking of the WithName().
+func BenchmarkWithName(b *testing.B) {
+	configuration := NewConfiguration()
+
+	name := "test"
+
+	option := WithName(name)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestNewConfiguration tests that NewConfiguration creates a new Configuration.
+func TestNewConfiguration(t *testing.T) {
+	tests := map[string]struct {
+		options           []Option
+		expectedFromLevel loglevel.LogLevel
+		expectedToLevel   loglevel.LogLevel
+		expectedTemplate  string
+		expectedFile      string
+		expectedName      string
+	}{
+		"Empty": {
+			options:           []Option{},
+			expectedFromLevel: loglevel.Warning,
+			expectedToLevel:   loglevel.Null,
+			expectedTemplate:  "%(level):%(name):%(message)",
+			expectedFile:      "",
+			expectedName:      "root",
+		},
+		"Non Standard": {
+			options: []Option{
+				WithFromLevel(loglevel.All),
+				WithToLevel(loglevel.Emergency),
+				WithTemplate("%(message):%(name):%(level)"),
+				WithFile("file.log"),
+				WithName("test"),
+			},
+			expectedFromLevel: loglevel.All,
+			expectedToLevel:   loglevel.Emergency,
+			expectedTemplate:  "%(message):%(name):%(level)",
+			expectedFile:      "file.log",
+			expectedName:      "test",
+		},
+	}
+	for name, configuration := range tests {
+		t.Run(name, func(t *testing.T) {
+			newConfiguration := NewConfiguration(configuration.options...)
+
+			testutils.AssertEquals(t, configuration.expectedFromLevel, newConfiguration.fromLevel)
+			testutils.AssertEquals(t, configuration.expectedToLevel, newConfiguration.toLevel)
+			testutils.AssertEquals(t, configuration.expectedTemplate, newConfiguration.template)
+			testutils.AssertEquals(t, configuration.expectedFile, newConfiguration.file)
+			testutils.AssertEquals(t, configuration.expectedName, newConfiguration.name)
+		})
+	}
+}
+
+// BenchmarkNewConfiguration perform benchmarking of the NewConfiguration().
+func BenchmarkNewConfiguration(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		NewConfiguration()
+	}
+}
+
+// TestConfigure tests that Configure sets the configuration for the default
+// logger.
+func TestConfigure(t *testing.T) {
+	configuration := NewConfiguration(
+		WithFromLevel(loglevel.All),
+		WithToLevel(loglevel.Emergency),
+		WithTemplate("%(message):%(name):%(level)"),
+		WithFile(""),
+		WithName("test"),
+	)
+
+	Configure(configuration)
+
+	testutils.AssertEquals(t, "test", rootLogger.baseLogger.Name())
+	testutils.AssertEquals(t, 2, len(rootLogger.baseLogger.Handlers()))
+}
+
+// TestConfigure_IncorrectLevels tests that Configure returns an error when
+// 'from' level is greater than 'to' level.
+func TestConfigure_IncorrectLevels(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatalf("The code did not panic when 'from' level was greater than 'to' level")
+		}
+	}()
+
+	configuration := NewConfiguration(
+		WithFromLevel(loglevel.Warning),
+		WithToLevel(loglevel.Debug),
+	)
+
+	Configure(configuration)
+}
+
+// BenchmarkConfigure perform benchmarking of the Configure().
+func BenchmarkConfigure(b *testing.B) {
+	configuration := NewConfiguration(
+		WithFromLevel(loglevel.All),
+		WithToLevel(loglevel.Emergency),
+		WithTemplate("%(message):%(name):%(level)"),
+		WithFile(""),
+		WithName("test"),
+	)
+
+	for index := 0; index < b.N; index++ {
+		Configure(configuration)
+	}
+}
+
+// TestName tests that Name returns name of the default logger.
+func TestName(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, "root", Name())
+}
+
+// BenchmarkName perform benchmarking of the Name().
+func BenchmarkName(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		Name()
+	}
+}
+
+// TestTemplate tests that Template returns template of the default logger.
+func TestTemplate(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, "%(level):%(name):%(message)", Template())
+}
+
+// BenchmarkTemplate perform benchmarking of the Template().
+func BenchmarkTemplate(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		Template()
+	}
+}
+
+// TestFromLevel tests that FromLevel returns from level of the default logger.
+func TestFromLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, loglevel.Warning, FromLevel())
+}
+
+// BenchmarkFromLevel perform benchmarking of the FromLevel().
+func BenchmarkFromLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		FromLevel()
+	}
+}
+
+// TestToLevel tests that ToLevel returns to level of the default logger.
+func TestToLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, loglevel.Null, ToLevel())
+}
+
+// BenchmarkToLevel perform benchmarking of the ToLevel().
+func BenchmarkToLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		ToLevel()
 	}
 }
 
