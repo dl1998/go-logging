@@ -49,7 +49,7 @@ By default, root logger prints on console only, and starting from Warning level.
 level:
 
 ```go
-logging.SetLevel(loglevel.None)
+logger.Configure(logger.NewConfiguration(logger.WithFromLevel(loglevel.All)))
 ```
 
 After changing log level to "None" it will print messages for any level.
@@ -75,26 +75,33 @@ After creation of the formatter, you need to create a new handler that tells whe
 
 #### Handler
 
-There are two predefined types of handler:
+There are three predefined types of handler:
 
-- Console Handler - it takes log level starting from which it would log messages, and formatter that tells how to log
-message.
+- Console Handler - it takes log level starting from which it would log messages, log level till which it would log
+messages, and formatter that tells how to log message. It logs messages to standard output.
 
 ```go
-newConsoleHandler := handler.NewConsoleHandler(loglevel.Debug, applicationFormatter)
+newConsoleHandler := handler.NewConsoleHandler(loglevel.Debug, loglevel.Null, applicationFormatter)
 ```
 
-- File Handler - it takes log level starting from which it would log messages, formatter that tells how to log message,
-and path to the file where to log those data.
+- Console Error Handler - it takes log level starting from which it would log messages, log level till which it would
+log messages, and formatter that tells how to log message. It logs messages to error output.
 
 ```go
-newFileHandler := handler.NewFileHandler(loglevel.Debug, applicationFormatter, "system.log")
+newConsoleErrorHandler := handler.NewConsoleErrorHandler(loglevel.Debug, loglevel.Null, applicationFormatter)
+```
+
+- File Handler - it takes log level starting from which it would log messages, log level till which it would
+log messages, formatter that tells how to log message, and path to the file where to log those data.
+
+```go
+newFileHandler := handler.NewFileHandler(loglevel.Debug, loglevel.Null, applicationFormatter, "system.log")
 ```
 
 You could create your custom handler:
 
 ```go
-customHandler := handler.New(loglevel.Debug, applicationFormatter, os.Stdout, os.Stderr)
+customHandler := handler.New(loglevel.Debug, loglevel.Null, applicationFormatter, os.Stdout)
 ```
 
 It takes two additional arguments writer for standard messages and for error messages. Standard message logs till
@@ -104,6 +111,7 @@ After handler has been created it shall be registered.
 
 ```go
 applicationLogger.AddHandler(newConsoleHandler)
+applicationLogger.AddHandler(newConsoleErrorHandler)
 applicationLogger.AddHandler(newFileHandler)
 ```
 
