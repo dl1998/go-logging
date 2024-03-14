@@ -16,9 +16,9 @@ main -> formatter: New(template)
 activate formatter
 deactivate formatter
 
-main -> handler: NewConsoleHandler(level, formatter)
+main -> handler: NewConsoleHandler(fromLevel, toLevel, formatter)
 activate handler
-handler -> handler: New(level, formatter, writer, errorWriter)
+handler -> handler: New(fromLevel, toLevel, formatter, writer)
 deactivate handler
 
 note right of main: Calling AddHandler on the instance of Logger returned by New
