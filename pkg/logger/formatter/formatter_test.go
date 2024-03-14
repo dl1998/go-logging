@@ -4,14 +4,14 @@ package formatter
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
-	"github.com/dl1998/go-logging/pkg/logger/loglevel"
+	"github.com/dl1998/go-logging/pkg/logger/level"
 	"testing"
 )
 
 var template = "%(level):%(name):%(message)"
 var message = "Test message."
 var loggerName = "test"
-var loggingLevel = loglevel.LogLevel(loglevel.Debug)
+var loggingLevel = level.Debug
 
 // TestNew tests that New create correct Formatter instance.
 func TestNew(t *testing.T) {

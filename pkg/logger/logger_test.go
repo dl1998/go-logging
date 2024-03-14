@@ -5,7 +5,7 @@ import (
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
-	"github.com/dl1998/go-logging/pkg/logger/loglevel"
+	"github.com/dl1998/go-logging/pkg/logger/level"
 	"io"
 	"testing"
 )
@@ -29,7 +29,7 @@ type MockLogger struct {
 }
 
 // Log mocks Log from baseLogger.
-func (mock *MockLogger) Log(level loglevel.LogLevel, message string, parameters ...any) {
+func (mock *MockLogger) Log(level level.Level, message string, parameters ...any) {
 	mock.CalledName = "Log"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), level, message)
@@ -103,17 +103,17 @@ func (mock *MockHandler) Writer() io.Writer {
 }
 
 // FromLevel mocks FromLevel from Handler.
-func (mock *MockHandler) FromLevel() loglevel.LogLevel {
+func (mock *MockHandler) FromLevel() level.Level {
 	mock.CalledName = "FromLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := loglevel.Debug
+	returnValue := level.Debug
 	mock.Return = returnValue
 	return returnValue
 }
 
 // SetFromLevel mocks SetFromLevel from Handler.
-func (mock *MockHandler) SetFromLevel(level loglevel.LogLevel) {
+func (mock *MockHandler) SetFromLevel(level level.Level) {
 	mock.CalledName = "SetFromLevel"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), level)
@@ -121,17 +121,17 @@ func (mock *MockHandler) SetFromLevel(level loglevel.LogLevel) {
 }
 
 // ToLevel mocks ToLevel from Handler.
-func (mock *MockHandler) ToLevel() loglevel.LogLevel {
+func (mock *MockHandler) ToLevel() level.Level {
 	mock.CalledName = "ToLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := loglevel.Debug
+	returnValue := level.Debug
 	mock.Return = returnValue
 	return returnValue
 }
 
 // SetToLevel mocks SetToLevel from Handler.
-func (mock *MockHandler) SetToLevel(level loglevel.LogLevel) {
+func (mock *MockHandler) SetToLevel(level level.Level) {
 	mock.CalledName = "SetToLevel"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), level)
@@ -149,7 +149,7 @@ func (mock *MockHandler) Formatter() formatter.Interface {
 }
 
 // Write mocks Write from Handler.
-func (mock *MockHandler) Write(logName string, level loglevel.LogLevel, message string, parameters ...any) {
+func (mock *MockHandler) Write(logName string, level level.Level, message string, parameters ...any) {
 	mock.CalledName = "Write"
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), logName, level, message)
@@ -168,12 +168,12 @@ func TestBaseLogger_Log(t *testing.T) {
 		},
 	}
 
-	logLevel := loglevel.Debug
+	logLevel := level.Debug
 
 	newBaseLogger.Log(logLevel, message, parameters...)
 
 	testutils.AssertEquals(t, loggerName, newHandler.Parameters[0].(string))
-	testutils.AssertEquals(t, logLevel, newHandler.Parameters[1].(loglevel.LogLevel))
+	testutils.AssertEquals(t, logLevel, newHandler.Parameters[1].(level.Level))
 	testutils.AssertEquals(t, message, newHandler.Parameters[2].(string))
 	testutils.AssertEquals(t, parameters, newHandler.Parameters[3:len(newHandler.Parameters)])
 }
@@ -187,7 +187,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 		},
 	}
 
-	logLevel := loglevel.Debug
+	logLevel := level.Debug
 
 	for index := 0; index < b.N; index++ {
 		newBaseLogger.Log(logLevel, message, parameters...)
@@ -469,7 +469,7 @@ func TestLogger_Trace(t *testing.T) {
 
 	newLogger.Trace(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Trace, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Trace, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -494,7 +494,7 @@ func TestLogger_Debug(t *testing.T) {
 
 	newLogger.Debug(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Debug, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Debug, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -519,7 +519,7 @@ func TestLogger_Verbose(t *testing.T) {
 
 	newLogger.Verbose(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Verbose, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Verbose, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -544,7 +544,7 @@ func TestLogger_Info(t *testing.T) {
 
 	newLogger.Info(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Info, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Info, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -569,7 +569,7 @@ func TestLogger_Notice(t *testing.T) {
 
 	newLogger.Notice(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Notice, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Notice, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -594,7 +594,7 @@ func TestLogger_Warning(t *testing.T) {
 
 	newLogger.Warning(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Warning, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Warning, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -619,7 +619,7 @@ func TestLogger_Severe(t *testing.T) {
 
 	newLogger.Severe(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Severe, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Severe, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -644,7 +644,7 @@ func TestLogger_Error(t *testing.T) {
 
 	newLogger.Error(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Error, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -669,7 +669,7 @@ func TestLogger_Alert(t *testing.T) {
 
 	newLogger.Alert(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Alert, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Alert, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -694,7 +694,7 @@ func TestLogger_Critical(t *testing.T) {
 
 	newLogger.Critical(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Critical, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -719,7 +719,7 @@ func TestLogger_Emergency(t *testing.T) {
 
 	newLogger.Emergency(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Emergency, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Emergency, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -739,18 +739,18 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 func TestWithFromLevel(t *testing.T) {
 	configuration := NewConfiguration()
 
-	option := WithFromLevel(loglevel.Trace)
+	option := WithFromLevel(level.Trace)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.fromLevel, loglevel.Trace)
+	testutils.AssertEquals(t, configuration.fromLevel, level.Trace)
 }
 
 // BenchmarkWithFromLevel perform benchmarking of the WithFromLevel().
 func BenchmarkWithFromLevel(b *testing.B) {
 	configuration := NewConfiguration()
 
-	option := WithFromLevel(loglevel.Trace)
+	option := WithFromLevel(level.Trace)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -761,18 +761,18 @@ func BenchmarkWithFromLevel(b *testing.B) {
 func TestWithToLevel(t *testing.T) {
 	configuration := NewConfiguration()
 
-	option := WithToLevel(loglevel.Trace)
+	option := WithToLevel(level.Trace)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.toLevel, loglevel.Trace)
+	testutils.AssertEquals(t, configuration.toLevel, level.Trace)
 }
 
 // BenchmarkWithToLevel perform benchmarking of the WithToLevel().
 func BenchmarkWithToLevel(b *testing.B) {
 	configuration := NewConfiguration()
 
-	option := WithToLevel(loglevel.Trace)
+	option := WithToLevel(level.Trace)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -862,30 +862,30 @@ func BenchmarkWithName(b *testing.B) {
 func TestNewConfiguration(t *testing.T) {
 	tests := map[string]struct {
 		options           []Option
-		expectedFromLevel loglevel.LogLevel
-		expectedToLevel   loglevel.LogLevel
+		expectedFromLevel level.Level
+		expectedToLevel   level.Level
 		expectedTemplate  string
 		expectedFile      string
 		expectedName      string
 	}{
 		"Empty": {
 			options:           []Option{},
-			expectedFromLevel: loglevel.Warning,
-			expectedToLevel:   loglevel.Null,
+			expectedFromLevel: level.Warning,
+			expectedToLevel:   level.Null,
 			expectedTemplate:  "%(level):%(name):%(message)",
 			expectedFile:      "",
 			expectedName:      "root",
 		},
 		"Non Standard": {
 			options: []Option{
-				WithFromLevel(loglevel.All),
-				WithToLevel(loglevel.Emergency),
+				WithFromLevel(level.All),
+				WithToLevel(level.Emergency),
 				WithTemplate("%(message):%(name):%(level)"),
 				WithFile("file.log"),
 				WithName("test"),
 			},
-			expectedFromLevel: loglevel.All,
-			expectedToLevel:   loglevel.Emergency,
+			expectedFromLevel: level.All,
+			expectedToLevel:   level.Emergency,
 			expectedTemplate:  "%(message):%(name):%(level)",
 			expectedFile:      "file.log",
 			expectedName:      "test",
@@ -915,8 +915,8 @@ func BenchmarkNewConfiguration(b *testing.B) {
 // logger.
 func TestConfigure(t *testing.T) {
 	configuration := NewConfiguration(
-		WithFromLevel(loglevel.All),
-		WithToLevel(loglevel.Emergency),
+		WithFromLevel(level.All),
+		WithToLevel(level.Emergency),
 		WithTemplate("%(message):%(name):%(level)"),
 		WithFile(""),
 		WithName("test"),
@@ -938,8 +938,8 @@ func TestConfigure_IncorrectLevels(t *testing.T) {
 	}()
 
 	configuration := NewConfiguration(
-		WithFromLevel(loglevel.Warning),
-		WithToLevel(loglevel.Debug),
+		WithFromLevel(level.Warning),
+		WithToLevel(level.Debug),
 	)
 
 	Configure(configuration)
@@ -948,8 +948,8 @@ func TestConfigure_IncorrectLevels(t *testing.T) {
 // BenchmarkConfigure perform benchmarking of the Configure().
 func BenchmarkConfigure(b *testing.B) {
 	configuration := NewConfiguration(
-		WithFromLevel(loglevel.All),
-		WithToLevel(loglevel.Emergency),
+		WithFromLevel(level.All),
+		WithToLevel(level.Emergency),
 		WithTemplate("%(message):%(name):%(level)"),
 		WithFile(""),
 		WithName("test"),
@@ -996,7 +996,7 @@ func BenchmarkTemplate(b *testing.B) {
 func TestFromLevel(t *testing.T) {
 	Configure(NewConfiguration())
 
-	testutils.AssertEquals(t, loglevel.Warning, FromLevel())
+	testutils.AssertEquals(t, level.Warning, FromLevel())
 }
 
 // BenchmarkFromLevel perform benchmarking of the FromLevel().
@@ -1012,7 +1012,7 @@ func BenchmarkFromLevel(b *testing.B) {
 func TestToLevel(t *testing.T) {
 	Configure(NewConfiguration())
 
-	testutils.AssertEquals(t, loglevel.Null, ToLevel())
+	testutils.AssertEquals(t, level.Null, ToLevel())
 }
 
 // BenchmarkToLevel perform benchmarking of the ToLevel().
@@ -1033,7 +1033,7 @@ func TestTrace(t *testing.T) {
 
 	Trace(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Trace, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Trace, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1058,7 +1058,7 @@ func TestDebug(t *testing.T) {
 
 	Debug(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Debug, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Debug, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1083,7 +1083,7 @@ func TestVerbose(t *testing.T) {
 
 	Verbose(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Verbose, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Verbose, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1108,7 +1108,7 @@ func TestInfo(t *testing.T) {
 
 	Info(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Info, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Info, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1133,7 +1133,7 @@ func TestNotice(t *testing.T) {
 
 	Notice(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Notice, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Notice, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1158,7 +1158,7 @@ func TestWarning(t *testing.T) {
 
 	Warning(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Warning, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Warning, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1183,7 +1183,7 @@ func TestSevere(t *testing.T) {
 
 	Severe(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Severe, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Severe, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1208,7 +1208,7 @@ func TestError(t *testing.T) {
 
 	Error(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Error, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1233,7 +1233,7 @@ func TestAlert(t *testing.T) {
 
 	Alert(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Alert, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Alert, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1258,7 +1258,7 @@ func TestCritical(t *testing.T) {
 
 	Critical(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Critical, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
@@ -1283,7 +1283,7 @@ func TestEmergency(t *testing.T) {
 
 	Emergency(message, parameters...)
 
-	testutils.AssertEquals(t, loglevel.Emergency, mockLogger.Parameters[0].(loglevel.LogLevel))
+	testutils.AssertEquals(t, level.Emergency, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, message, mockLogger.Parameters[1].(string))
 	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }

@@ -1,15 +1,15 @@
-// Package loglevel_test has tests for loglevel package.
-package loglevel
+// Package loglevel_test has tests for level package.
+package level
 
 import (
 	"github.com/dl1998/go-logging/internal/testutils"
 	"testing"
 )
 
-// TestLogLevel_String tests that LogLevel correctly converts value to string.
+// TestLogLevel_String tests that Level correctly converts value to string.
 func TestLogLevel_String(t *testing.T) {
 	parameters := []struct {
-		input    LogLevel
+		input    Level
 		expected string
 	}{
 		{All, "all"},
@@ -32,7 +32,7 @@ func TestLogLevel_String(t *testing.T) {
 	}
 }
 
-// BenchmarkLogLevel_String performs benchmarking of the LogLevel.String().
+// BenchmarkLogLevel_String performs benchmarking of the Level.String().
 func BenchmarkLogLevel_String(b *testing.B) {
 	level := Debug
 
@@ -41,11 +41,11 @@ func BenchmarkLogLevel_String(b *testing.B) {
 	}
 }
 
-// TestLogLevel_String tests that LogLevel returns correct digital representation
+// TestLogLevel_String tests that Level returns correct digital representation
 // of the value.
 func TestLogLevel_DigitRepresentation(t *testing.T) {
 	parameters := []struct {
-		input    LogLevel
+		input    Level
 		expected int
 	}{
 		{All, 0},
@@ -69,7 +69,7 @@ func TestLogLevel_DigitRepresentation(t *testing.T) {
 }
 
 // BenchmarkLogLevel_DigitRepresentation performs benchmarking of the
-// LogLevel.DigitRepresentation().
+// Level.DigitRepresentation().
 func BenchmarkLogLevel_DigitRepresentation(b *testing.B) {
 	level := Debug
 
@@ -78,11 +78,11 @@ func BenchmarkLogLevel_DigitRepresentation(b *testing.B) {
 	}
 }
 
-// TestLogLevel_Next tests that LogLevel returns next LogLevel.
+// TestLogLevel_Next tests that Level returns next Level.
 func TestLogLevel_Next(t *testing.T) {
 	parameters := []struct {
-		input    LogLevel
-		expected LogLevel
+		input    Level
+		expected Level
 	}{
 		{All, Trace},
 		{Trace, Debug},
@@ -105,7 +105,7 @@ func TestLogLevel_Next(t *testing.T) {
 	}
 }
 
-// BenchmarkLogLevel_Next performs benchmarking of the LogLevel.Next().
+// BenchmarkLogLevel_Next performs benchmarking of the Level.Next().
 func BenchmarkLogLevel_Next(b *testing.B) {
 	level := Debug
 
@@ -114,11 +114,11 @@ func BenchmarkLogLevel_Next(b *testing.B) {
 	}
 }
 
-// TestLogLevel_Previous tests that LogLevel returns previous LogLevel.
+// TestLogLevel_Previous tests that Level returns previous Level.
 func TestLogLevel_Previous(t *testing.T) {
 	parameters := []struct {
-		input    LogLevel
-		expected LogLevel
+		input    Level
+		expected Level
 	}{
 		{All, All},
 		{Trace, All},
@@ -141,7 +141,7 @@ func TestLogLevel_Previous(t *testing.T) {
 	}
 }
 
-// BenchmarkLogLevel_Previous performs benchmarking of the LogLevel.Previous().
+// BenchmarkLogLevel_Previous performs benchmarking of the Level.Previous().
 func BenchmarkLogLevel_Previous(b *testing.B) {
 	level := Debug
 
