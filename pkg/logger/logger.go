@@ -4,12 +4,12 @@ package logger
 import (
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
-	"github.com/dl1998/go-logging/pkg/logger/loglevel"
+	"github.com/dl1998/go-logging/pkg/logger/level"
 )
 
 var rootLogger *Logger
-var fromLevel loglevel.LogLevel
-var toLevel loglevel.LogLevel
+var fromLevel level.Level
+var toLevel level.Level
 var template string
 
 func init() {
@@ -18,7 +18,7 @@ func init() {
 
 // baseLoggerInterface defines low level logging interface.
 type baseLoggerInterface interface {
-	Log(level loglevel.LogLevel, message string, parameters ...any)
+	Log(level level.Level, message string, parameters ...any)
 	Name() string
 	SetName(name string)
 	Handlers() []handler.Interface
@@ -32,8 +32,8 @@ type baseLogger struct {
 	handlers []handler.Interface
 }
 
-// Log logs interpolated message with the provided loglevel.LogLevel.
-func (logger *baseLogger) Log(level loglevel.LogLevel, message string, parameters ...any) {
+// Log logs interpolated message with the provided level.Level.
+func (logger *baseLogger) Log(level level.Level, message string, parameters ...any) {
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(logger.name, level, message, parameters...)
 	}
@@ -126,65 +126,65 @@ func (logger *Logger) RemoveHandler(handlerInterface handler.Interface) {
 	logger.baseLogger.RemoveHandler(handlerInterface)
 }
 
-// Trace logs a new message using Logger with loglevel.Trace level.
+// Trace logs a new message using Logger with level.Trace level.
 func (logger *Logger) Trace(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Trace, message, parameters...)
+	logger.baseLogger.Log(level.Trace, message, parameters...)
 }
 
-// Debug logs a new message using Logger with loglevel.Debug level.
+// Debug logs a new message using Logger with level.Debug level.
 func (logger *Logger) Debug(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Debug, message, parameters...)
+	logger.baseLogger.Log(level.Debug, message, parameters...)
 }
 
-// Verbose logs a new message using Logger with loglevel.Verbose level.
+// Verbose logs a new message using Logger with level.Verbose level.
 func (logger *Logger) Verbose(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Verbose, message, parameters...)
+	logger.baseLogger.Log(level.Verbose, message, parameters...)
 }
 
-// Info logs a new message using Logger with loglevel.Info level.
+// Info logs a new message using Logger with level.Info level.
 func (logger *Logger) Info(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Info, message, parameters...)
+	logger.baseLogger.Log(level.Info, message, parameters...)
 }
 
-// Notice logs a new message using Logger with loglevel.Notice level.
+// Notice logs a new message using Logger with level.Notice level.
 func (logger *Logger) Notice(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Notice, message, parameters...)
+	logger.baseLogger.Log(level.Notice, message, parameters...)
 }
 
-// Warning logs a new message using Logger with loglevel.Warning level.
+// Warning logs a new message using Logger with level.Warning level.
 func (logger *Logger) Warning(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Warning, message, parameters...)
+	logger.baseLogger.Log(level.Warning, message, parameters...)
 }
 
-// Severe logs a new message using Logger with loglevel.Severe level.
+// Severe logs a new message using Logger with level.Severe level.
 func (logger *Logger) Severe(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Severe, message, parameters...)
+	logger.baseLogger.Log(level.Severe, message, parameters...)
 }
 
-// Error logs a new message using Logger with loglevel.Error level.
+// Error logs a new message using Logger with level.Error level.
 func (logger *Logger) Error(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Error, message, parameters...)
+	logger.baseLogger.Log(level.Error, message, parameters...)
 }
 
-// Alert logs a new message using Logger with loglevel.Alert level.
+// Alert logs a new message using Logger with level.Alert level.
 func (logger *Logger) Alert(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Alert, message, parameters...)
+	logger.baseLogger.Log(level.Alert, message, parameters...)
 }
 
-// Critical logs a new message using Logger with loglevel.Critical level.
+// Critical logs a new message using Logger with level.Critical level.
 func (logger *Logger) Critical(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Critical, message, parameters...)
+	logger.baseLogger.Log(level.Critical, message, parameters...)
 }
 
-// Emergency logs a new message using Logger with loglevel.Emergency level.
+// Emergency logs a new message using Logger with level.Emergency level.
 func (logger *Logger) Emergency(message string, parameters ...any) {
-	logger.baseLogger.Log(loglevel.Emergency, message, parameters...)
+	logger.baseLogger.Log(level.Emergency, message, parameters...)
 }
 
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
-	fromLevel loglevel.LogLevel
-	toLevel   loglevel.LogLevel
+	fromLevel level.Level
+	toLevel   level.Level
 	template  string
 	file      string
 	name      string
@@ -194,14 +194,14 @@ type Configuration struct {
 type Option func(*Configuration)
 
 // WithFromLevel sets fromLevel for the Configuration.
-func WithFromLevel(fromLevel loglevel.LogLevel) Option {
+func WithFromLevel(fromLevel level.Level) Option {
 	return func(configuration *Configuration) {
 		configuration.fromLevel = fromLevel
 	}
 }
 
 // WithToLevel sets toLevel for the Configuration.
-func WithToLevel(toLevel loglevel.LogLevel) Option {
+func WithToLevel(toLevel level.Level) Option {
 	return func(configuration *Configuration) {
 		configuration.toLevel = toLevel
 	}
@@ -231,8 +231,8 @@ func WithName(name string) Option {
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
-		fromLevel: loglevel.Warning,
-		toLevel:   loglevel.Null,
+		fromLevel: level.Warning,
+		toLevel:   level.Null,
 		template:  "%(level):%(name):%(message)",
 		file:      "",
 		name:      "root",
@@ -259,14 +259,14 @@ func Configure(configuration *Configuration) {
 
 	defaultFormatter := formatter.New(configuration.template)
 
-	var createStdoutHandler = configuration.fromLevel.DigitRepresentation() <= loglevel.Severe.DigitRepresentation()
-	var createStderrHandler = configuration.toLevel.DigitRepresentation() >= loglevel.Error.DigitRepresentation()
+	var createStdoutHandler = configuration.fromLevel.DigitRepresentation() <= level.Severe.DigitRepresentation()
+	var createStderrHandler = configuration.toLevel.DigitRepresentation() >= level.Error.DigitRepresentation()
 	var createFileHandler = configuration.file != ""
 
 	if createStdoutHandler {
 		stdoutToLevel := toLevel
-		if stdoutToLevel > loglevel.Severe {
-			stdoutToLevel = loglevel.Severe
+		if stdoutToLevel > level.Severe {
+			stdoutToLevel = level.Severe
 		}
 		newHandler := handler.NewConsoleHandler(configuration.fromLevel, stdoutToLevel, defaultFormatter)
 		newLogger.baseLogger.AddHandler(newHandler)
@@ -274,8 +274,8 @@ func Configure(configuration *Configuration) {
 
 	if createStderrHandler {
 		stderrFromLevel := fromLevel
-		if stderrFromLevel < loglevel.Error {
-			stderrFromLevel = loglevel.Error
+		if stderrFromLevel < level.Error {
+			stderrFromLevel = level.Error
 		}
 		newHandler := handler.NewConsoleErrorHandler(stderrFromLevel, configuration.toLevel, defaultFormatter)
 		newLogger.baseLogger.AddHandler(newHandler)
@@ -300,66 +300,66 @@ func Template() string {
 }
 
 // FromLevel returns fromLevel of the rootLogger.
-func FromLevel() loglevel.LogLevel {
+func FromLevel() level.Level {
 	return fromLevel
 }
 
 // ToLevel returns toLevel of the rootLogger.
-func ToLevel() loglevel.LogLevel {
+func ToLevel() level.Level {
 	return toLevel
 }
 
-// Trace logs a new message using default logger with loglevel.Trace level.
+// Trace logs a new message using default logger with level.Trace level.
 func Trace(message string, parameters ...any) {
 	rootLogger.Trace(message, parameters...)
 }
 
-// Debug logs a new message using default logger with loglevel.Debug level.
+// Debug logs a new message using default logger with level.Debug level.
 func Debug(message string, parameters ...any) {
 	rootLogger.Debug(message, parameters...)
 }
 
-// Verbose logs a new message using default logger with loglevel.Verbose level.
+// Verbose logs a new message using default logger with level.Verbose level.
 func Verbose(message string, parameters ...any) {
 	rootLogger.Verbose(message, parameters...)
 }
 
-// Info logs a new message using default logger with loglevel.Info level.
+// Info logs a new message using default logger with level.Info level.
 func Info(message string, parameters ...any) {
 	rootLogger.Info(message, parameters...)
 }
 
-// Notice logs a new message using default logger with loglevel.Notice level.
+// Notice logs a new message using default logger with level.Notice level.
 func Notice(message string, parameters ...any) {
 	rootLogger.Notice(message, parameters...)
 }
 
-// Warning logs a new message using default logger with loglevel.Warning level.
+// Warning logs a new message using default logger with level.Warning level.
 func Warning(message string, parameters ...any) {
 	rootLogger.Warning(message, parameters...)
 }
 
-// Severe logs a new message using default logger with loglevel.Severe level.
+// Severe logs a new message using default logger with level.Severe level.
 func Severe(message string, parameters ...any) {
 	rootLogger.Severe(message, parameters...)
 }
 
-// Error logs a new message using default logger with loglevel.Error level.
+// Error logs a new message using default logger with level.Error level.
 func Error(message string, parameters ...any) {
 	rootLogger.Error(message, parameters...)
 }
 
-// Alert logs a new message using default logger with loglevel.Alert level.
+// Alert logs a new message using default logger with level.Alert level.
 func Alert(message string, parameters ...any) {
 	rootLogger.Alert(message, parameters...)
 }
 
-// Critical logs a new message using default logger with loglevel.Critical level.
+// Critical logs a new message using default logger with level.Critical level.
 func Critical(message string, parameters ...any) {
 	rootLogger.Critical(message, parameters...)
 }
 
-// Emergency logs a new message using default logger with loglevel.Emergency level.
+// Emergency logs a new message using default logger with level.Emergency level.
 func Emergency(message string, parameters ...any) {
 	rootLogger.Emergency(message, parameters...)
 }

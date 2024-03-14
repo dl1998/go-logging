@@ -3,26 +3,26 @@
 package formatter
 
 import (
-	"github.com/dl1998/go-logging/pkg/logger/loglevel"
+	"github.com/dl1998/go-logging/pkg/logger/level"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
 )
 
-// logLevelColors maps LogLevel values to ANSI color codes.
-var logLevelColors = map[loglevel.LogLevel]string{
-	loglevel.Trace:     "\033[90m",         // Dark Grey
-	loglevel.Debug:     "\033[36m",         // Cyan
-	loglevel.Verbose:   "\033[96m",         // Light Cyan
-	loglevel.Info:      "\033[97m",         // Default terminal text color (ANSI Bright White)
-	loglevel.Notice:    "\033[94m",         // Light Blue
-	loglevel.Warning:   "\033[93m",         // Bright Yellow
-	loglevel.Severe:    "\033[38;5;208m",   // Orange
-	loglevel.Error:     "\033[31m",         // Red
-	loglevel.Alert:     "\033[38;5;202m",   // Dark Orange
-	loglevel.Critical:  "\033[1;31m",       // Red or magenta (ANSI Bright Magenta)
-	loglevel.Emergency: "\033[97m\033[41m", // Bright White on Red Background
+// logLevelColors maps level.Level values to ANSI color codes.
+var logLevelColors = map[level.Level]string{
+	level.Trace:     "\033[90m",         // Dark Grey
+	level.Debug:     "\033[36m",         // Cyan
+	level.Verbose:   "\033[96m",         // Light Cyan
+	level.Info:      "\033[97m",         // Default terminal text color (ANSI Bright White)
+	level.Notice:    "\033[94m",         // Light Blue
+	level.Warning:   "\033[93m",         // Bright Yellow
+	level.Severe:    "\033[38;5;208m",   // Orange
+	level.Error:     "\033[31m",         // Red
+	level.Alert:     "\033[38;5;202m",   // Dark Orange
+	level.Critical:  "\033[1;31m",       // Red or magenta (ANSI Bright Magenta)
+	level.Emergency: "\033[97m\033[41m", // Bright White on Red Background
 }
 
 // Reset color
@@ -31,7 +31,7 @@ const resetColor = "\033[0m"
 // Interface represents interface that shall be satisfied by Formatter.
 type Interface interface {
 	Template() string
-	Format(message string, loggerName string, level loglevel.LogLevel, colored bool) string
+	Format(message string, loggerName string, logLevel level.Level, colored bool) string
 }
 
 // Formatter struct that contains necessary for the formatting fields.
@@ -52,19 +52,19 @@ func (formatter *Formatter) IsEqual(anotherFormatter *Formatter) bool {
 
 // EvaluatePreset evaluates pre-defined set of formatting options and returns map
 // with mapping of the option to interpolated value.
-func (formatter *Formatter) EvaluatePreset(message string, loggerName string, level loglevel.LogLevel) map[string]string {
+func (formatter *Formatter) EvaluatePreset(message string, loggerName string, logLevel level.Level) map[string]string {
 	_, functionName, functionLine, _ := runtime.Caller(2)
 	var presets = map[string]string{
-		"%(name)":      loggerName,                                // Logger name
-		"%(message)":   message,                                   // Logged message
-		"%(time)":      time.Now().Format(time.TimeOnly),          // Current time (format: HH:MM:ss)
-		"%(date)":      time.Now().Format(time.DateOnly),          // Current date (format: yyyy-mm-dd)
-		"%(isotime)":   time.Now().Format(time.RFC3339),           // Current date and time (format: yyyy-mm-ddTHH:MM:ssGMT)
-		"%(timestamp)": strconv.FormatInt(time.Now().Unix(), 10),  // Current timestamp
-		"%(level)":     level.String(),                            // Logging level name
-		"%(levelnr)":   strconv.Itoa(level.DigitRepresentation()), // Logging level number
-		"%(fname)":     functionName,                              // Name of the function from which logger has been called
-		"%(fline)":     strconv.Itoa(functionLine),                // Line number from which logger has been called
+		"%(name)":      loggerName,                                   // Logger name
+		"%(message)":   message,                                      // Logged message
+		"%(time)":      time.Now().Format(time.TimeOnly),             // Current time (format: HH:MM:ss)
+		"%(date)":      time.Now().Format(time.DateOnly),             // Current date (format: yyyy-mm-dd)
+		"%(isotime)":   time.Now().Format(time.RFC3339),              // Current date and time (format: yyyy-mm-ddTHH:MM:ssGMT)
+		"%(timestamp)": strconv.FormatInt(time.Now().Unix(), 10),     // Current timestamp
+		"%(level)":     logLevel.String(),                            // Logging log level name
+		"%(levelnr)":   strconv.Itoa(logLevel.DigitRepresentation()), // Logging log level number
+		"%(fname)":     functionName,                                 // Name of the function from which logger has been called
+		"%(fline)":     strconv.Itoa(functionLine),                   // Line number from which logger has been called
 	}
 	return presets
 }
@@ -75,8 +75,8 @@ func (formatter *Formatter) Template() string {
 }
 
 // Format formats provided message template to the interpolated string.
-func (formatter *Formatter) Format(message string, loggerName string, level loglevel.LogLevel, colored bool) string {
-	var presets = formatter.EvaluatePreset(message, loggerName, level)
+func (formatter *Formatter) Format(message string, loggerName string, logLevel level.Level, colored bool) string {
+	var presets = formatter.EvaluatePreset(message, loggerName, logLevel)
 
 	format := formatter.template
 
@@ -85,7 +85,7 @@ func (formatter *Formatter) Format(message string, loggerName string, level logl
 	}
 
 	if colored {
-		format = logLevelColors[level] + format + resetColor
+		format = logLevelColors[logLevel] + format + resetColor
 	}
 
 	return format + "\n"

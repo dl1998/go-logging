@@ -5,19 +5,19 @@ package pkg.logger {
     package formatter {
         interface Interface {
             + Template() : string
-            + Format(message : string, loggerName : string, level : loglevel.LogLevel, colored : bool) : string
+            + Format(message : string, loggerName : string, level : level.Level, colored : bool) : string
         }
 
         struct Formatter implements Interface {
             ~ template : string
             + IsEqual(anotherFormatter : *Formatter) : bool
-            + EvaluatePreset(message : string, loggerName : string, level : loglevel.LogLevel) : map[string]string
+            + EvaluatePreset(message : string, loggerName : string, level : level.Level) : map[string]string
             + Template() : string
-            + Format(message : string, loggerName : string, level : loglevel.LogLevel, colored : bool) : string
+            + Format(message : string, loggerName : string, level : level.Level, colored : bool) : string
         }
 
         class "<<module>>" {
-            ~ logLevelColors : map[loglevel.LogLevel]string
+            ~ logLevelColors : map[level.Level]string
             ~ resetColor : string
             + New(template : string) : *Formatter
         }
@@ -27,66 +27,66 @@ package pkg.logger {
     package handler {
         interface Interface {
             + Writer() : io.Writer
-            + FromLevel() loglevel.LogLevel
-            + SetFromLevel(fromLevel loglevel.LogLevel)
-            + ToLevel() loglevel.LogLevel
-            + SetToLevel(toLevel loglevel.LogLevel)
+            + FromLevel() level.Level
+            + SetFromLevel(fromLevel level.Level)
+            + ToLevel() level.Level
+            + SetToLevel(toLevel level.Level)
             + Formatter() : formatter.Interface
-            + Write(logName : string, level : loglevel.LogLevel, message : string, parameters : ...any)
+            + Write(logName : string, level : level.Level, message : string, parameters : ...any)
         }
         struct Handler implements Interface {
-            ~ fromLevel : loglevel.LogLevel
-            ~ toLevel : loglevel.LogLevel
+            ~ fromLevel : level.Level
+            ~ toLevel : level.Level
             ~ formatter : formatter.Interface
             ~ writer : io.Writer
             ~ consoleSupportsANSIColors : func() bool
             + Writer() : io.Writer
-            + FromLevel() : loglevel.LogLevel
-            + SetLevel(level : loglevel.LogLevel)
-            + ToLevel() : loglevel.LogLevel
-            + SetToLevel(level : loglevel.LogLevel)
+            + FromLevel() : level.Level
+            + SetLevel(level : level.Level)
+            + ToLevel() : level.Level
+            + SetToLevel(level : level.Level)
             + Formatter() : formatter.Interface
-            + Write(logName : string, level : loglevel.LogLevel, message : string, parameters : ...any)
+            + Write(logName : string, level : level.Level, message : string, parameters : ...any)
         }
         class "<<module>>" {
             ~ osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File, error)
             ~ osStdout : *File
             ~ osStderr : *File
-            + New(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel, newFormatter : formatter.Interface, writer : io.Writer, errorWriter : io.Writer) : *Handler
-            + NewConsoleHandler(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel, newFormatter : formatter.Interface) : *Handler
-            + NewConsoleErrorHandler(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel, newFormatter : formatter.Interface) : *Handler
-            + NewFileHandler(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel, newFormatter : formatter.Interface, file : string) : *Handler
+            + New(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, writer : io.Writer, errorWriter : io.Writer) : *Handler
+            + NewConsoleHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+            + NewConsoleErrorHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+            + NewFileHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, file : string) : *Handler
             ~ consoleSupportsANSIColors() : bool
         }
 
         "<<module>>" ..> Handler : uses
     }
-    package loglevel {
-        stereotype LogLevel <<int>> {
+    package level {
+        stereotype Level <<int>> {
             + String() : string
             + DigitRepresentation() : int
-            + Next() : LogLevel
-            + Previous() : LogLevel
+            + Next() : Level
+            + Previous() : Level
         }
         class "<<module>>" {
-            + All : loglevel.LogLevel
-            + Trace : loglevel.LogLevel
-            + Debug : loglevel.LogLevel
-            + Verbose : loglevel.LogLevel
-            + Info : loglevel.LogLevel
-            + Notice : loglevel.LogLevel
-            + Warning : loglevel.LogLevel
-            + Severe : loglevel.LogLevel
-            + Error : loglevel.LogLevel
-            + Alert : loglevel.LogLevel
-            + Critical : loglevel.LogLevel
-            + Emergency : loglevel.LogLevel
-            + Null : loglevel.LogLevel
+            + All : level.Level
+            + Trace : level.Level
+            + Debug : level.Level
+            + Verbose : level.Level
+            + Info : level.Level
+            + Notice : level.Level
+            + Warning : level.Level
+            + Severe : level.Level
+            + Error : level.Level
+            + Alert : level.Level
+            + Critical : level.Level
+            + Emergency : level.Level
+            + Null : level.Level
         }
-        "<<module>>" ..> LogLevel : uses
+        "<<module>>" ..> Level : uses
     }
     interface baseLoggerInterface {
-        + Log(level : loglevel.LogLevel, message : string, parameters : ...any)
+        + Log(level : level.Level, message : string, parameters : ...any)
         + Name() : string
         + SetName(name : string)
         + Handlers() : []handler.Interface
@@ -96,7 +96,7 @@ package pkg.logger {
     struct baseLogger implements baseLoggerInterface {
         ~ name : string
         ~ handlers : []handler.Interface
-        + Log(level : loglevel.LogLevel, message : string, parameters : ...any)
+        + Log(level : level.Level, message : string, parameters : ...any)
         + Name() : string
         + SetName(name : string)
         + Handlers() : []handler.Interface
@@ -139,8 +139,8 @@ package pkg.logger {
         + Emergency(message : string, parameters : ...any)
     }
     struct Configuration {
-        ~ fromLevel : loglevel.LogLevel
-        ~ toLevel : loglevel.LogLevel
+        ~ fromLevel : level.Level
+        ~ toLevel : level.Level
         ~ template : string
         ~ file : string
         ~ name : string
@@ -148,13 +148,13 @@ package pkg.logger {
     stereotype Option <<func(*Configuration)>> {}
     class "<<module>>" {
         ~ rootLogger : *Logger
-        ~ fromLevel : loglevel.LogLevel
-        ~ toLevel : loglevel.LogLevel
+        ~ fromLevel : level.Level
+        ~ toLevel : level.Level
         ~ template : string
         ~ init()
         + New(name : string) : *Logger
-        + WithFromLevel(fromLevel : loglevel.LogLevel) : Option
-        + WithToLevel(toLevel : loglevel.LogLevel) : Option
+        + WithFromLevel(fromLevel : level.Level) : Option
+        + WithToLevel(toLevel : level.Level) : Option
         + WithTemplate(template : string) : Option
         + WithFile(file : string) : Option
         + WithName(name : string) : Option
@@ -162,8 +162,8 @@ package pkg.logger {
         + Configure(configuration : *Configuration)
         + Name() : string
         + Template() : string
-        + FromLevel() : loglevel.LogLevel
-        + ToLevel() : loglevel.LogLevel
+        + FromLevel() : level.Level
+        + ToLevel() : level.Level
         + Trace(message : string, parameters : ...any)
         + Debug(message : string, parameters : ...any)
         + Verbose(message : string, parameters : ...any)
@@ -184,7 +184,7 @@ package pkg.logger {
     Option ..> Configuration : uses
 }
 
-pkg.logger.handler.Handler *-- pkg.logger.loglevel.LogLevel : contains
+pkg.logger.handler.Handler *-- pkg.logger.level.Level : contains
 pkg.logger.handler.Handler *-- pkg.logger.formatter.Interface : contains
 pkg.logger.baseLogger *-- "0..*" pkg.logger.handler.Interface : contains
 
