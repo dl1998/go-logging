@@ -3,8 +3,10 @@ package loglevel
 
 type LogLevel int
 
+const step = 5
+
 const (
-	None = LogLevel(iota * 5)
+	All = LogLevel(iota * step)
 	Trace
 	Debug
 	Verbose
@@ -16,12 +18,13 @@ const (
 	Alert
 	Critical
 	Emergency
+	Null
 )
 
 // String returns string representation of the LogLevel.
-func (level *LogLevel) String() string {
+func (level LogLevel) String() string {
 	mapping := map[LogLevel]string{
-		None:      "none",
+		All:       "all",
 		Trace:     "trace",
 		Debug:     "debug",
 		Verbose:   "verbose",
@@ -33,11 +36,28 @@ func (level *LogLevel) String() string {
 		Alert:     "alert",
 		Critical:  "critical",
 		Emergency: "emergency",
+		Null:      "null",
 	}
-	return mapping[*level]
+	return mapping[level]
 }
 
 // DigitRepresentation returns digit representations of the LogLevel.
-func (level *LogLevel) DigitRepresentation() int {
-	return int(*level)
+func (level LogLevel) DigitRepresentation() int {
+	return int(level)
+}
+
+// Next returns next LogLevel.
+func (level LogLevel) Next() LogLevel {
+	if level == Null {
+		return level
+	}
+	return LogLevel(level.DigitRepresentation() + step)
+}
+
+// Previous returns previous LogLevel.
+func (level LogLevel) Previous() LogLevel {
+	if level == All {
+		return level
+	}
+	return LogLevel(level.DigitRepresentation() - step)
 }

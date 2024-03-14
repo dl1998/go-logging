@@ -12,7 +12,7 @@ func TestLogLevel_String(t *testing.T) {
 		input    LogLevel
 		expected string
 	}{
-		{None, "none"},
+		{All, "all"},
 		{Trace, "trace"},
 		{Debug, "debug"},
 		{Verbose, "verbose"},
@@ -24,6 +24,7 @@ func TestLogLevel_String(t *testing.T) {
 		{Alert, "alert"},
 		{Critical, "critical"},
 		{Emergency, "emergency"},
+		{Null, "null"},
 	}
 
 	for index := range parameters {
@@ -47,7 +48,7 @@ func TestLogLevel_DigitRepresentation(t *testing.T) {
 		input    LogLevel
 		expected int
 	}{
-		{None, 0},
+		{All, 0},
 		{Trace, 5},
 		{Debug, 10},
 		{Verbose, 15},
@@ -67,11 +68,84 @@ func TestLogLevel_DigitRepresentation(t *testing.T) {
 	}
 }
 
-// BenchmarkLogLevel_DigitRepresentation performs benchmarking of the LogLevel.DigitRepresentation().
+// BenchmarkLogLevel_DigitRepresentation performs benchmarking of the
+// LogLevel.DigitRepresentation().
 func BenchmarkLogLevel_DigitRepresentation(b *testing.B) {
 	level := Debug
 
 	for index := 0; index < b.N; index++ {
 		level.DigitRepresentation()
+	}
+}
+
+// TestLogLevel_Next tests that LogLevel returns next LogLevel.
+func TestLogLevel_Next(t *testing.T) {
+	parameters := []struct {
+		input    LogLevel
+		expected LogLevel
+	}{
+		{All, Trace},
+		{Trace, Debug},
+		{Debug, Verbose},
+		{Verbose, Info},
+		{Info, Notice},
+		{Notice, Warning},
+		{Warning, Severe},
+		{Severe, Error},
+		{Error, Alert},
+		{Alert, Critical},
+		{Critical, Emergency},
+		{Emergency, Null},
+		{Null, Null},
+	}
+
+	for index := range parameters {
+		actual := parameters[index].input.Next()
+		testutils.AssertEquals(t, parameters[index].expected, actual)
+	}
+}
+
+// BenchmarkLogLevel_Next performs benchmarking of the LogLevel.Next().
+func BenchmarkLogLevel_Next(b *testing.B) {
+	level := Debug
+
+	for index := 0; index < b.N; index++ {
+		level.Next()
+	}
+}
+
+// TestLogLevel_Previous tests that LogLevel returns previous LogLevel.
+func TestLogLevel_Previous(t *testing.T) {
+	parameters := []struct {
+		input    LogLevel
+		expected LogLevel
+	}{
+		{All, All},
+		{Trace, All},
+		{Debug, Trace},
+		{Verbose, Debug},
+		{Info, Verbose},
+		{Notice, Info},
+		{Warning, Notice},
+		{Severe, Warning},
+		{Error, Severe},
+		{Alert, Error},
+		{Critical, Alert},
+		{Emergency, Critical},
+		{Null, Emergency},
+	}
+
+	for index := range parameters {
+		actual := parameters[index].input.Previous()
+		testutils.AssertEquals(t, parameters[index].expected, actual)
+	}
+}
+
+// BenchmarkLogLevel_Previous performs benchmarking of the LogLevel.Previous().
+func BenchmarkLogLevel_Previous(b *testing.B) {
+	level := Debug
+
+	for index := 0; index < b.N; index++ {
+		level.Previous()
 	}
 }
