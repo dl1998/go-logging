@@ -1,807 +1,1063 @@
 <?xml version="1.0" encoding="us-ascii" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
-     height="1346.4px" preserveAspectRatio="none" style="width:1129px;height:1346px;background:#FFFFFF;" version="1.1"
-     viewBox="0 0 1129 1346" width="1129.2px" zoomAndPan="magnify">
+     height="1570.14px" preserveAspectRatio="none" style="width:1282px;height:1570px;background:#FFFFFF;" version="1.1"
+     viewBox="0 0 1282 1570" width="1282.22px" zoomAndPan="magnify">
     <defs/>
     <g><!--cluster pkg-->
         <g id="cluster_pkg">
-            <path d="M5.1,3.6 L21.9,3.6 A2.25,2.25 0 0 1 23.4,5.1 L27.6,17.093 L1123.5,17.093 A1.5,1.5 0 0 1 1125,18.593 L1125,1340.7 A1.5,1.5 0 0 1 1123.5,1342.2 L5.1,1342.2 A1.5,1.5 0 0 1 3.6,1340.7 L3.6,5.1 A1.5,1.5 0 0 1 5.1,3.6 "
-                  fill="none" style="stroke:#000000;stroke-width:0.8999999999999999;"/>
-            <line style="stroke:#000000;stroke-width:0.8999999999999999;" x1="3.6" x2="27.6" y1="17.093" y2="17.093"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing"
-                  textLength="16.2" x="6" y="12.9211">pkg
+            <path d="M5.185,3.66 L22.265,3.66 A2.2875,2.2875 0 0 1 23.79,5.185 L28.06,17.3779 L1276.425,17.3779 A1.525,1.525 0 0 1 1277.95,18.9029 L1277.95,1564.345 A1.525,1.525 0 0 1 1276.425,1565.87 L5.185,1565.87 A1.525,1.525 0 0 1 3.66,1564.345 L3.66,5.185 A1.525,1.525 0 0 1 5.185,3.66 "
+                  fill="none" style="stroke:#000000;stroke-width:0.915;"/>
+            <line style="stroke:#000000;stroke-width:0.915;" x1="3.66" x2="28.06" y1="17.3779" y2="17.3779"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-weight="bold" lengthAdjust="spacing"
+                  textLength="16.47" x="6.1" y="13.1364">pkg
             </text>
         </g><!--cluster logger-->
         <g id="cluster_logger">
-            <path d="M19.5,29.4 L47.7,29.4 A2.25,2.25 0 0 1 49.2,30.9 L53.4,42.893 L1109.1,42.893 A1.5,1.5 0 0 1 1110.6,44.393 L1110.6,1326.3 A1.5,1.5 0 0 1 1109.1,1327.8 L19.5,1327.8 A1.5,1.5 0 0 1 18,1326.3 L18,30.9 A1.5,1.5 0 0 1 19.5,29.4 "
-                  fill="none" style="stroke:#000000;stroke-width:0.8999999999999999;"/>
-            <line style="stroke:#000000;stroke-width:0.8999999999999999;" x1="18" x2="53.4" y1="42.893" y2="42.893"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing"
-                  textLength="27.6" x="20.4" y="38.7211">logger
+            <path d="M19.825,29.89 L48.495,29.89 A2.2875,2.2875 0 0 1 50.02,31.415 L54.29,43.6079 L1261.785,43.6079 A1.525,1.525 0 0 1 1263.31,45.1329 L1263.31,1549.705 A1.525,1.525 0 0 1 1261.785,1551.23 L19.825,1551.23 A1.525,1.525 0 0 1 18.3,1549.705 L18.3,31.415 A1.525,1.525 0 0 1 19.825,29.89 "
+                  fill="none" style="stroke:#000000;stroke-width:0.915;"/>
+            <line style="stroke:#000000;stroke-width:0.915;" x1="18.3" x2="54.29" y1="43.6079" y2="43.6079"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-weight="bold" lengthAdjust="spacing"
+                  textLength="28.06" x="20.74" y="39.3664">logger
             </text>
         </g><!--cluster formatter-->
         <g id="cluster_formatter">
-            <path d="M286.5,1100.4 L328.5,1100.4 A2.25,2.25 0 0 1 330,1101.9 L334.2,1113.893 L923.1,1113.893 A1.5,1.5 0 0 1 924.6,1115.393 L924.6,1311.9 A1.5,1.5 0 0 1 923.1,1313.4 L286.5,1313.4 A1.5,1.5 0 0 1 285,1311.9 L285,1101.9 A1.5,1.5 0 0 1 286.5,1100.4 "
-                  fill="none" style="stroke:#000000;stroke-width:0.8999999999999999;"/>
-            <line style="stroke:#000000;stroke-width:0.8999999999999999;" x1="285" x2="334.2" y1="1113.893"
-                  y2="1113.893"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing"
-                  textLength="41.4" x="287.4" y="1109.7211">formatter
+            <path d="M425.475,1310.89 L468.175,1310.89 A2.2875,2.2875 0 0 1 469.7,1312.415 L473.97,1324.6079 L1072.685,1324.6079 A1.525,1.525 0 0 1 1074.21,1326.1329 L1074.21,1535.065 A1.525,1.525 0 0 1 1072.685,1536.59 L425.475,1536.59 A1.525,1.525 0 0 1 423.95,1535.065 L423.95,1312.415 A1.525,1.525 0 0 1 425.475,1310.89 "
+                  fill="none" style="stroke:#000000;stroke-width:0.915;"/>
+            <line style="stroke:#000000;stroke-width:0.915;" x1="423.95" x2="473.97" y1="1324.6079" y2="1324.6079"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-weight="bold" lengthAdjust="spacing"
+                  textLength="42.09" x="426.39" y="1320.3664">formatter
             </text>
         </g><!--cluster handler-->
         <g id="cluster_handler">
-            <path d="M33.9,737.4 L66.9,737.4 A2.25,2.25 0 0 1 68.4,738.9 L72.6,750.893 L923.1,750.893 A1.5,1.5 0 0 1 924.6,752.393 L924.6,1055.7 A1.5,1.5 0 0 1 923.1,1057.2 L33.9,1057.2 A1.5,1.5 0 0 1 32.4,1055.7 L32.4,738.9 A1.5,1.5 0 0 1 33.9,737.4 "
-                  fill="none" style="stroke:#000000;stroke-width:0.8999999999999999;"/>
-            <line style="stroke:#000000;stroke-width:0.8999999999999999;" x1="32.4" x2="72.6" y1="750.893"
-                  y2="750.893"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing"
-                  textLength="32.4" x="34.8" y="746.7211">handler
+            <path d="M34.465,921.71 L68.015,921.71 A2.2875,2.2875 0 0 1 69.54,923.235 L73.81,935.4279 L1072.685,935.4279 A1.525,1.525 0 0 1 1074.21,936.9529 L1074.21,1275.815 A1.525,1.525 0 0 1 1072.685,1277.34 L34.465,1277.34 A1.525,1.525 0 0 1 32.94,1275.815 L32.94,923.235 A1.525,1.525 0 0 1 34.465,921.71 "
+                  fill="none" style="stroke:#000000;stroke-width:0.915;"/>
+            <line style="stroke:#000000;stroke-width:0.915;" x1="32.94" x2="73.81" y1="935.4279" y2="935.4279"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-weight="bold" lengthAdjust="spacing"
+                  textLength="32.94" x="35.38" y="931.1864">handler
             </text>
         </g><!--cluster loglevel-->
         <g id="cluster_loglevel">
-            <path d="M940.5,894 L975.3,894 A2.25,2.25 0 0 1 976.8,895.5 L981,907.493 L1094.7,907.493 A1.5,1.5 0 0 1 1096.2,908.993 L1096.2,1185.6 A1.5,1.5 0 0 1 1094.7,1187.1 L940.5,1187.1 A1.5,1.5 0 0 1 939,1185.6 L939,895.5 A1.5,1.5 0 0 1 940.5,894 "
-                  fill="none" style="stroke:#000000;stroke-width:0.8999999999999999;"/>
-            <line style="stroke:#000000;stroke-width:0.8999999999999999;" x1="939" x2="981" y1="907.493" y2="907.493"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing"
-                  textLength="34.2" x="941.4" y="903.3211">loglevel
+            <path d="M1090.375,1091.29 L1125.755,1091.29 A2.2875,2.2875 0 0 1 1127.28,1092.815 L1131.55,1105.0079 L1247.145,1105.0079 A1.525,1.525 0 0 1 1248.67,1106.5329 L1248.67,1407.575 A1.525,1.525 0 0 1 1247.145,1409.1 L1090.375,1409.1 A1.525,1.525 0 0 1 1088.85,1407.575 L1088.85,1092.815 A1.525,1.525 0 0 1 1090.375,1091.29 "
+                  fill="none" style="stroke:#000000;stroke-width:0.915;"/>
+            <line style="stroke:#000000;stroke-width:0.915;" x1="1088.85" x2="1131.55" y1="1105.0079" y2="1105.0079"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-weight="bold" lengthAdjust="spacing"
+                  textLength="34.77" x="1091.29" y="1100.7664">loglevel
             </text>
         </g><!--class baseLoggerInterface-->
         <g id="elem_baseLoggerInterface">
-            <rect codeLine="77" fill="#F1F1F1" height="78.2648" id="baseLoggerInterface" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="284.4" x="591" y="487.2"/>
-            <ellipse cx="688.65" cy="496.8" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M686.2066,494.2591 L686.2066,492.9642 L690.6343,492.9642 L690.6343,494.2591 L689.1551,494.2591 L689.1551,499.1051 L690.6343,499.1051 L690.6343,500.4 L686.2066,500.4 L686.2066,499.1051 L687.6858,499.1051 L687.6858,494.2591 Z "
+            <rect codeLine="87" fill="#F1F1F1" height="89.6271" id="baseLoggerInterface" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="289.14" x="735.05" y="646.6"/>
+            <ellipse cx="834.3275" cy="656.36" fill="#B4A7E5" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M831.8434,653.7767 L831.8434,652.4602 L836.3448,652.4602 L836.3448,653.7767 L834.841,653.7767 L834.841,658.7035 L836.3448,658.7035 L836.3448,660.02 L831.8434,660.02 L831.8434,658.7035 L833.3473,658.7035 L833.3473,653.7767 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing"
-                  textLength="84" x="700.95" y="499.9746">baseLoggerInterface
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-style="italic" lengthAdjust="spacing"
+                  textLength="85.4" x="846.8325" y="659.5875">baseLoggerInterface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="591.6" x2="874.8" y1="506.4" y2="506.4"/>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="591.6" x2="874.8" y1="511.2" y2="511.2"/>
-            <ellipse cx="597.6" cy="519.4465" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="268.8"
-                  x="603" y="521.7211">Log(level : loglevel.LogLevel, message : string, parameters : ...any)
+            <line style="stroke:#181818;stroke-width:0.305;" x1="735.66" x2="1023.58" y1="666.12" y2="666.12"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="735.66" x2="1023.58" y1="671" y2="671"/>
+            <ellipse cx="741.76" cy="679.3839" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="273.28"
+                  x="747.25" y="681.6964">Log(level : loglevel.LogLevel, message : string, parameters : ...any)
             </text>
-            <ellipse cx="597.6" cy="529.3395" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="60.6"
-                  x="603" y="531.6141">Name() : string
+            <ellipse cx="741.76" cy="689.4418" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="747.25" y="691.7543">Name() : string
             </text>
-            <ellipse cx="597.6" cy="539.2324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="96" x="603"
-                  y="541.507">SetName(name : string)
+            <ellipse cx="741.76" cy="699.4996" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="97.6"
+                  x="747.25" y="701.8121">SetName(name : string)
             </text>
-            <ellipse cx="597.6" cy="549.1254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126"
-                  x="603" y="551.4">Handlers() : []handler.Interface
+            <ellipse cx="741.76" cy="709.5575" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="128.1"
+                  x="747.25" y="711.87">Handlers() : []handler.Interface
             </text>
-            <ellipse cx="597.6" cy="559.0184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="164.4"
-                  x="603" y="561.293">AddHandler(handler : handler.Interface)
+            <ellipse cx="741.76" cy="719.6153" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="203.74"
+                  x="747.25" y="721.9279">AddHandler(handlerInterface : handler.Interface)
+            </text>
+            <ellipse cx="741.76" cy="729.6732" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="219.6"
+                  x="747.25" y="731.9857">RemoveHandler(handlerInterface : handler.Interface)
             </text>
         </g><!--class baseLogger-->
         <g id="elem_baseLogger">
-            <rect codeLine="84" fill="#F1F1F1" height="98.0508" id="baseLogger" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="284.4" x="591" y="601.8"/>
-            <ellipse cx="706.65" cy="611.4" fill="#F1F1F1" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M706.34,611.7378 Q705.2294,611.3145 704.8359,610.8488 Q704.4425,610.3831 704.4425,609.5962 Q704.4425,608.5852 705.0899,608.0074 Q705.7374,607.4297 706.868,607.4297 Q707.381,607.4297 707.8939,607.5467 Q708.4069,607.6638 708.91,607.8929 L708.91,609.3272 Q708.4368,608.9936 707.9487,608.8192 Q707.4606,608.6449 706.9825,608.6449 Q706.4496,608.6449 706.1657,608.8591 Q705.8818,609.0732 705.8818,609.4717 Q705.8818,609.7805 706.0885,609.9822 Q706.2952,610.1839 706.9526,610.4279 L707.5852,610.667 Q708.4816,610.9957 708.905,611.5386 Q709.3283,612.0814 709.3283,612.9082 Q709.3283,614.0338 708.6634,614.5891 Q707.9985,615.1444 706.6538,615.1444 Q706.101,615.1444 705.5457,615.0125 Q704.9903,614.8805 704.4724,614.6215 L704.4724,613.1024 Q705.0601,613.5208 705.6104,613.725 Q706.1607,613.9292 706.6986,613.9292 Q707.2415,613.9292 707.5403,613.6827 Q707.8392,613.4361 707.8392,612.9929 Q707.8392,612.6592 707.6399,612.4077 Q707.4407,612.1562 707.0622,612.0117 Z "
+            <rect codeLine="95" fill="#F1F1F1" height="109.7428" id="baseLogger" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="289.14" x="735.05" y="773.48"/>
+            <ellipse cx="852.6275" cy="783.24" fill="#F1F1F1" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M852.3124,783.5834 Q851.1832,783.153 850.7832,782.6796 Q850.3832,782.2062 850.3832,781.4061 Q850.3832,780.3782 851.0414,779.7909 Q851.6997,779.2035 852.8491,779.2035 Q853.3706,779.2035 853.8922,779.3225 Q854.4137,779.4415 854.9251,779.6744 L854.9251,781.1327 Q854.4441,780.7934 853.9479,780.6162 Q853.4517,780.439 852.9656,780.439 Q852.4238,780.439 852.1352,780.6567 Q851.8465,780.8745 851.8465,781.2795 Q851.8465,781.5935 852.0567,781.7985 Q852.2668,782.0036 852.9352,782.2517 L853.5782,782.4948 Q854.4897,782.829 854.9201,783.3809 Q855.3505,783.9328 855.3505,784.7733 Q855.3505,785.9177 854.6745,786.4823 Q853.9985,787.0468 852.6314,787.0468 Q852.0693,787.0468 851.5047,786.9127 Q850.9402,786.7785 850.4136,786.5152 L850.4136,784.9708 Q851.0111,785.3961 851.5706,785.6038 Q852.1301,785.8114 852.6769,785.8114 Q853.2289,785.8114 853.5327,785.5607 Q853.8365,785.3101 853.8365,784.8594 Q853.8365,784.5202 853.6339,784.2645 Q853.4314,784.0088 853.0466,783.8619 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="48"
-                  x="718.95" y="614.5746">baseLogger
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="48.8"
+                  x="865.1325" y="786.4675">baseLogger
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="591.6" x2="874.8" y1="621" y2="621"/>
-            <polygon fill="none" points="597.6,626.8465,595.2,630.4465,600,630.4465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="54" x="603"
-                  y="631.5211">name : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="735.66" x2="1023.58" y1="793" y2="793"/>
+            <polygon fill="none" points="741.76,798.9439,739.32,802.6039,744.2,802.6039"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="54.9"
+                  x="747.25" y="803.6964">name : string
             </text>
-            <polygon fill="none" points="597.6,636.7395,595.2,640.3395,600,640.3395"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="119.4"
-                  x="603" y="641.4141">handlers : []handler.Interface
+            <polygon fill="none" points="741.76,809.0018,739.32,812.6618,744.2,812.6618"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="121.39"
+                  x="747.25" y="813.7543">handlers : []handler.Interface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="591.6" x2="874.8" y1="645.5859" y2="645.5859"/>
-            <ellipse cx="597.6" cy="653.8324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="268.8"
-                  x="603" y="656.107">Log(level : loglevel.LogLevel, message : string, parameters : ...any)
+            <line style="stroke:#181818;stroke-width:0.305;" x1="735.66" x2="1023.58" y1="817.9957" y2="817.9957"/>
+            <ellipse cx="741.76" cy="826.3796" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="273.28"
+                  x="747.25" y="828.6921">Log(level : loglevel.LogLevel, message : string, parameters : ...any)
             </text>
-            <ellipse cx="597.6" cy="663.7254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="60.6"
-                  x="603" y="666">Name() : string
+            <ellipse cx="741.76" cy="836.4375" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="747.25" y="838.75">Name() : string
             </text>
-            <ellipse cx="597.6" cy="673.6184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="96" x="603"
-                  y="675.893">SetName(name : string)
+            <ellipse cx="741.76" cy="846.4953" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="97.6"
+                  x="747.25" y="848.8079">SetName(name : string)
             </text>
-            <ellipse cx="597.6" cy="683.5113" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126"
-                  x="603" y="685.7859">Handlers() : []handler.Interface
+            <ellipse cx="741.76" cy="856.5532" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="128.1"
+                  x="747.25" y="858.8657">Handlers() : []handler.Interface
             </text>
-            <ellipse cx="597.6" cy="693.4043" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="164.4"
-                  x="603" y="695.6789">AddHandler(handler : handler.Interface)
+            <ellipse cx="741.76" cy="866.611" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="203.74"
+                  x="747.25" y="868.9236">AddHandler(handlerInterface : handler.Interface)
+            </text>
+            <ellipse cx="741.76" cy="876.6689" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="219.6"
+                  x="747.25" y="878.9814">RemoveHandler(handlerInterface : handler.Interface)
             </text>
         </g><!--class Interface-->
         <g id="elem_Interface">
-            <rect codeLine="93" fill="#F1F1F1" height="167.3016" id="Interface" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="214.2" x="743.7" y="55.2"/>
-            <ellipse cx="830.25" cy="64.8" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M827.8066,62.2591 L827.8066,60.9642 L832.2343,60.9642 L832.2343,62.2591 L830.7551,62.2591 L830.7551,67.1051 L832.2343,67.1051 L832.2343,68.4 L827.8066,68.4 L827.8066,67.1051 L829.2858,67.1051 L829.2858,62.2591 Z "
+            <rect codeLine="105" fill="#F1F1F1" height="180.1478" id="Interface" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="235.46" x="781.41" y="116.815"/>
+            <ellipse cx="878.2475" cy="126.575" fill="#B4A7E5" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M875.7634,123.9917 L875.7634,122.6752 L880.2648,122.6752 L880.2648,123.9917 L878.761,123.9917 L878.761,128.9185 L880.2648,128.9185 L880.2648,130.235 L875.7634,130.235 L875.7634,128.9185 L877.2673,128.9185 L877.2673,123.9917 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing"
-                  textLength="36" x="842.55" y="67.9746">Interface
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-style="italic" lengthAdjust="spacing"
+                  textLength="36.6" x="890.7525" y="129.8025">Interface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="744.3" x2="957.3" y1="74.4" y2="74.4"/>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="744.3" x2="957.3" y1="79.2" y2="79.2"/>
-            <ellipse cx="750.3" cy="87.4465" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="60.6"
-                  x="755.7" y="89.7211">Name() : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="782.02" x2="1016.26" y1="136.335" y2="136.335"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="782.02" x2="1016.26" y1="141.215" y2="141.215"/>
+            <ellipse cx="788.12" cy="149.5989" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="793.61" y="151.9114">Name() : string
             </text>
-            <ellipse cx="750.3" cy="97.3395" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126"
-                  x="755.7" y="99.6141">Handlers() : []handler.Interface
+            <ellipse cx="788.12" cy="159.6568" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="128.1"
+                  x="793.61" y="161.9693">Handlers() : []handler.Interface
             </text>
-            <ellipse cx="750.3" cy="107.2324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="164.4"
-                  x="755.7" y="109.507">AddHandler(handler : handler.Interface)
+            <ellipse cx="788.12" cy="169.7146" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="203.74"
+                  x="793.61" y="172.0271">AddHandler(handlerInterface : handler.Interface)
             </text>
-            <ellipse cx="750.3" cy="117.1254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="176.4"
-                  x="755.7" y="119.4">Trace(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="179.7725" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="219.6"
+                  x="793.61" y="182.085">RemoveHandler(handlerInterface : handler.Interface)
             </text>
-            <ellipse cx="750.3" cy="127.0184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="755.7" y="129.293">Debug(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="189.8303" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="179.34"
+                  x="793.61" y="192.1429">Trace(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="136.9113" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.2"
-                  x="755.7" y="139.1859">Verbose(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="199.8882" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="793.61" y="202.2007">Debug(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="146.8043" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="169.8"
-                  x="755.7" y="149.0789">Info(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="209.946" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.32"
+                  x="793.61" y="212.2586">Verbose(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="156.6973" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="179.4"
-                  x="755.7" y="158.9719">Notice(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="220.0039" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="172.63"
+                  x="793.61" y="222.3164">Info(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="166.5902" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.8"
-                  x="755.7" y="168.8648">Warning(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="230.0617" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="182.39"
+                  x="793.61" y="232.3743">Notice(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="176.4832" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="755.7" y="178.7578">Severe(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="240.1196" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.93"
+                  x="793.61" y="242.4321">Warning(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="186.3762" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="174.6"
-                  x="755.7" y="188.6508">Error(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="250.1774" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="793.61" y="252.49">Severe(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="196.2691" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="173.4"
-                  x="755.7" y="198.5438">Alert(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="260.2353" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="177.51"
+                  x="793.61" y="262.5478">Error(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="206.1621" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="182.4"
-                  x="755.7" y="208.4367">Critical(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="270.2931" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="176.29"
+                  x="793.61" y="272.6057">Alert(message : string, parameters : ...any)
             </text>
-            <ellipse cx="750.3" cy="216.0551" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="198.6"
-                  x="755.7" y="218.3297">Emergency(message : string, parameters : ...any)
+            <ellipse cx="788.12" cy="280.351" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="185.44"
+                  x="793.61" y="282.6635">Critical(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="788.12" cy="290.4088" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="201.91"
+                  x="793.61" y="292.7214">Emergency(message : string, parameters : ...any)
             </text>
         </g><!--class Logger-->
         <g id="elem_Logger">
-            <rect codeLine="109" fill="#F1F1F1" height="177.1945" id="Logger" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="214.2" x="626.1" y="273.6"/>
-            <ellipse cx="716.25" cy="283.2" fill="#F1F1F1" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M715.94,283.5378 Q714.8294,283.1145 714.4359,282.6488 Q714.0425,282.1831 714.0425,281.3962 Q714.0425,280.3852 714.6899,279.8074 Q715.3374,279.2297 716.468,279.2297 Q716.981,279.2297 717.4939,279.3467 Q718.0069,279.4638 718.51,279.6929 L718.51,281.1272 Q718.0368,280.7936 717.5487,280.6192 Q717.0606,280.4449 716.5825,280.4449 Q716.0496,280.4449 715.7657,280.6591 Q715.4818,280.8732 715.4818,281.2717 Q715.4818,281.5805 715.6885,281.7822 Q715.8952,281.9839 716.5526,282.2279 L717.1852,282.467 Q718.0816,282.7957 718.505,283.3386 Q718.9283,283.8814 718.9283,284.7082 Q718.9283,285.8338 718.2634,286.3891 Q717.5985,286.9444 716.2538,286.9444 Q715.701,286.9444 715.1457,286.8125 Q714.5903,286.6805 714.0724,286.4215 L714.0724,284.9024 Q714.6601,285.3208 715.2104,285.525 Q715.7607,285.7292 716.2986,285.7292 Q716.8415,285.7292 717.1403,285.4827 Q717.4392,285.2361 717.4392,284.7929 Q717.4392,284.4592 717.2399,284.2077 Q717.0407,283.9562 716.6622,283.8117 Z "
+            <rect codeLine="122" fill="#F1F1F1" height="190.2056" id="Logger" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="235.46" x="761.89" y="409.31"/>
+            <ellipse cx="862.3875" cy="419.07" fill="#F1F1F1" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M862.0724,419.4134 Q860.9432,418.983 860.5432,418.5096 Q860.1432,418.0362 860.1432,417.2361 Q860.1432,416.2082 860.8014,415.6209 Q861.4597,415.0335 862.6091,415.0335 Q863.1306,415.0335 863.6522,415.1525 Q864.1737,415.2715 864.6851,415.5044 L864.6851,416.9627 Q864.2041,416.6234 863.7079,416.4462 Q863.2117,416.269 862.7256,416.269 Q862.1838,416.269 861.8952,416.4867 Q861.6065,416.7045 861.6065,417.1095 Q861.6065,417.4235 861.8167,417.6285 Q862.0268,417.8336 862.6952,418.0817 L863.3382,418.3248 Q864.2497,418.659 864.6801,419.2109 Q865.1105,419.7628 865.1105,420.6033 Q865.1105,421.7477 864.4345,422.3123 Q863.7585,422.8768 862.3914,422.8768 Q861.8293,422.8768 861.2647,422.7427 Q860.7002,422.6085 860.1736,422.3452 L860.1736,420.8008 Q860.7711,421.2261 861.3306,421.4338 Q861.8901,421.6414 862.4369,421.6414 Q862.9889,421.6414 863.2927,421.3907 Q863.5965,421.1401 863.5965,420.6894 Q863.5965,420.3502 863.3939,420.0945 Q863.1914,419.8388 862.8066,419.6919 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="28.8"
-                  x="728.55" y="286.3746">Logger
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="29.28"
+                  x="874.8925" y="422.2975">Logger
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="626.7" x2="839.7" y1="292.8" y2="292.8"/>
-            <polygon fill="none" points="632.7,298.6465,630.3,302.2465,635.1,302.2465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="139.2"
-                  x="638.1" y="303.3211">baseLogger : baseLoggerInterface
+            <line style="stroke:#181818;stroke-width:0.305;" x1="762.5" x2="996.74" y1="428.83" y2="428.83"/>
+            <polygon fill="none" points="768.6,434.7739,766.16,438.4339,771.04,438.4339"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="141.52"
+                  x="774.09" y="439.5264">baseLogger : baseLoggerInterface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="626.7" x2="839.7" y1="307.493" y2="307.493"/>
-            <ellipse cx="632.7" cy="315.7395" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="60.6"
-                  x="638.1" y="318.0141">Name() : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="762.5" x2="996.74" y1="443.7679" y2="443.7679"/>
+            <ellipse cx="768.6" cy="452.1518" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="774.09" y="454.4643">Name() : string
             </text>
-            <ellipse cx="632.7" cy="325.6324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126"
-                  x="638.1" y="327.907">Handlers() : []handler.Interface
+            <ellipse cx="768.6" cy="462.2096" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="128.1"
+                  x="774.09" y="464.5221">Handlers() : []handler.Interface
             </text>
-            <ellipse cx="632.7" cy="335.5254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="164.4"
-                  x="638.1" y="337.8">AddHandler(handler : handler.Interface)
+            <ellipse cx="768.6" cy="472.2675" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="203.74"
+                  x="774.09" y="474.58">AddHandler(handlerInterface : handler.Interface)
             </text>
-            <ellipse cx="632.7" cy="345.4184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="176.4"
-                  x="638.1" y="347.693">Trace(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="482.3253" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="219.6"
+                  x="774.09" y="484.6379">RemoveHandler(handlerInterface : handler.Interface)
             </text>
-            <ellipse cx="632.7" cy="355.3113" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="638.1" y="357.5859">Debug(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="492.3832" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="179.34"
+                  x="774.09" y="494.6957">Trace(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="365.2043" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.2"
-                  x="638.1" y="367.4789">Verbose(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="502.441" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="774.09" y="504.7536">Debug(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="375.0973" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="169.8"
-                  x="638.1" y="377.3719">Info(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="512.4989" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.32"
+                  x="774.09" y="514.8114">Verbose(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="384.9902" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="179.4"
-                  x="638.1" y="387.2648">Notice(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="522.5567" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="172.63"
+                  x="774.09" y="524.8693">Info(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="394.8832" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.8"
-                  x="638.1" y="397.1578">Warning(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="532.6146" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="182.39"
+                  x="774.09" y="534.9271">Notice(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="404.7762" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="638.1" y="407.0508">Severe(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="542.6724" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.93"
+                  x="774.09" y="544.985">Warning(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="414.6691" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="174.6"
-                  x="638.1" y="416.9437">Error(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="552.7303" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="774.09" y="555.0428">Severe(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="424.5621" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="173.4"
-                  x="638.1" y="426.8367">Alert(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="562.7881" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="177.51"
+                  x="774.09" y="565.1007">Error(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="434.4551" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="182.4"
-                  x="638.1" y="436.7297">Critical(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="572.846" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="176.29"
+                  x="774.09" y="575.1585">Alert(message : string, parameters : ...any)
             </text>
-            <ellipse cx="632.7" cy="444.348" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="198.6"
-                  x="638.1" y="446.6227">Emergency(message : string, parameters : ...any)
+            <ellipse cx="768.6" cy="582.9038" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="185.44"
+                  x="774.09" y="585.2164">Critical(message : string, parameters : ...any)
             </text>
+            <ellipse cx="768.6" cy="592.9617" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="201.91"
+                  x="774.09" y="595.2742">Emergency(message : string, parameters : ...any)
+            </text>
+        </g><!--class Configuration-->
+        <g id="elem_Configuration">
+            <rect codeLine="140" fill="#F1F1F1" height="79.5693" id="Configuration" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="134.81" x="559.675" y="651.785"/>
+            <ellipse cx="595.2075" cy="661.545" fill="#F1F1F1" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M594.8924,661.8884 Q593.7632,661.458 593.3632,660.9846 Q592.9632,660.5112 592.9632,659.7111 Q592.9632,658.6832 593.6214,658.0959 Q594.2797,657.5085 595.4291,657.5085 Q595.9506,657.5085 596.4722,657.6275 Q596.9937,657.7465 597.5051,657.9794 L597.5051,659.4377 Q597.0241,659.0984 596.5279,658.9212 Q596.0317,658.744 595.5456,658.744 Q595.0038,658.744 594.7152,658.9617 Q594.4265,659.1795 594.4265,659.5845 Q594.4265,659.8985 594.6367,660.1035 Q594.8468,660.3086 595.5152,660.5567 L596.1582,660.7998 Q597.0697,661.134 597.5001,661.6859 Q597.9305,662.2378 597.9305,663.0783 Q597.9305,664.2227 597.2545,664.7873 Q596.5785,665.3518 595.2114,665.3518 Q594.6493,665.3518 594.0847,665.2177 Q593.5202,665.0835 592.9936,664.8202 L592.9936,663.2758 Q593.5911,663.7011 594.1506,663.9087 Q594.7101,664.1164 595.2569,664.1164 Q595.8089,664.1164 596.1127,663.8657 Q596.4165,663.6151 596.4165,663.1644 Q596.4165,662.8252 596.2139,662.5695 Q596.0114,662.3138 595.6266,662.1669 Z "
+                  fill="#000000"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="58.56"
+                  x="607.7125" y="664.7725">Configuration
+            </text>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="560.285" x2="693.875" y1="671.305" y2="671.305"/>
+            <polygon fill="none" points="566.385,677.2489,563.945,680.9089,568.825,680.9089"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="118.95"
+                  x="571.875" y="682.0014">fromLevel : loglevel.LogLevel
+            </text>
+            <polygon fill="none" points="566.385,687.3068,563.945,690.9668,568.825,690.9668"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="107.36"
+                  x="571.875" y="692.0593">toLevel : loglevel.LogLevel
+            </text>
+            <polygon fill="none" points="566.385,697.3646,563.945,701.0246,568.825,701.0246"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="68.32"
+                  x="571.875" y="702.1171">template : string
+            </text>
+            <polygon fill="none" points="566.385,707.4225,563.945,711.0825,568.825,711.0825"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="44.53"
+                  x="571.875" y="712.175">file : string
+            </text>
+            <polygon fill="none" points="566.385,717.4803,563.945,721.1403,568.825,721.1403"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="54.9"
+                  x="571.875" y="722.2329">name : string
+            </text>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="560.285" x2="693.875" y1="726.4743" y2="726.4743"/>
+        </g><!--class Option-->
+        <g id="elem_Option">
+            <rect codeLine="147" fill="#F1F1F1" height="34.5389" id="Option" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="93.94" x="622.81" y="487.085"/>
+            <ellipse cx="631.96" cy="499.4744" fill="#FF77FF" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M631.6449,499.8179 Q630.5157,499.3875 630.1157,498.914 Q629.7157,498.4406 629.7157,497.6406 Q629.7157,496.6127 630.3739,496.0253 Q631.0322,495.4379 632.1816,495.4379 Q632.7031,495.4379 633.2247,495.5569 Q633.7462,495.6759 634.2576,495.9089 L634.2576,497.3671 Q633.7766,497.0279 633.2804,496.8507 Q632.7842,496.6734 632.2981,496.6734 Q631.7563,496.6734 631.4677,496.8912 Q631.179,497.1089 631.179,497.514 Q631.179,497.8279 631.3892,498.033 Q631.5993,498.2381 632.2677,498.4862 L632.9107,498.7292 Q633.8222,499.0634 634.2526,499.6153 Q634.683,500.1672 634.683,501.0078 Q634.683,502.1521 634.007,502.7167 Q633.331,503.2813 631.9639,503.2813 Q631.4018,503.2813 630.8372,503.1471 Q630.2727,503.0129 629.7461,502.7496 L629.7461,501.2052 Q630.3436,501.6306 630.9031,501.8382 Q631.4626,502.0458 632.0094,502.0458 Q632.5614,502.0458 632.8652,501.7951 Q633.169,501.5445 633.169,501.0939 Q633.169,500.7546 632.9664,500.4989 Q632.7639,500.2432 632.3791,500.0963 Z "
+                  fill="#000000"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.32" font-style="italic" lengthAdjust="spacing"
+                  textLength="76.86" x="639.28" y="497.212">&#171;func(*Configuration)&#187;
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="28.67"
+                  x="663.375" y="507.0125">Option
+            </text>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="623.42" x2="716.14" y1="511.8639" y2="511.8639"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="623.42" x2="716.14" y1="516.7439" y2="516.7439"/>
         </g><!--class <<module>>-->
         <g id="elem_&lt;&lt;module&gt;&gt;">
-            <rect codeLine="126" fill="#F1F1F1" height="177.1945" id="&lt;&lt;module&gt;&gt;" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="214.2" x="508.5" y="50.4"/>
-            <ellipse cx="593.25" cy="60" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M595.0339,63.3858 Q594.6853,63.5651 594.3018,63.6548 Q593.9183,63.7444 593.4949,63.7444 Q591.9908,63.7444 591.1989,62.7533 Q590.407,61.7622 590.407,59.8896 Q590.407,58.0119 591.1989,57.0208 Q591.9908,56.0297 593.4949,56.0297 Q593.9183,56.0297 594.3067,56.1193 Q594.6952,56.209 595.0339,56.3883 L595.0339,58.0219 Q594.6554,57.6732 594.2993,57.5114 Q593.9432,57.3495 593.5646,57.3495 Q592.7578,57.3495 592.3469,57.9895 Q591.936,58.6295 591.936,59.8896 Q591.936,61.1446 592.3469,61.7846 Q592.7578,62.4246 593.5646,62.4246 Q593.9432,62.4246 594.2993,62.2627 Q594.6554,62.1009 595.0339,61.7522 Z "
+            <rect codeLine="148" fill="#F1F1F1" height="310.8998" id="&lt;&lt;module&gt;&gt;" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="243.39" x="516.365" y="51.24"/>
+            <ellipse cx="615.3375" cy="61" fill="#ADD1B2" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M617.1511,64.4423 Q616.7967,64.6246 616.4068,64.7157 Q616.0169,64.8068 615.5865,64.8068 Q614.0573,64.8068 613.2522,63.7992 Q612.4471,62.7916 612.4471,60.8877 Q612.4471,58.9788 613.2522,57.9711 Q614.0573,56.9635 615.5865,56.9635 Q616.0169,56.9635 616.4119,57.0547 Q616.8068,57.1458 617.1511,57.3281 L617.1511,58.9889 Q616.7663,58.6345 616.4043,58.4699 Q616.0422,58.3053 615.6574,58.3053 Q614.8371,58.3053 614.4194,58.956 Q614.0016,59.6067 614.0016,60.8877 Q614.0016,62.1637 614.4194,62.8144 Q614.8371,63.465 615.6574,63.465 Q616.0422,63.465 616.4043,63.3005 Q616.7663,63.1359 617.1511,62.7815 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="39.6"
-                  x="605.55" y="63.1746">&#171;module&#187;
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="40.26"
+                  x="627.8425" y="64.2275">&#171;module&#187;
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="509.1" x2="722.1" y1="69.6" y2="69.6"/>
-            <polygon fill="none" points="515.1,75.4465,512.7,79.0465,517.5,79.0465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="86.4"
-                  x="520.5" y="80.1211">rootLogger : *Logger
+            <line style="stroke:#181818;stroke-width:0.305;" x1="516.975" x2="759.145" y1="70.76" y2="70.76"/>
+            <polygon fill="none" points="523.075,76.7039,520.635,80.3639,525.515,80.3639"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="87.84"
+                  x="528.565" y="81.4564">rootLogger : *Logger
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="509.1" x2="722.1" y1="84.293" y2="84.293"/>
-            <ellipse cx="515.1" cy="92.5395" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="117.6"
-                  x="520.5" y="94.8141">New(name : string) : *Logger
+            <polygon fill="none" points="523.075,86.7618,520.635,90.4218,525.515,90.4218"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="118.95"
+                  x="528.565" y="91.5143">fromLevel : loglevel.LogLevel
             </text>
-            <ellipse cx="515.1" cy="102.4324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="118.2"
-                  x="520.5" y="104.707">GetDefaultLogger() : *Logger
+            <polygon fill="none" points="523.075,96.8196,520.635,100.4796,525.515,100.4796"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="107.36"
+                  x="528.565" y="101.5721">toLevel : loglevel.LogLevel
             </text>
-            <ellipse cx="515.1" cy="112.3254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="134.4"
-                  x="520.5" y="114.6">SetLevel(level : loglevel.LogLevel)
+            <polygon fill="none" points="523.075,106.8775,520.635,110.5375,525.515,110.5375"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="68.32"
+                  x="528.565" y="111.63">template : string
             </text>
-            <ellipse cx="515.1" cy="122.2184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="176.4"
-                  x="520.5" y="124.493">Trace(message : string, parameters : ...any)
+            <line style="stroke:#181818;stroke-width:0.305;" x1="516.975" x2="759.145" y1="115.8714" y2="115.8714"/>
+            <polygon fill="#4177AF" points="523.075,121.8153,520.635,125.4753,525.515,125.4753"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="19.52"
+                  x="528.565" y="126.5679">init()
             </text>
-            <ellipse cx="515.1" cy="132.1113" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="520.5" y="134.3859">Debug(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="134.3132" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="119.56"
+                  x="528.565" y="136.6257">New(name : string) : *Logger
             </text>
-            <ellipse cx="515.1" cy="142.0043" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.2"
-                  x="520.5" y="144.2789">Verbose(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="144.371" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="222.04"
+                  x="528.565" y="146.6836">WithFromLevel(fromLevel : loglevel.LogLevel) : Option
             </text>
-            <ellipse cx="515.1" cy="151.8973" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="169.8"
-                  x="520.5" y="154.1719">Info(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="154.4289" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="199.47"
+                  x="528.565" y="156.7414">WithToLevel(toLevel : loglevel.LogLevel) : Option
             </text>
-            <ellipse cx="515.1" cy="161.7902" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="179.4"
-                  x="520.5" y="164.0648">Notice(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="164.4867" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="167.75"
+                  x="528.565" y="166.7993">WithTemplate(template : string) : Option
             </text>
-            <ellipse cx="515.1" cy="171.6832" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="187.8"
-                  x="520.5" y="173.9578">Warning(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="174.5446" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="119.56"
+                  x="528.565" y="176.8571">WithFile(file : string) : Option
             </text>
-            <ellipse cx="515.1" cy="181.5762" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="180.6"
-                  x="520.5" y="183.8508">Severe(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="184.6024" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="139.08"
+                  x="528.565" y="186.915">WithName(name : string) : Option
             </text>
-            <ellipse cx="515.1" cy="191.4691" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="174.6"
-                  x="520.5" y="193.7438">Error(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="194.6603" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="227.53"
+                  x="528.565" y="196.9728">NewConfiguration(options : ...Option) : *Configuration
             </text>
-            <ellipse cx="515.1" cy="201.3621" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="173.4"
-                  x="520.5" y="203.6367">Alert(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="204.7181" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="175.07"
+                  x="528.565" y="207.0307">Configure(configuration : *Configuration)
             </text>
-            <ellipse cx="515.1" cy="211.2551" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="182.4"
-                  x="520.5" y="213.5297">Critical(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="214.776" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="528.565" y="217.0885">Name() : string
             </text>
-            <ellipse cx="515.1" cy="221.148" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="198.6"
-                  x="520.5" y="223.4227">Emergency(message : string, parameters : ...any)
+            <ellipse cx="523.075" cy="224.8338" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="76.86"
+                  x="528.565" y="227.1464">Template() : string
+            </text>
+            <ellipse cx="523.075" cy="234.8917" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="126.88"
+                  x="528.565" y="237.2042">FromLevel() : loglevel.LogLevel
+            </text>
+            <ellipse cx="523.075" cy="244.9496" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="115.9"
+                  x="528.565" y="247.2621">ToLevel() : loglevel.LogLevel
+            </text>
+            <ellipse cx="523.075" cy="255.0074" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="179.34"
+                  x="528.565" y="257.3199">Trace(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="265.0653" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="528.565" y="267.3778">Debug(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="275.1231" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.32"
+                  x="528.565" y="277.4356">Verbose(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="285.181" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="172.63"
+                  x="528.565" y="287.4935">Info(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="295.2388" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="182.39"
+                  x="528.565" y="297.5513">Notice(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="305.2967" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="190.93"
+                  x="528.565" y="307.6092">Warning(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="315.3545" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="183.61"
+                  x="528.565" y="317.667">Severe(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="325.4124" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="177.51"
+                  x="528.565" y="327.7249">Error(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="335.4702" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="176.29"
+                  x="528.565" y="337.7827">Alert(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="345.5281" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="185.44"
+                  x="528.565" y="347.8406">Critical(message : string, parameters : ...any)
+            </text>
+            <ellipse cx="523.075" cy="355.5859" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="201.91"
+                  x="528.565" y="357.8984">Emergency(message : string, parameters : ...any)
             </text>
         </g><!--class Interface-->
         <g id="elem_Interface">
-            <rect codeLine="5" fill="#F1F1F1" height="48.5859" id="Interface" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="397.8" x="516.9" y="1126.2"/>
-            <ellipse cx="695.25" cy="1135.8" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M692.8066,1133.2591 L692.8066,1131.9642 L697.2343,1131.9642 L697.2343,1133.2591 L695.7551,1133.2591 L695.7551,1138.1051 L697.2343,1138.1051 L697.2343,1139.4 L692.8066,1139.4 L692.8066,1138.1051 L694.2858,1138.1051 L694.2858,1133.2591 Z "
+            <rect codeLine="5" fill="#F1F1F1" height="49.3957" id="Interface" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="404.43" x="659.715" y="1337.12"/>
+            <ellipse cx="841.0375" cy="1346.88" fill="#B4A7E5" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M838.5534,1344.2967 L838.5534,1342.9802 L843.0548,1342.9802 L843.0548,1344.2967 L841.551,1344.2967 L841.551,1349.2235 L843.0548,1349.2235 L843.0548,1350.54 L838.5534,1350.54 L838.5534,1349.2235 L840.0573,1349.2235 L840.0573,1344.2967 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing"
-                  textLength="36" x="707.55" y="1138.9746">Interface
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-style="italic" lengthAdjust="spacing"
+                  textLength="36.6" x="853.5425" y="1350.1075">Interface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="517.5" x2="914.1" y1="1145.4" y2="1145.4"/>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="517.5" x2="914.1" y1="1150.2" y2="1150.2"/>
-            <ellipse cx="523.5" cy="1158.4465" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="75.6"
-                  x="528.9" y="1160.7211">Template() : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="660.325" x2="1063.535" y1="1356.64" y2="1356.64"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="660.325" x2="1063.535" y1="1361.52" y2="1361.52"/>
+            <ellipse cx="666.425" cy="1369.9039" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="76.86"
+                  x="671.915" y="1372.2164">Template() : string
             </text>
-            <ellipse cx="523.5" cy="1168.3395" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="382.2"
-                  x="528.9" y="1170.6141">Format(message : string, loggerName : string, level : loglevel.LogLevel,
+            <ellipse cx="666.425" cy="1379.9618" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="388.57"
+                  x="671.915" y="1382.2743">Format(message : string, loggerName : string, level : loglevel.LogLevel,
                 colored : bool) : string
             </text>
         </g><!--class Formatter-->
         <g id="elem_Formatter">
-            <rect codeLine="10" fill="#F1F1F1" height="78.2648" id="Formatter" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="414" x="397.8" y="1225.8"/>
-            <ellipse cx="581.85" cy="1235.4" fill="#F1F1F1" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M581.54,1235.7378 Q580.4294,1235.3145 580.0359,1234.8488 Q579.6425,1234.3831 579.6425,1233.5962 Q579.6425,1232.5852 580.2899,1232.0074 Q580.9374,1231.4297 582.068,1231.4297 Q582.581,1231.4297 583.0939,1231.5467 Q583.6069,1231.6638 584.11,1231.8929 L584.11,1233.3272 Q583.6368,1232.9936 583.1487,1232.8192 Q582.6606,1232.6449 582.1825,1232.6449 Q581.6496,1232.6449 581.3657,1232.8591 Q581.0818,1233.0732 581.0818,1233.4717 Q581.0818,1233.7805 581.2885,1233.9822 Q581.4952,1234.1839 582.1526,1234.4279 L582.7852,1234.667 Q583.6816,1234.9957 584.105,1235.5386 Q584.5283,1236.0814 584.5283,1236.9082 Q584.5283,1238.0338 583.8634,1238.5891 Q583.1985,1239.1444 581.8538,1239.1444 Q581.301,1239.1444 580.7457,1239.0125 Q580.1903,1238.8805 579.6724,1238.6215 L579.6724,1237.1024 Q580.2601,1237.5208 580.8104,1237.725 Q581.3607,1237.9292 581.8986,1237.9292 Q582.4415,1237.9292 582.7403,1237.6827 Q583.0392,1237.4361 583.0392,1236.9929 Q583.0392,1236.6592 582.8399,1236.4077 Q582.6407,1236.1562 582.2622,1236.0117 Z "
+            <rect codeLine="10" fill="#F1F1F1" height="79.5693" id="Formatter" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="420.9" x="538.63" y="1447.53"/>
+            <ellipse cx="725.7475" cy="1457.29" fill="#F1F1F1" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M725.4324,1457.6334 Q724.3032,1457.203 723.9032,1456.7296 Q723.5032,1456.2562 723.5032,1455.4561 Q723.5032,1454.4282 724.1614,1453.8409 Q724.8197,1453.2535 725.9691,1453.2535 Q726.4906,1453.2535 727.0122,1453.3725 Q727.5337,1453.4915 728.0451,1453.7244 L728.0451,1455.1827 Q727.5641,1454.8434 727.0679,1454.6662 Q726.5717,1454.489 726.0856,1454.489 Q725.5438,1454.489 725.2552,1454.7067 Q724.9665,1454.9245 724.9665,1455.3295 Q724.9665,1455.6435 725.1767,1455.8485 Q725.3868,1456.0536 726.0552,1456.3017 L726.6982,1456.5448 Q727.6097,1456.879 728.0401,1457.4309 Q728.4705,1457.9828 728.4705,1458.8233 Q728.4705,1459.9677 727.7945,1460.5323 Q727.1185,1461.0968 725.7514,1461.0968 Q725.1893,1461.0968 724.6247,1460.9627 Q724.0602,1460.8285 723.5336,1460.5652 L723.5336,1459.0208 Q724.1311,1459.4461 724.6906,1459.6538 Q725.2501,1459.8614 725.7969,1459.8614 Q726.3489,1459.8614 726.6527,1459.6107 Q726.9565,1459.3601 726.9565,1458.9094 Q726.9565,1458.5702 726.7539,1458.3145 Q726.5514,1458.0588 726.1666,1457.9119 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="40.8"
-                  x="594.15" y="1238.5746">Formatter
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="41.48"
+                  x="738.2525" y="1460.5175">Formatter
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="398.4" x2="811.2" y1="1245" y2="1245"/>
-            <polygon fill="none" points="404.4,1250.8465,402,1254.4465,406.8,1254.4465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="67.2"
-                  x="409.8" y="1255.5211">template : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="539.24" x2="958.92" y1="1467.05" y2="1467.05"/>
+            <polygon fill="none" points="545.34,1472.9939,542.9,1476.6539,547.78,1476.6539"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="68.32"
+                  x="550.83" y="1477.7464">template : string
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="398.4" x2="811.2" y1="1259.693" y2="1259.693"/>
-            <ellipse cx="404.4" cy="1267.9395" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="186.6"
-                  x="409.8" y="1270.2141">IsEqual(anotherFormatter : *Formatter) : bool
+            <line style="stroke:#181818;stroke-width:0.305;" x1="539.24" x2="958.92" y1="1481.9879" y2="1481.9879"/>
+            <ellipse cx="545.34" cy="1490.3718" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="189.71"
+                  x="550.83" y="1492.6843">IsEqual(anotherFormatter : *Formatter) : bool
             </text>
-            <ellipse cx="404.4" cy="1277.8324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="398.4"
-                  x="409.8" y="1280.107">EvaluatePreset(message : string, loggerName : string, level :
+            <ellipse cx="545.34" cy="1500.4296" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="405.04"
+                  x="550.83" y="1502.7421">EvaluatePreset(message : string, loggerName : string, level :
                 loglevel.LogLevel) : map[string]string
             </text>
-            <ellipse cx="404.4" cy="1287.7254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="75.6"
-                  x="409.8" y="1290">Template() : string
+            <ellipse cx="545.34" cy="1510.4875" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="76.86"
+                  x="550.83" y="1512.8">Template() : string
             </text>
-            <ellipse cx="404.4" cy="1297.6184" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="382.2"
-                  x="409.8" y="1299.893">Format(message : string, loggerName : string, level : loglevel.LogLevel,
+            <ellipse cx="545.34" cy="1520.5453" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="388.57"
+                  x="550.83" y="1522.8579">Format(message : string, loggerName : string, level : loglevel.LogLevel,
                 colored : bool) : string
             </text>
         </g><!--class <<module>>-->
         <g id="elem_&lt;&lt;module&gt;&gt;">
-            <rect codeLine="18" fill="#F1F1F1" height="58.4789" id="&lt;&lt;module&gt;&gt;" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="201" x="294.9" y="1121.4"/>
-            <ellipse cx="373.05" cy="1131" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M374.8339,1134.3858 Q374.4853,1134.5651 374.1018,1134.6548 Q373.7183,1134.7444 373.2949,1134.7444 Q371.7908,1134.7444 370.9989,1133.7533 Q370.207,1132.7622 370.207,1130.8896 Q370.207,1129.0119 370.9989,1128.0208 Q371.7908,1127.0297 373.2949,1127.0297 Q373.7183,1127.0297 374.1067,1127.1193 Q374.4952,1127.209 374.8339,1127.3883 L374.8339,1129.0219 Q374.4554,1128.6732 374.0993,1128.5114 Q373.7432,1128.3495 373.3646,1128.3495 Q372.5578,1128.3495 372.1469,1128.9895 Q371.736,1129.6295 371.736,1130.8896 Q371.736,1132.1446 372.1469,1132.7846 Q372.5578,1133.4246 373.3646,1133.4246 Q373.7432,1133.4246 374.0993,1133.2627 Q374.4554,1133.1009 374.8339,1132.7522 Z "
+            <rect codeLine="18" fill="#F1F1F1" height="59.4536" id="&lt;&lt;module&gt;&gt;" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="204.35" x="434.015" y="1332.24"/>
+            <ellipse cx="513.4675" cy="1342" fill="#ADD1B2" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M515.2811,1345.4423 Q514.9267,1345.6246 514.5368,1345.7157 Q514.1469,1345.8068 513.7165,1345.8068 Q512.1873,1345.8068 511.3822,1344.7992 Q510.5771,1343.7916 510.5771,1341.8877 Q510.5771,1339.9788 511.3822,1338.9711 Q512.1873,1337.9635 513.7165,1337.9635 Q514.1469,1337.9635 514.5419,1338.0547 Q514.9368,1338.1458 515.2811,1338.3281 L515.2811,1339.9889 Q514.8963,1339.6345 514.5343,1339.4699 Q514.1722,1339.3053 513.7874,1339.3053 Q512.9671,1339.3053 512.5494,1339.956 Q512.1316,1340.6067 512.1316,1341.8877 Q512.1316,1343.1637 512.5494,1343.8144 Q512.9671,1344.465 513.7874,1344.465 Q514.1722,1344.465 514.5343,1344.3005 Q514.8963,1344.1359 515.2811,1343.7815 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="39.6"
-                  x="385.35" y="1134.1746">&#171;module&#187;
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="40.26"
+                  x="525.9725" y="1345.2275">&#171;module&#187;
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="295.5" x2="495.3" y1="1140.6" y2="1140.6"/>
-            <polygon fill="none" points="301.5,1146.4465,299.1,1150.0465,303.9,1150.0465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="185.4"
-                  x="306.9" y="1151.1211">logLevelColors : map[loglevel.LogLevel]string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="434.625" x2="637.755" y1="1351.76" y2="1351.76"/>
+            <polygon fill="none" points="440.725,1357.7039,438.285,1361.3639,443.165,1361.3639"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="188.49"
+                  x="446.215" y="1362.4564">logLevelColors : map[loglevel.LogLevel]string
             </text>
-            <polygon fill="none" points="301.5,1156.3395,299.1,1159.9395,303.9,1159.9395"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="74.4"
-                  x="306.9" y="1161.0141">resetColor : string
+            <polygon fill="none" points="440.725,1367.7618,438.285,1371.4218,443.165,1371.4218"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="75.64"
+                  x="446.215" y="1372.5143">resetColor : string
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="295.5" x2="495.3" y1="1165.1859" y2="1165.1859"/>
-            <ellipse cx="301.5" cy="1173.4324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="142.8"
-                  x="306.9" y="1175.707">New(template : string) : *Formatter
+            <line style="stroke:#181818;stroke-width:0.305;" x1="434.625" x2="637.755" y1="1376.7557" y2="1376.7557"/>
+            <ellipse cx="440.725" cy="1385.1396" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="145.18"
+                  x="446.215" y="1387.4521">New(template : string) : *Formatter
             </text>
         </g><!--class Interface-->
         <g id="elem_Interface">
-            <rect codeLine="27" fill="#F1F1F1" height="68.3719" id="Interface" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="363" x="551.7" y="773.1"/>
-            <ellipse cx="712.65" cy="782.7" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M710.2066,780.1591 L710.2066,778.8642 L714.6343,778.8642 L714.6343,780.1591 L713.1551,780.1591 L713.1551,785.0051 L714.6343,785.0051 L714.6343,786.3 L710.2066,786.3 L710.2066,785.0051 L711.6858,785.0051 L711.6858,780.1591 Z "
+            <rect codeLine="27" fill="#F1F1F1" height="99.685" id="Interface" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="369.05" x="695.095" y="948.245"/>
+            <ellipse cx="858.7275" cy="958.005" fill="#B4A7E5" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M856.2434,955.4217 L856.2434,954.1052 L860.7448,954.1052 L860.7448,955.4217 L859.241,955.4217 L859.241,960.3485 L860.7448,960.3485 L860.7448,961.665 L856.2434,961.665 L856.2434,960.3485 L857.7473,960.3485 L857.7473,955.4217 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing"
-                  textLength="36" x="724.95" y="785.8746">Interface
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" font-style="italic" lengthAdjust="spacing"
+                  textLength="36.6" x="871.2325" y="961.2325">Interface
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="552.3" x2="914.1" y1="792.3" y2="792.3"/>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="552.3" x2="914.1" y1="797.1" y2="797.1"/>
-            <ellipse cx="558.3" cy="805.3465" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="98.4"
-                  x="563.7" y="807.6211">Level() loglevel.LogLevel
+            <line style="stroke:#181818;stroke-width:0.305;" x1="695.705" x2="1063.535" y1="967.765" y2="967.765"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="695.705" x2="1063.535" y1="972.645" y2="972.645"/>
+            <ellipse cx="701.805" cy="981.0289" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="73.81"
+                  x="707.295" y="983.3414">Writer() : io.Writer
             </text>
-            <ellipse cx="558.3" cy="815.2395" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="129.6"
-                  x="563.7" y="817.5141">SetLevel(level loglevel.LogLevel)
+            <ellipse cx="701.805" cy="991.0868" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="122"
+                  x="707.295" y="993.3993">FromLevel() loglevel.LogLevel
             </text>
-            <ellipse cx="558.3" cy="825.1324" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="131.4"
-                  x="563.7" y="827.407">Formatter() : formatter.Interface
+            <ellipse cx="701.805" cy="1001.1446" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="175.68"
+                  x="707.295" y="1003.4571">SetFromLevel(fromLevel loglevel.LogLevel)
             </text>
-            <ellipse cx="558.3" cy="835.0254" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="347.4"
-                  x="563.7" y="837.3">Write(logName : string, level : loglevel.LogLevel, message : string, parameters :
-                ...any)
+            <ellipse cx="701.805" cy="1011.2025" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="111.02"
+                  x="707.295" y="1013.515">ToLevel() loglevel.LogLevel
+            </text>
+            <ellipse cx="701.805" cy="1021.2603" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="153.11"
+                  x="707.295" y="1023.5729">SetToLevel(toLevel loglevel.LogLevel)
+            </text>
+            <ellipse cx="701.805" cy="1031.3182" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="133.59"
+                  x="707.295" y="1033.6307">Formatter() : formatter.Interface
+            </text>
+            <ellipse cx="701.805" cy="1041.376" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="353.19"
+                  x="707.295" y="1043.6886">Write(logName : string, level : loglevel.LogLevel, message : string,
+                parameters : ...any)
             </text>
         </g><!--class Handler-->
         <g id="elem_Handler">
-            <rect codeLine="33" fill="#F1F1F1" height="117.8367" id="Handler" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="363" x="543.3" y="930"/>
-            <ellipse cx="706.05" cy="939.6" fill="#F1F1F1" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M705.74,939.9378 Q704.6294,939.5145 704.2359,939.0488 Q703.8425,938.5831 703.8425,937.7962 Q703.8425,936.7852 704.4899,936.2074 Q705.1374,935.6297 706.268,935.6297 Q706.781,935.6297 707.2939,935.7467 Q707.8069,935.8638 708.31,936.0929 L708.31,937.5272 Q707.8368,937.1936 707.3487,937.0192 Q706.8606,936.8449 706.3825,936.8449 Q705.8496,936.8449 705.5657,937.0591 Q705.2818,937.2732 705.2818,937.6717 Q705.2818,937.9805 705.4885,938.1822 Q705.6952,938.3839 706.3526,938.6279 L706.9852,938.867 Q707.8816,939.1957 708.305,939.7386 Q708.7283,940.2814 708.7283,941.1082 Q708.7283,942.2338 708.0634,942.7891 Q707.3985,943.3444 706.0538,943.3444 Q705.501,943.3444 704.9457,943.2125 Q704.3903,943.0805 703.8724,942.8215 L703.8724,941.3024 Q704.4601,941.7208 705.0104,941.925 Q705.5607,942.1292 706.0986,942.1292 Q706.6415,942.1292 706.9403,941.8827 Q707.2392,941.6361 707.2392,941.1929 Q707.2392,940.8592 707.0399,940.6077 Q706.8407,940.3562 706.4622,940.2117 Z "
+            <rect codeLine="36" fill="#F1F1F1" height="149.9742" id="Handler" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="369.05" x="686.555" y="1117.52"/>
+            <ellipse cx="852.0175" cy="1127.28" fill="#F1F1F1" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M851.7024,1127.6234 Q850.5732,1127.193 850.1732,1126.7196 Q849.7732,1126.2462 849.7732,1125.4461 Q849.7732,1124.4182 850.4314,1123.8309 Q851.0897,1123.2435 852.2391,1123.2435 Q852.7606,1123.2435 853.2822,1123.3625 Q853.8037,1123.4815 854.3151,1123.7144 L854.3151,1125.1727 Q853.8341,1124.8334 853.3379,1124.6562 Q852.8417,1124.479 852.3556,1124.479 Q851.8138,1124.479 851.5252,1124.6967 Q851.2365,1124.9145 851.2365,1125.3195 Q851.2365,1125.6335 851.4467,1125.8385 Q851.6568,1126.0436 852.3252,1126.2917 L852.9682,1126.5348 Q853.8797,1126.869 854.3101,1127.4209 Q854.7405,1127.9728 854.7405,1128.8133 Q854.7405,1129.9577 854.0645,1130.5223 Q853.3885,1131.0868 852.0214,1131.0868 Q851.4593,1131.0868 850.8947,1130.9527 Q850.3302,1130.8185 849.8036,1130.5552 L849.8036,1129.0108 Q850.4011,1129.4361 850.9606,1129.6438 Q851.5201,1129.8514 852.0669,1129.8514 Q852.6189,1129.8514 852.9227,1129.6007 Q853.2265,1129.3501 853.2265,1128.8994 Q853.2265,1128.5602 853.0239,1128.3045 Q852.8214,1128.0488 852.4366,1127.9019 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="32.4"
-                  x="718.35" y="942.7746">Handler
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="32.94"
+                  x="864.5225" y="1130.5075">Handler
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="543.9" x2="905.7" y1="949.2" y2="949.2"/>
-            <polygon fill="none" points="549.9,955.0465,547.5,958.6465,552.3,958.6465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="95.4"
-                  x="555.3" y="959.7211">level : loglevel.LogLevel
+            <line style="stroke:#181818;stroke-width:0.305;" x1="687.165" x2="1054.995" y1="1137.04" y2="1137.04"/>
+            <polygon fill="none" points="693.265,1142.9839,690.825,1146.6439,695.705,1146.6439"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="118.95"
+                  x="698.755" y="1147.7364">fromLevel : loglevel.LogLevel
             </text>
-            <polygon fill="none" points="549.9,964.9395,547.5,968.5395,552.3,968.5395"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="123.6"
-                  x="555.3" y="969.6141">formatter : formatter.Interface
+            <polygon fill="none" points="693.265,1153.0418,690.825,1156.7018,695.705,1156.7018"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="107.36"
+                  x="698.755" y="1157.7943">toLevel : loglevel.LogLevel
             </text>
-            <polygon fill="none" points="549.9,974.8324,547.5,978.4324,552.3,978.4324"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="66"
-                  x="555.3" y="979.507">writer : io.Writer
+            <polygon fill="none" points="693.265,1163.0996,690.825,1166.7596,695.705,1166.7596"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="125.66"
+                  x="698.755" y="1167.8521">formatter : formatter.Interface
             </text>
-            <polygon fill="none" points="549.9,984.7254,547.5,988.3254,552.3,988.3254"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="87.6"
-                  x="555.3" y="989.4">errorWriter : io.Writer
+            <polygon fill="none" points="693.265,1173.1575,690.825,1176.8175,695.705,1176.8175"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="67.1"
+                  x="698.755" y="1177.91">writer : io.Writer
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="543.9" x2="905.7" y1="993.5719" y2="993.5719"/>
-            <polygon fill="#4177AF" points="549.9,999.4184,547.5,1003.0184,552.3,1003.0184"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="167.4"
-                  x="555.3" y="1004.093">consoleSupportsANSIColors : func() bool
+            <line style="stroke:#181818;stroke-width:0.305;" x1="687.165" x2="1054.995" y1="1182.1514" y2="1182.1514"/>
+            <polygon fill="#4177AF" points="693.265,1188.0953,690.825,1191.7553,695.705,1191.7553"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="170.19"
+                  x="698.755" y="1192.8479">consoleSupportsANSIColors : func() bool
             </text>
-            <ellipse cx="549.9" cy="1011.7113" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="103.2"
-                  x="555.3" y="1013.9859">Level() : loglevel.LogLevel
+            <ellipse cx="693.265" cy="1200.5932" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="73.81"
+                  x="698.755" y="1202.9057">Writer() : io.Writer
             </text>
-            <ellipse cx="549.9" cy="1021.6043" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="134.4"
-                  x="555.3" y="1023.8789">SetLevel(level : loglevel.LogLevel)
+            <ellipse cx="693.265" cy="1210.651" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="126.88"
+                  x="698.755" y="1212.9636">FromLevel() : loglevel.LogLevel
             </text>
-            <ellipse cx="549.9" cy="1031.4973" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="131.4"
-                  x="555.3" y="1033.7719">Formatter() : formatter.Interface
+            <ellipse cx="693.265" cy="1220.7089" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="136.64"
+                  x="698.755" y="1223.0214">SetLevel(level : loglevel.LogLevel)
             </text>
-            <ellipse cx="549.9" cy="1041.3902" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="347.4"
-                  x="555.3" y="1043.6648">Write(logName : string, level : loglevel.LogLevel, message : string,
+            <ellipse cx="693.265" cy="1230.7667" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="115.9"
+                  x="698.755" y="1233.0793">ToLevel() : loglevel.LogLevel
+            </text>
+            <ellipse cx="693.265" cy="1240.8246" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="147.62"
+                  x="698.755" y="1243.1371">SetToLevel(level : loglevel.LogLevel)
+            </text>
+            <ellipse cx="693.265" cy="1250.8824" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="133.59"
+                  x="698.755" y="1253.195">Formatter() : formatter.Interface
+            </text>
+            <ellipse cx="693.265" cy="1260.9403" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="353.19"
+                  x="698.755" y="1263.2528">Write(logName : string, level : loglevel.LogLevel, message : string,
                 parameters : ...any)
             </text>
         </g><!--class <<module>>-->
         <g id="elem_&lt;&lt;module&gt;&gt;">
-            <rect codeLine="44" fill="#F1F1F1" height="98.0508" id="&lt;&lt;module&gt;&gt;" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="488.4" x="42" y="758.4"/>
-            <ellipse cx="263.85" cy="768" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M265.6339,771.3858 Q265.2853,771.5651 264.9018,771.6548 Q264.5183,771.7444 264.0949,771.7444 Q262.5908,771.7444 261.7989,770.7533 Q261.007,769.7622 261.007,767.8896 Q261.007,766.0119 261.7989,765.0208 Q262.5908,764.0297 264.0949,764.0297 Q264.5183,764.0297 264.9067,764.1193 Q265.2952,764.209 265.6339,764.3883 L265.6339,766.0219 Q265.2554,765.6732 264.8993,765.5114 Q264.5432,765.3495 264.1646,765.3495 Q263.3578,765.3495 262.9469,765.9895 Q262.536,766.6295 262.536,767.8896 Q262.536,769.1446 262.9469,769.7846 Q263.3578,770.4246 264.1646,770.4246 Q264.5432,770.4246 264.8993,770.2627 Q265.2554,770.1009 265.6339,769.7522 Z "
+            <rect codeLine="50" fill="#F1F1F1" height="109.7428" id="&lt;&lt;module&gt;&gt;" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="630.74" x="42.7" y="943.06"/>
+            <ellipse cx="335.3475" cy="952.82" fill="#ADD1B2" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M337.1611,956.2623 Q336.8067,956.4446 336.4168,956.5357 Q336.0269,956.6268 335.5965,956.6268 Q334.0673,956.6268 333.2622,955.6192 Q332.4571,954.6116 332.4571,952.7077 Q332.4571,950.7988 333.2622,949.7911 Q334.0673,948.7835 335.5965,948.7835 Q336.0269,948.7835 336.4219,948.8747 Q336.8168,948.9658 337.1611,949.1481 L337.1611,950.8089 Q336.7763,950.4545 336.4143,950.2899 Q336.0522,950.1253 335.6674,950.1253 Q334.8471,950.1253 334.4294,950.776 Q334.0116,951.4267 334.0116,952.7077 Q334.0116,953.9837 334.4294,954.6344 Q334.8471,955.285 335.6674,955.285 Q336.0522,955.285 336.4143,955.1205 Q336.7763,954.9559 337.1611,954.6015 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="39.6"
-                  x="276.15" y="771.1746">&#171;module&#187;
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="40.26"
+                  x="347.8525" y="956.0475">&#171;module&#187;
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="42.6" x2="529.8" y1="777.6" y2="777.6"/>
-            <polygon fill="none" points="48.6,783.4465,46.2,787.0465,51,787.0465"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="62.4"
-                  x="54" y="788.1211">osStdout : *File
+            <line style="stroke:#181818;stroke-width:0.305;" x1="43.31" x2="672.83" y1="962.58" y2="962.58"/>
+            <polygon fill="none" points="49.41,968.5239,46.97,972.1839,51.85,972.1839"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="63.44"
+                  x="54.9" y="973.2764">osStdout : *File
             </text>
-            <polygon fill="none" points="48.6,793.3395,46.2,796.9395,51,796.9395"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="60.6"
-                  x="54" y="798.0141">osStderr : *File
+            <polygon fill="none" points="49.41,978.5818,46.97,982.2418,51.85,982.2418"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="61.61"
+                  x="54.9" y="983.3343">osStderr : *File
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="42.6" x2="529.8" y1="802.1859" y2="802.1859"/>
-            <polygon fill="#4177AF" points="48.6,808.0324,46.2,811.6324,51,811.6324"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="328.8"
-                  x="54" y="812.707">osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File,
+            <line style="stroke:#181818;stroke-width:0.305;" x1="43.31" x2="672.83" y1="987.5757" y2="987.5757"/>
+            <polygon fill="#4177AF" points="49.41,993.5196,46.97,997.1796,51.85,997.1796"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="334.28"
+                  x="54.9" y="998.2721">osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File,
                 error)
             </text>
-            <ellipse cx="48.6" cy="820.3254" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="472.8"
-                  x="54" y="822.6">New(level : loglevel.LogLevel, newFormatter : formatter.Interface, writer :
-                io.Writer, errorWriter : io.Writer) : *Handler
+            <ellipse cx="49.41" cy="1006.0175" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="614.88"
+                  x="54.9" y="1008.33">New(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel, newFormatter :
+                formatter.Interface, writer : io.Writer, errorWriter : io.Writer) : *Handler
             </text>
-            <ellipse cx="48.6" cy="830.2184" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="375.6"
-                  x="54" y="832.493">NewConsoleHandler(level : loglevel.LogLevel, newFormatter : formatter.Interface) :
-                *Handler
+            <ellipse cx="49.41" cy="1016.0753" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="516.06"
+                  x="54.9" y="1018.3879">NewConsoleHandler(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel,
+                newFormatter : formatter.Interface) : *Handler
             </text>
-            <ellipse cx="48.6" cy="840.1113" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="405" x="54"
-                  y="842.3859">NewFileHandler(level : loglevel.LogLevel, newFormatter : formatter.Interface, file :
-                string) : *Handler
+            <ellipse cx="49.41" cy="1026.1332" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="537.41"
+                  x="54.9" y="1028.4457">NewConsoleErrorHandler(fromLevel : loglevel.LogLevel, toLevel :
+                loglevel.LogLevel, newFormatter : formatter.Interface) : *Handler
             </text>
-            <polygon fill="#4177AF" points="48.6,847.6043,46.2,851.2043,51,851.2043"
-                     style="stroke:#1963A0;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="147" x="54"
-                  y="852.2789">consoleSupportsANSIColors() : bool
+            <ellipse cx="49.41" cy="1036.191" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="545.95"
+                  x="54.9" y="1038.5036">NewFileHandler(fromLevel : loglevel.LogLevel, toLevel : loglevel.LogLevel,
+                newFormatter : formatter.Interface, file : string) : *Handler
+            </text>
+            <polygon fill="#4177AF" points="49.41,1043.8089,46.97,1047.4689,51.85,1047.4689"
+                     style="stroke:#1963A0;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="149.45"
+                  x="54.9" y="1048.5614">consoleSupportsANSIColors() : bool
             </text>
         </g><!--class LogLevel-->
         <g id="elem_LogLevel">
-            <rect codeLine="57" fill="#F1F1F1" height="53.7586" id="LogLevel" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="121.2" x="952.8" y="1123.5"/>
-            <ellipse cx="993.15" cy="1135.6863" fill="#FF77FF" rx="6.6" ry="6.6"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M992.84,1136.0241 Q991.7294,1135.6008 991.3359,1135.1351 Q990.9425,1134.6694 990.9425,1133.8825 Q990.9425,1132.8715 991.5899,1132.2938 Q992.2374,1131.716 993.368,1131.716 Q993.881,1131.716 994.3939,1131.8331 Q994.9069,1131.9501 995.41,1132.1792 L995.41,1133.6136 Q994.9368,1133.2799 994.4487,1133.1056 Q993.9606,1132.9312 993.4825,1132.9312 Q992.9496,1132.9312 992.6657,1133.1454 Q992.3818,1133.3596 992.3818,1133.758 Q992.3818,1134.0668 992.5885,1134.2685 Q992.7952,1134.4702 993.4526,1134.7143 L994.0852,1134.9533 Q994.9816,1135.282 995.405,1135.8249 Q995.8283,1136.3678 995.8283,1137.1945 Q995.8283,1138.3201 995.1634,1138.8754 Q994.4985,1139.4308 993.1538,1139.4308 Q992.601,1139.4308 992.0457,1139.2988 Q991.4903,1139.1668 990.9724,1138.9078 L990.9724,1137.3888 Q991.5601,1137.8071 992.1104,1138.0113 Q992.6607,1138.2155 993.1986,1138.2155 Q993.7415,1138.2155 994.0403,1137.969 Q994.3392,1137.7225 994.3392,1137.2792 Q994.3392,1136.9455 994.1399,1136.694 Q993.9407,1136.4425 993.5622,1136.298 Z "
+            <rect codeLine="64" fill="#F1F1F1" height="74.7703" id="LogLevel" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="123.22" x="1102.88" y="1324.31"/>
+            <ellipse cx="1143.9025" cy="1336.6994" fill="#FF77FF" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M1143.5874,1337.0429 Q1142.4582,1336.6125 1142.0582,1336.139 Q1141.6582,1335.6656 1141.6582,1334.8656 Q1141.6582,1333.8377 1142.3164,1333.2503 Q1142.9747,1332.6629 1144.1241,1332.6629 Q1144.6456,1332.6629 1145.1672,1332.7819 Q1145.6887,1332.9009 1146.2001,1333.1339 L1146.2001,1334.5921 Q1145.7191,1334.2529 1145.2229,1334.0757 Q1144.7267,1333.8984 1144.2406,1333.8984 Q1143.6988,1333.8984 1143.4102,1334.1162 Q1143.1215,1334.3339 1143.1215,1334.739 Q1143.1215,1335.0529 1143.3317,1335.258 Q1143.5418,1335.4631 1144.2102,1335.7112 L1144.8532,1335.9542 Q1145.7647,1336.2884 1146.1951,1336.8403 Q1146.6255,1337.3922 1146.6255,1338.2328 Q1146.6255,1339.3771 1145.9495,1339.9417 Q1145.2735,1340.5063 1143.9064,1340.5063 Q1143.3443,1340.5063 1142.7797,1340.3721 Q1142.2152,1340.2379 1141.6886,1339.9746 L1141.6886,1338.4302 Q1142.2861,1338.8556 1142.8456,1339.0632 Q1143.4051,1339.2708 1143.9519,1339.2708 Q1144.5039,1339.2708 1144.8077,1339.0201 Q1145.1115,1338.7695 1145.1115,1338.3189 Q1145.1115,1337.9796 1144.9089,1337.7239 Q1144.7064,1337.4682 1144.3216,1337.3213 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.2" font-style="italic" lengthAdjust="spacing"
-                  textLength="15.6" x="1015.35" y="1133.4609">&#171;int&#187;
+            <text fill="#000000" font-family="sans-serif" font-size="7.32" font-style="italic" lengthAdjust="spacing"
+                  textLength="15.86" x="1166.4725" y="1334.437">&#171;int&#187;
             </text>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="35.4"
-                  x="1005.45" y="1143.1008">LogLevel
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="35.99"
+                  x="1156.4075" y="1344.2375">LogLevel
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="953.4" x2="1073.4" y1="1147.8727" y2="1147.8727"/>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="953.4" x2="1073.4" y1="1152.6727" y2="1152.6727"/>
-            <ellipse cx="959.4" cy="1160.9191" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="61.8"
-                  x="964.8" y="1163.1938">String() : string
+            <line style="stroke:#181818;stroke-width:0.305;" x1="1103.49" x2="1225.49" y1="1349.0889" y2="1349.0889"/>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="1103.49" x2="1225.49" y1="1353.9689" y2="1353.9689"/>
+            <ellipse cx="1109.59" cy="1362.3528" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="62.83"
+                  x="1115.08" y="1364.6653">String() : string
             </text>
-            <ellipse cx="959.4" cy="1170.8121" fill="#84BE84" rx="1.8" ry="1.8"
-                     style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="105.6"
-                  x="964.8" y="1173.0867">DigitRepresentation() : int
+            <ellipse cx="1109.59" cy="1372.4106" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="107.36"
+                  x="1115.08" y="1374.7232">DigitRepresentation() : int
+            </text>
+            <ellipse cx="1109.59" cy="1382.4685" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="68.93"
+                  x="1115.08" y="1384.781">Next() : LogLevel
+            </text>
+            <ellipse cx="1109.59" cy="1392.5263" fill="#84BE84" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="84.79"
+                  x="1115.08" y="1394.8389">Previous() : LogLevel
             </text>
         </g><!--class <<module>>-->
         <g id="elem_&lt;&lt;module&gt;&gt;">
-            <rect codeLine="61" fill="#F1F1F1" height="147.5156" id="&lt;&lt;module&gt;&gt;" rx="1.5" ry="1.5"
-                  style="stroke:#181818;stroke-width:0.3;" width="137.4" x="948.9" y="915"/>
-            <ellipse cx="995.25" cy="924.6" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/>
-            <path d="M997.0339,927.9858 Q996.6853,928.1651 996.3018,928.2548 Q995.9183,928.3444 995.4949,928.3444 Q993.9908,928.3444 993.1989,927.3533 Q992.407,926.3622 992.407,924.4896 Q992.407,922.6119 993.1989,921.6208 Q993.9908,920.6297 995.4949,920.6297 Q995.9183,920.6297 996.3067,920.7193 Q996.6952,920.809 997.0339,920.9883 L997.0339,922.6219 Q996.6554,922.2732 996.2993,922.1114 Q995.9432,921.9495 995.5646,921.9495 Q994.7578,921.9495 994.3469,922.5895 Q993.936,923.2295 993.936,924.4896 Q993.936,925.7446 994.3469,926.3846 Q994.7578,927.0246 995.5646,927.0246 Q995.9432,927.0246 996.2993,926.8627 Q996.6554,926.7009 997.0339,926.3522 Z "
+            <rect codeLine="70" fill="#F1F1F1" height="160.0321" id="&lt;&lt;module&gt;&gt;" rx="1.525" ry="1.525"
+                  style="stroke:#181818;stroke-width:0.305;" width="139.69" x="1098.915" y="1112.64"/>
+            <ellipse cx="1146.0375" cy="1122.4" fill="#ADD1B2" rx="6.71" ry="6.71"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <path d="M1147.8511,1125.8423 Q1147.4967,1126.0246 1147.1068,1126.1157 Q1146.7169,1126.2068 1146.2865,1126.2068 Q1144.7573,1126.2068 1143.9522,1125.1992 Q1143.1471,1124.1916 1143.1471,1122.2877 Q1143.1471,1120.3788 1143.9522,1119.3711 Q1144.7573,1118.3635 1146.2865,1118.3635 Q1146.7169,1118.3635 1147.1119,1118.4547 Q1147.5068,1118.5458 1147.8511,1118.7281 L1147.8511,1120.3889 Q1147.4663,1120.0345 1147.1043,1119.8699 Q1146.7422,1119.7053 1146.3574,1119.7053 Q1145.5371,1119.7053 1145.1194,1120.356 Q1144.7016,1121.0067 1144.7016,1122.2877 Q1144.7016,1123.5637 1145.1194,1124.2144 Q1145.5371,1124.865 1146.3574,1124.865 Q1146.7422,1124.865 1147.1043,1124.7005 Q1147.4663,1124.5359 1147.8511,1124.1815 Z "
                   fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="39.6"
-                  x="1007.55" y="927.7746">&#171;module&#187;
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="40.26"
+                  x="1158.5425" y="1125.6275">&#171;module&#187;
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="949.5" x2="1085.7" y1="934.2" y2="934.2"/>
-            <ellipse cx="955.5" cy="942.4465" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="98.4"
-                  x="960.9" y="944.7211">None : loglevel.LogLevel
+            <line style="stroke:#181818;stroke-width:0.305;" x1="1099.525" x2="1237.995" y1="1132.16" y2="1132.16"/>
+            <ellipse cx="1105.625" cy="1140.5439" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="89.06"
+                  x="1111.115" y="1142.8564">All : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="952.3395" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="99.6"
-                  x="960.9" y="954.6141">Trace : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1150.6018" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="101.26"
+                  x="1111.115" y="1152.9143">Trace : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="962.2324" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="103.8"
-                  x="960.9" y="964.507">Debug : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1160.6596" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="105.53"
+                  x="1111.115" y="1162.9721">Debug : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="972.1254" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="110.4"
-                  x="960.9" y="974.4">Verbose : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1170.7175" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="112.24"
+                  x="1111.115" y="1173.03">Verbose : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="982.0184" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="93"
-                  x="960.9" y="984.293">Info : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1180.7753" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="94.55"
+                  x="1111.115" y="1183.0879">Info : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="991.9113" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="102.6"
-                  x="960.9" y="994.1859">Notice : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1190.8332" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="104.31"
+                  x="1111.115" y="1193.1457">Notice : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1001.8043" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="111"
-                  x="960.9" y="1004.0789">Warning : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1200.891" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="112.85"
+                  x="1111.115" y="1203.2036">Warning : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1011.6973" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="103.8"
-                  x="960.9" y="1013.9719">Severe : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1210.9489" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="105.53"
+                  x="1111.115" y="1213.2614">Severe : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1021.5902" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="97.8"
-                  x="960.9" y="1023.8648">Error : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1221.0067" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="99.43"
+                  x="1111.115" y="1223.3193">Error : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1031.4832" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="96.6"
-                  x="960.9" y="1033.7578">Alert : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1231.0646" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="98.21"
+                  x="1111.115" y="1233.3771">Alert : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1041.3762" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="105.6"
-                  x="960.9" y="1043.6508">Critical : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1241.1224" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="107.36"
+                  x="1111.115" y="1243.435">Critical : loglevel.LogLevel
             </text>
-            <ellipse cx="955.5" cy="1051.2691" fill="none" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="121.8"
-                  x="960.9" y="1053.5438">Emergency : loglevel.LogLevel
+            <ellipse cx="1105.625" cy="1251.1803" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="123.83"
+                  x="1111.115" y="1253.4928">Emergency : loglevel.LogLevel
             </text>
-            <line style="stroke:#181818;stroke-width:0.3;" x1="949.5" x2="1085.7" y1="1057.7156" y2="1057.7156"/>
+            <ellipse cx="1105.625" cy="1261.2381" fill="none" rx="1.83" ry="1.83"
+                     style="stroke:#038048;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="8.54" lengthAdjust="spacing" textLength="94.55"
+                  x="1111.115" y="1263.5507">Null : loglevel.LogLevel
+            </text>
+            <line style="stroke:#181818;stroke-width:0.305;" x1="1099.525" x2="1237.995" y1="1267.7921" y2="1267.7921"/>
         </g><!--reverse link Interface to Formatter-->
         <g id="link_Interface_Formatter">
-            <path d="M684.6966,1182.7954 C670.3146,1197.4474 659.154,1208.82 642.72,1225.566 " fill="none"
-                  id="Interface-backto-Formatter" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="692.262,1175.088,682.1274,1180.2736,687.2657,1185.3172,692.262,1175.088"
-                     style="stroke:#181818;stroke-width:0.6;"/>
+            <path d="M832.5161,1394.788 C816.8635,1412.0022 802.8942,1427.3756 784.8199,1447.2555 " fill="none"
+                  id="Interface-backto-Formatter" style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="839.9029,1386.6642,829.8082,1392.3257,835.224,1397.2502,839.9029,1386.6642"
+                     style="stroke:#181818;stroke-width:0.61;"/>
         </g><!--link <<module>> to Formatter-->
         <g id="link_&lt;&lt;module&gt;&gt;_Formatter">
-            <path codeLine="24" d="M448.512,1179.786 C474.198,1193.658 502.2423,1208.8075 529.9983,1223.7955 "
+            <path codeLine="24" d="M586.3747,1391.6967 C614.8312,1408.2887 647.6534,1427.429 678.5438,1445.4423 "
                   fill="none" id="&lt;&lt;module&gt;&gt;-to-Formatter"
-                  style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="533.166,1225.506,529.5548,1220.8284,530.5263,1224.0806,527.2742,1225.052,533.166,1225.506"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="17.4"
-                  x="500.4" y="1205.741">uses
+                     points="681.7055,1447.286,678.1921,1442.4126,679.0707,1445.7496,675.7338,1446.6282,681.7055,1447.286"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="649.04" y="1427.1367">uses
             </text>
         </g><!--reverse link Interface to Handler-->
         <g id="link_Interface_Handler">
-            <path d="M731.1262,852.3903 C729.9742,877.1583 728.88,900.648 727.518,929.832 " fill="none"
-                  id="Interface-backto-Handler" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="731.628,841.602,727.5301,852.2231,734.7223,852.5576,731.628,841.602"
-                     style="stroke:#181818;stroke-width:0.6;"/>
+            <path d="M876.957,1058.8334 C876.0237,1079.9272 875.4049,1094.0472 874.374,1117.3309 " fill="none"
+                  id="Interface-backto-Handler" style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="877.4423,1047.8641,873.3005,1058.6716,880.6134,1058.9951,877.4423,1047.8641"
+                     style="stroke:#181818;stroke-width:0.61;"/>
         </g><!--link <<module>> to Handler-->
         <g id="link_&lt;&lt;module&gt;&gt;_Handler">
-            <path codeLine="54" d="M404.316,856.452 C459.246,879.036 521.6943,904.7094 579.3243,928.3974 " fill="none"
-                  id="&lt;&lt;module&gt;&gt;-to-Handler"
-                  style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
+            <path codeLine="61" d="M502.8474,1053.1406 C559.8153,1074.6126 622.4962,1098.2402 682.8435,1120.9871 "
+                  fill="none" id="&lt;&lt;module&gt;&gt;-to-Handler"
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="582.654,929.766,578.5719,925.4933,579.8793,928.6255,576.747,929.9329,582.654,929.766"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="17.4"
-                  x="466.8" y="882.341">uses
+                     points="686.2683,1122.278,681.9917,1118.0584,683.4143,1121.2022,680.2705,1122.6248,686.2683,1122.278"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="569.13" y="1079.4367">uses
             </text>
         </g><!--link <<module>> to LogLevel-->
         <g id="link_&lt;&lt;module&gt;&gt;_LogLevel">
-            <path codeLine="75" d="M1015.68,1062.84 C1015.11,1084.464 1014.6216,1103.1552 1014.1896,1119.7692 "
+            <path codeLine="85" d="M1166.7348,1272.7589 C1166.2834,1290.6563 1165.9124,1305.1694 1165.5281,1320.3462 "
                   fill="none" id="&lt;&lt;module&gt;&gt;-to-LogLevel"
-                  style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="1014.096,1123.368,1016.6356,1118.0322,1014.174,1120.369,1011.8372,1117.9074,1014.096,1123.368"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="17.4"
-                  x="1015.2" y="1088.741">uses
+                     points="1165.4355,1324.005,1168.0137,1318.5785,1165.5127,1320.956,1163.1353,1318.455,1165.4355,1324.005"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="1166.32" y="1299.0367">uses
             </text>
         </g><!--reverse link baseLoggerInterface to baseLogger-->
         <g id="link_baseLoggerInterface_baseLogger">
-            <path d="M733.2,576.276 C733.2,587.718 733.2,589.59 733.2,601.572 " fill="none"
+            <path d="M879.62,747.4635 C879.62,759.2182 879.62,761.0543 879.62,773.2726 " fill="none"
                   id="baseLoggerInterface-backto-baseLogger"
-                  style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="733.2,565.476,729.6,576.276,736.8,576.276,733.2,565.476"
-                     style="stroke:#181818;stroke-width:0.6;"/>
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="879.62,736.4835,875.96,747.4635,883.28,747.4635,879.62,736.4835"
+                     style="stroke:#181818;stroke-width:0.61;"/>
         </g><!--reverse link Interface to Logger-->
         <g id="link_Interface_Logger">
-            <path d="M801.6204,232.3416 C792.8544,248.8896 788.676,256.77 779.832,273.468 " fill="none"
-                  id="Interface-backto-Logger" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="806.676,222.798,798.4392,230.6565,804.8016,234.0268,806.676,222.798"
-                     style="stroke:#181818;stroke-width:0.6;"/>
+            <path d="M892.5213,307.9044 C890.1911,343.3637 888.221,373.2041 885.8542,409.1453 " fill="none"
+                  id="Interface-backto-Logger" style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="893.2413,296.948,888.8692,307.6644,896.1734,308.1444,893.2413,296.948"
+                     style="stroke:#181818;stroke-width:0.61;"/>
         </g><!--reverse link Logger to baseLoggerInterface-->
         <g id="link_Logger_baseLoggerInterface">
-            <path codeLine="144" d="M733.2,458.022 C733.2,470.694 733.2,475.944 733.2,486.942 " fill="none"
-                  id="Logger-backto-baseLoggerInterface" style="stroke:#181818;stroke-width:0.6;"/>
-            <polygon fill="#181818" points="733.2,450.822,730.8,454.422,733.2,458.022,735.6,454.422,733.2,450.822"
-                     style="stroke:#181818;stroke-width:0.6;"/>
+            <path codeLine="179" d="M879.62,607.1757 C879.62,623.4566 879.62,632.3321 879.62,646.4536 " fill="none"
+                  id="Logger-backto-baseLoggerInterface" style="stroke:#181818;stroke-width:0.61;"/>
+            <polygon fill="#181818"
+                     points="879.62,599.8557,877.18,603.5157,879.62,607.1757,882.06,603.5157,879.62,599.8557"
+                     style="stroke:#181818;stroke-width:0.61;"/>
         </g><!--link <<module>> to Logger-->
         <g id="link_&lt;&lt;module&gt;&gt;_Logger">
-            <path codeLine="145" d="M662.25,227.562 C670.23,242.628 676.8425,255.1129 684.8285,270.1849 " fill="none"
-                  id="&lt;&lt;module&gt;&gt;-to-Logger"
-                  style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/>
+            <path codeLine="180" d="M759.9014,356.9354 C774.3828,374.7047 786.5346,389.6118 800.1376,406.3136 "
+                  fill="none" id="&lt;&lt;module&gt;&gt;-to-Logger"
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="686.514,273.366,686.1064,267.4708,685.1094,270.7151,681.865,269.7181,686.514,273.366"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="17.4"
-                  x="675" y="253.541">uses
+                     points="802.4489,409.1514,800.8738,403.3537,800.5228,406.7865,797.09,406.4355,802.4489,409.1514"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="788.12" y="388.9167">uses
+            </text>
+        </g><!--link <<module>> to Option-->
+        <g id="link_&lt;&lt;module&gt;&gt;_Option">
+            <path codeLine="181" d="M654.6642,362.5779 C660.0322,412.7321 664.8953,458.1795 667.5671,483.1773 "
+                  fill="none" id="&lt;&lt;module&gt;&gt;-to-Option"
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="667.9561,486.8166,669.7988,481.0984,667.632,483.7839,664.9465,481.617,667.9561,486.8166"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="658.19" y="388.9167">uses
+            </text>
+        </g><!--link <<module>> to Configuration-->
+        <g id="link_&lt;&lt;module&gt;&gt;_Configuration">
+            <path codeLine="182"
+                  d="M599.8801,362.4376 C587.308,434.8202 579.6952,521.9526 593.53,599.63 C596.6532,617.1492 601.5492,632.3159 607.8139,648.0966 "
+                  fill="none" id="&lt;&lt;module&gt;&gt;-to-Configuration"
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="609.1643,651.4983,609.4065,645.4954,608.0389,648.6635,604.8708,647.296,609.1643,651.4983"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="594.14" y="507.5617">uses
+            </text>
+        </g><!--link Option to Configuration-->
+        <g id="link_Option_Configuration">
+            <path codeLine="183" d="M665.876,522.0563 C659.1782,551.2082 646.1326,607.9397 636.9277,647.9984 "
+                  fill="none" id="Option-to-Configuration"
+                  style="stroke:#181818;stroke-width:0.61;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="636.108,651.5654,639.7155,646.7613,636.791,648.5929,634.9595,645.6684,636.108,651.5654"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="17.69"
+                  x="643.55" y="626.2067">uses
             </text>
         </g><!--reverse link Handler to LogLevel-->
         <g id="link_Handler_LogLevel">
-            <path codeLine="148"
-                  d="M844.0806,1051.2851 C872.6106,1066.4831 896.712,1079.682 924.6,1095.6 C939.9,1104.336 956.43,1114.29 971.028,1123.272 "
-                  fill="none" id="Handler-backto-LogLevel" style="stroke:#181818;stroke-width:0.6;"/>
+            <path codeLine="186"
+                  d="M1013.6713,1271.3865 C1036.1193,1283.9769 1052.6892,1293.4623 1074.21,1306.01 C1084.0493,1311.7501 1094.4193,1317.9477 1104.4843,1324.0416 "
+                  fill="none" id="Handler-backto-LogLevel" style="stroke:#181818;stroke-width:0.61;"/>
             <polygon fill="#181818"
-                     points="837.726,1047.9,839.7749,1051.7108,844.0806,1051.2851,842.0317,1047.4744,837.726,1047.9"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="32.4"
-                  x="914.4" y="1088.741">contains
+                     points="1007.2869,1267.8057,1009.2855,1271.7242,1013.6713,1271.3865,1011.6727,1267.468,1007.2869,1267.8057"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="32.94"
+                  x="1063.84" y="1299.0367">contains
             </text>
         </g><!--reverse link Handler to Interface-->
         <g id="link_Handler_Interface">
-            <path codeLine="149" d="M721.1212,1054.9867 C719.6092,1081.9687 718.302,1105.32 717.144,1125.918 "
-                  fill="none" id="Handler-backto-Interface" style="stroke:#181818;stroke-width:0.6;"/>
+            <path codeLine="187" d="M866.6138,1275.1576 C865.2596,1300.0578 864.2419,1318.7468 863.2476,1336.9736 "
+                  fill="none" id="Handler-backto-Interface" style="stroke:#181818;stroke-width:0.61;"/>
             <polygon fill="#181818"
-                     points="721.524,1047.798,718.9263,1051.2581,721.1212,1054.9867,723.7188,1051.5266,721.524,1047.798"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="32.4"
-                  x="720" y="1088.741">contains
+                     points="867.0113,1267.8484,864.3761,1271.3705,866.6138,1275.1576,869.2489,1271.6355,867.0113,1267.8484"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="32.94"
+                  x="866.2" y="1299.0367">contains
             </text>
         </g><!--reverse link baseLogger to Interface-->
         <g id="link_baseLogger_Interface">
-            <path codeLine="150" d="M733.2,707.028 C733.2,730.716 733.2,751.44 733.2,772.8 " fill="none"
-                  id="baseLogger-backto-Interface" style="stroke:#181818;stroke-width:0.6;"/>
-            <polygon fill="#181818" points="733.2,699.828,730.8,703.428,733.2,707.028,735.6,703.428,733.2,699.828"
-                     style="stroke:#181818;stroke-width:0.6;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="32.4"
-                  x="733.8" y="725.741">contains
+            <path codeLine="188" d="M879.62,890.7403 C879.62,911.4925 879.62,927.688 879.62,947.9522 " fill="none"
+                  id="baseLogger-backto-Interface" style="stroke:#181818;stroke-width:0.61;"/>
+            <polygon fill="#181818"
+                     points="879.62,883.4203,877.18,887.0803,879.62,890.7403,882.06,887.0803,879.62,883.4203"
+                     style="stroke:#181818;stroke-width:0.61;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="32.94"
+                  x="880.23" y="909.8567">contains
             </text>
-            <text fill="#000000" font-family="sans-serif" font-size="7.8" lengthAdjust="spacing" textLength="13.2"
-                  x="719.1956" y="766.601">0..*
+            <text fill="#000000" font-family="sans-serif" font-size="7.93" lengthAdjust="spacing" textLength="13.42"
+                  x="865.6234" y="941.7754">0..*
             </text>
-        </g><!--SRC=[xLbRJzim57xlhx1uIak9zbnLbIOk6nBhfXMD1yI3cvw6YCJER0U49lhRT-nScZHEcW2RDa5UwkJSRvzjLV6OA4wMN2aUaLKWm5C1PuD1JBqxwWE9xtmtvBuFWlmQ47nomfgBY2fLVDTFmF1zJJqWvyLgIzNF8Rc4A0wf0cT89aGg4J1_X-FCQ7OYa58Rohd69FLZJgFAHxY74D-HQ9Rk1VSlz69CF1vo0IiaBZaFBVQU1iKIAOcdCjiwgW3TX0YOaet1R8ZAWcaAvLoU_anew536rIs8hVO96HKlmyp17TdJUnecgFkR00alJuUs4j7uEcMyiRhxZzR62wcKv60wZVWg2M4sEwWL8imK7skrCWkrPjOMzOQO_1h1fgZdyE3KIZsi5D7cTyLZrvsHSlqJ2NAG2fJ7wfQoLTXxg4nqMBLQn3jy2r0fQrgPUfDOourMJKSK8-yMdkpmNua0kmVLTc-4UYl5LA0q6j1rT5sNiiTXARqx4_ivIrYdUMtqOuTlNIhKlgWtv457hLa3xfeCY1q648ABgtrS7cUIXx18ufWB9J_E5-T5EwyJvc4DB32HbtxIj_YJ_xly7K21owyniBCWrEgvTFCtXrNTMuVKrtLX2gs3Y72jsRxm5UYudP5-6wTL7DPiBDIA9yg00RBPo2Xe9QV0qf8S1WzdxPqujZJVkAdV369byr9tv3Xjlup-ChVQBUb4l8ePB5rQt18Yswosp9PJsttR03m7cqRupiCezQ94Pu6hnnX87XkPJh7PPhCQZYzC7CtRxqdW1-exn7hBOehgevfXHctF6H6i1cVG0JekXKRJ_Nmdi4py3dm_G2ovxABndArv1xOvLq4d3w-eO9ZNJd1vZuNhm7Ygfwq3tqVi7DM1xnY7DV1esCLq1C87vZssyZurDtJHaRMEtXuxbbJ2XJdUsJRMGwt3UJs4nreYqJO2PWSpn0f-bqMp-Kod-lecEqnPzYkincgLOz1jCTKrWM4f8zc1OvkEyfcZFKaRKd6vz3spAFVw-rQot7xSRVFx3xbLGa2dTvOD8FONo_2nlw26o_vIANhsbyl0jBzWYgtzvGpKzXSpoDjVB0VYP_YPut8VqGhAr176ZYibD9hOGEXzSjudvurCJkjnTqC4vwgOb56w6bIlOjKTpyhs2TG9h6aIPheSErkVk_RxYBoFo5yO4VEJ3S3ewAXnix3T4VpjdHSLRVyJS7Fapo_6Md69NEjwr89NSKK39dkeiLpz6nILjaEju-23wuuEYCMILT7WDm00]-->
+        </g><!--SRC=[xHdBRjiuyEwl87AI7LVOis4O2D846o2RBkgYEHGzq3Aj29L8BKav3OhwspkaA5aFIYRRtMuEziMKE3ESzmn7akL8ChHXKh8CRHDE8famEfdaEFg2OuBoBt6OiZWc77sR8FXL6pl6Conb_Lxz4WhFEnmHT5UlZhlgTua-a2nFiIJ152sGa3oXSGVYLbCECYA4EgY2cgEIZmUSjLwIFKdX6JRrChndyRrQp574KiR95ZOtZAMMyxvFwYNi594qPokf4c2JP8HACIZC0KaZp90eT-BcdmAd0QPCFX5-fBv0i_fXQXZiuDxiSLe0xRyv4UJNrQ5EoN3-gGJyR6NtbTecIh4Gw6AvpDYsICbgTT4pH6e8NokomeZQEzOczG5f_Mh48QaVo7FGC_MqPKGRtosEmt25clOl116J4g4PLa-ORbFle7ha2MnfioKiB9-wbkCiqqe0g9vYEh1h8e_WksfbyQck_p2F4ofWoHofrzhJSjRv9wpLObDA06JTlRBlrpdcW0q7AASAmn3Jbsd3rftqyQUndbFoE2fsSK9Va6YOA-IkuMEdT7H0pzfL1jtc075A1Kl9kiXpngMuUbZVrJ6sAsW4jh3aBaz_NBZuImaydDy6VN7XuutEz5-pDpeaJ2RUvOJU9gaYpqHOFGMqpTuknR6o8fLmEk4Ph1NONsnBbDp1J3tD4U6SyMdlZBNSiaBgH0bWjcr0j6wNINSqHEPZKJ57b3pVZiV2tEB-HfJ7tePEzoQ- -vnUbs5YzlzZlfrOkL5Yl0P-b6b_3n_WhQK_DmgqZQsHh1Rqch6nUbwb-y5gNedH23y1p18cNtA2AjdGSWdnjLhrolfQop7SZRrDuaI-9xdgOAZ4gdClSowLFJjybNfh80D2axbFM27iC1wPvH9TfQb3olt0LKay3VUMR8hO0UuZuHicN2ZUqHrp07jWCd7Yy15p2gPnAZDxiBq3e8vT1xWhS3xf07SD6Io9i8jTRZB2OqAZ5nSL5ITC_NquT6hVxyNEiT_TO47kzRt2raHTAXh1lrS-GHxOj0MRRX3qPgiuDb5D9YZZvzDdqyLRcW4msdPRfKC3TfHkWNgOpLFUaupjYJzsgLZJenwrscnJntLzG2t96-_DYUAas6TZUHbh_DOt9lxhbgwH_GDlc-jYu8zcQeC_eYeL_bXbvV37CuN47x6iA_vukipue-cguuzM5Q6VuBEgIJwehPpNptVsBDV8ZGjRIZm7u3a0pm7u4m48bz9T4XTStr5Q8USs1NERW8qDv0_jo-5eQrEnNj_KtkMQx-LIZxncBMccwk9MOepUZWw8CoRhx38hL_-B9XAQm6rmqfwrjDib2uSG88byiWs61putb5hhu7V7lbwurVS9wp3UYg9dMhsnW1NKqZJQGCiHoz7-0TCGnlrBSAs-5bGp3irx4aIjgEYYk7MxOzzitAUihlFIS-KuLuxVK3dqdqcLipTl1binsrWXRW_aUY0cbu-1N7VYieOqk8CmmFdnWtbOTM3Lc519qjZkHHbGWOmWSKA51ndB87I0KAExLJGk_WZ3sGMod6GbDFa1]-->
     </g>
 </svg>
