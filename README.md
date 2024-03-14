@@ -21,9 +21,9 @@ go install github.com/dl1998/go-logging@v1.0.0
 
 Check examples provided in the [examples](./examples).
 
-Logger supports 11 logging levels + 1 (when non set):
+Logger supports 11 logging levels + 2 (when not set):
 
-- None (special level, cannot be used for logging)
+- All (special level, cannot be used for logging)
 - Trace
 - Debug
 - Verbose
@@ -35,6 +35,7 @@ Logger supports 11 logging levels + 1 (when non set):
 - Alert
 - Critical
 - Emergency
+- Null (special level, cannot be used for logging)
 
 ### Default Logger
 
