@@ -2,9 +2,9 @@
 package logger
 
 import (
+	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
-	"github.com/dl1998/go-logging/pkg/logger/level"
 )
 
 var rootLogger *Logger

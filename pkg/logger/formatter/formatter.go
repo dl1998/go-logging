@@ -3,7 +3,7 @@
 package formatter
 
 import (
-	"github.com/dl1998/go-logging/pkg/logger/level"
+	"github.com/dl1998/go-logging/pkg/common/level"
 	"runtime"
 	"strconv"
 	"strings"

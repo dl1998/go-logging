@@ -4,7 +4,7 @@ package formatter
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
-	"github.com/dl1998/go-logging/pkg/logger/level"
+	"github.com/dl1998/go-logging/pkg/common/level"
 	"testing"
 )
 
