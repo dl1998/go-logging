@@ -1,12 +1,12 @@
-// Package handler provides handlers for the logger, it contains logic for the
-// logging messages.
+// Package handler provides handlers for the structured logger, it contains logic
+// for the logging messages.
 package handler
 
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/handler"
 	"github.com/dl1998/go-logging/pkg/common/level"
-	"github.com/dl1998/go-logging/pkg/logger/formatter"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"io"
 	"os"
 )
@@ -23,7 +23,7 @@ type Interface interface {
 	ToLevel() level.Level
 	SetToLevel(toLevel level.Level)
 	Formatter() formatter.Interface
-	Write(logName string, logLevel level.Level, message string, parameters ...any)
+	Write(logName string, logLevel level.Level, parameters ...any)
 }
 
 // Handler struct contains information where it shall write log message, how to
@@ -72,12 +72,10 @@ func (handler *Handler) Formatter() formatter.Interface {
 }
 
 // Write writes log message to the defined by the Handler writer.
-func (handler *Handler) Write(logName string, logLevel level.Level, message string, parameters ...any) {
+func (handler *Handler) Write(logName string, logLevel level.Level, parameters ...any) {
 	if logLevel.DigitRepresentation() < handler.FromLevel().DigitRepresentation() || logLevel.DigitRepresentation() > handler.ToLevel().DigitRepresentation() {
 		return
 	}
-
-	formattedMessage := fmt.Sprintf(message, parameters...)
 
 	var colored = false
 
@@ -85,7 +83,7 @@ func (handler *Handler) Write(logName string, logLevel level.Level, message stri
 		colored = true
 	}
 
-	log := handler.formatter.Format(formattedMessage, logName, logLevel, colored)
+	log := handler.formatter.Format(logName, logLevel, colored, parameters...)
 
 	if _, err := handler.Writer().Write([]byte(log)); err != nil {
 		fmt.Println(err)

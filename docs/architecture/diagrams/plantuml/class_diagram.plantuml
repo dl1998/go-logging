@@ -1,192 +1,411 @@
 @startuml
 top to bottom direction
 
-package pkg.logger {
-    package formatter {
-        interface Interface {
-            + Template() : string
-            + Format(message : string, loggerName : string, level : level.Level, colored : bool) : string
+package pkg {
+    package common {
+        package formatter {
+            class "<<module>>" {
+                + EvaluatePreset(loggerName : string, logLevel : level.Level, skipCaller : int) : map[string]interface{}
+            }
         }
-
-        struct Formatter implements Interface {
-            ~ template : string
-            + IsEqual(anotherFormatter : *Formatter) : bool
-            + EvaluatePreset(message : string, loggerName : string, level : level.Level) : map[string]string
-            + Template() : string
-            + Format(message : string, loggerName : string, level : level.Level, colored : bool) : string
+        package handler {
+            interface Interface {
+                + Writer() : io.Writer
+                + SetWriter(writer : io.Writer)
+                + FromLevel() level.Level
+                + SetFromLevel(fromLevel : level.Level)
+                + ToLevel() level.Level
+                + SetToLevel(toLevel : level.Level)
+            }
+            struct Handler implements Interface {
+                ~ fromLevel : level.Level
+                ~ toLevel : level.Level
+                ~ writer : io.Writer
+                + ConsoleSupportsANSIColors : func() : bool
+                + Writer() : io.Writer
+                + SetWriter(writer : io.Writer)
+                + FromLevel() : level.Level
+                + SetFromLevel(fromLevel : level.Level)
+                + ToLevel() : level.Level
+                + SetToLevel(toLevel : level.Level)
+            }
+            class "<<module>>" {
+                + New(fromLevel : level.Level, toLevel : level.Level, writer : io.Writer) : *Handler
+                ~ consoleSupportsANSIColors() : bool
+            }
+            "<<module>>" ..> Handler : uses
         }
-
-        class "<<module>>" {
-            ~ logLevelColors : map[level.Level]string
-            ~ resetColor : string
-            + New(template : string) : *Formatter
+        package level {
+            stereotype Level <<int>> {
+                + String() : string
+                + DigitRepresentation() : int
+                + Next() : Level
+                + Previous() : Level
+            }
+            class "<<module>>" {
+                + All : level.Level
+                + Trace : level.Level
+                + Debug : level.Level
+                + Verbose : level.Level
+                + Info : level.Level
+                + Notice : level.Level
+                + Warning : level.Level
+                + Severe : level.Level
+                + Error : level.Level
+                + Alert : level.Level
+                + Critical : level.Level
+                + Emergency : level.Level
+                + Null : level.Level
+            }
+            "<<module>>" ..> Level : uses
         }
-
-        "<<module>>" ..> Formatter : uses
     }
-    package handler {
-        interface Interface {
-            + Writer() : io.Writer
-            + FromLevel() level.Level
-            + SetFromLevel(fromLevel level.Level)
-            + ToLevel() level.Level
-            + SetToLevel(toLevel level.Level)
-            + Formatter() : formatter.Interface
-            + Write(logName : string, level : level.Level, message : string, parameters : ...any)
+    package logger {
+        package formatter {
+            interface Interface {
+                + Template() : string
+                + Format(message : string, loggerName : string, logLevel : level.Level, colored : bool) : string
+            }
+
+            struct Formatter implements Interface {
+                ~ template : string
+                + IsEqual(anotherFormatter : *Formatter) : bool
+                + Template() : string
+                + Format(message : string, loggerName : string, logLevel : level.Level, colored : bool) : string
+            }
+
+            class "<<module>>" {
+                ~ logLevelColors : map[level.Level]string
+                ~ resetColor : string
+                + New(template : string) : *Formatter
+            }
+
+            "<<module>>" ..> Formatter : uses
         }
-        struct Handler implements Interface {
+        package handler {
+            interface Interface {
+                + Writer() : io.Writer
+                + FromLevel() level.Level
+                + SetFromLevel(fromLevel level.Level)
+                + ToLevel() level.Level
+                + SetToLevel(toLevel level.Level)
+                + Formatter() : formatter.Interface
+                + Write(logName : string, logLevel : level.Level, message : string, parameters : ...any)
+            }
+            struct Handler implements Interface {
+                ~ *handler.Handler
+                ~ formatter : formatter.Interface
+                + Writer() : io.Writer
+                + FromLevel() : level.Level
+                + SetLevel(level : level.Level)
+                + ToLevel() : level.Level
+                + SetToLevel(level : level.Level)
+                + Formatter() : formatter.Interface
+                + Write(logName : string, logLevel : level.Level, message : string, parameters : ...any)
+            }
+            class "<<module>>" {
+                ~ osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File, error)
+                ~ osStdout : *File
+                ~ osStderr : *File
+                + New(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, writer : io.Writer, errorWriter : io.Writer) : *Handler
+                + NewConsoleHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+                + NewConsoleErrorHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+                + NewFileHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, file : string) : *Handler
+                ~ consoleSupportsANSIColors() : bool
+            }
+
+            "<<module>>" ..> Handler : uses
+        }
+        interface baseLoggerInterface {
+            + Log(level : level.Level, message : string, parameters : ...any)
+            + Name() : string
+            + SetName(name : string)
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+        }
+        struct baseLogger implements baseLoggerInterface {
+            ~ name : string
+            ~ handlers : []handler.Interface
+            + Log(level : level.Level, message : string, parameters : ...any)
+            + Name() : string
+            + SetName(name : string)
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+        }
+        interface Interface {
+            + Name() : string
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+            + Trace(message : string, parameters : ...any)
+            + Debug(message : string, parameters : ...any)
+            + Verbose(message : string, parameters : ...any)
+            + Info(message : string, parameters : ...any)
+            + Notice(message : string, parameters : ...any)
+            + Warning(message : string, parameters : ...any)
+            + Severe(message : string, parameters : ...any)
+            + Error(message : string, parameters : ...any)
+            + Alert(message : string, parameters : ...any)
+            + Critical(message : string, parameters : ...any)
+            + Emergency(message : string, parameters : ...any)
+        }
+        struct Logger implements Interface {
+            ~ baseLogger : baseLoggerInterface
+            + Name() : string
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+            + Trace(message : string, parameters : ...any)
+            + Debug(message : string, parameters : ...any)
+            + Verbose(message : string, parameters : ...any)
+            + Info(message : string, parameters : ...any)
+            + Notice(message : string, parameters : ...any)
+            + Warning(message : string, parameters : ...any)
+            + Severe(message : string, parameters : ...any)
+            + Error(message : string, parameters : ...any)
+            + Alert(message : string, parameters : ...any)
+            + Critical(message : string, parameters : ...any)
+            + Emergency(message : string, parameters : ...any)
+        }
+        struct Configuration {
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
-            ~ formatter : formatter.Interface
-            ~ writer : io.Writer
-            ~ consoleSupportsANSIColors : func() bool
-            + Writer() : io.Writer
+            ~ template : string
+            ~ file : string
+            ~ name : string
+        }
+        stereotype Option <<func(*Configuration)>> {}
+        class "<<module>>" {
+            ~ rootLogger : *Logger
+            ~ fromLevel : level.Level
+            ~ toLevel : level.Level
+            ~ template : string
+            ~ init()
+            + New(name : string) : *Logger
+            + WithFromLevel(fromLevel : level.Level) : Option
+            + WithToLevel(toLevel : level.Level) : Option
+            + WithTemplate(template : string) : Option
+            + WithFile(file : string) : Option
+            + WithName(name : string) : Option
+            + NewConfiguration(options : ...Option) : *Configuration
+            + Configure(configuration : *Configuration)
+            + Name() : string
+            + Template() : string
             + FromLevel() : level.Level
-            + SetLevel(level : level.Level)
             + ToLevel() : level.Level
-            + SetToLevel(level : level.Level)
-            + Formatter() : formatter.Interface
-            + Write(logName : string, level : level.Level, message : string, parameters : ...any)
-        }
-        class "<<module>>" {
-            ~ osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File, error)
-            ~ osStdout : *File
-            ~ osStderr : *File
-            + New(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, writer : io.Writer, errorWriter : io.Writer) : *Handler
-            + NewConsoleHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
-            + NewConsoleErrorHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
-            + NewFileHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, file : string) : *Handler
-            ~ consoleSupportsANSIColors() : bool
+            + Trace(message : string, parameters : ...any)
+            + Debug(message : string, parameters : ...any)
+            + Verbose(message : string, parameters : ...any)
+            + Info(message : string, parameters : ...any)
+            + Notice(message : string, parameters : ...any)
+            + Warning(message : string, parameters : ...any)
+            + Severe(message : string, parameters : ...any)
+            + Error(message : string, parameters : ...any)
+            + Alert(message : string, parameters : ...any)
+            + Critical(message : string, parameters : ...any)
+            + Emergency(message : string, parameters : ...any)
         }
 
-        "<<module>>" ..> Handler : uses
+        Logger *-- baseLoggerInterface
+        "<<module>>" ..> Logger : uses
+        "<<module>>" ..> Option : uses
+        "<<module>>" ..> Configuration : uses
+        Option ..> Configuration : uses
     }
-    package level {
-        stereotype Level <<int>> {
-            + String() : string
-            + DigitRepresentation() : int
-            + Next() : Level
-            + Previous() : Level
-        }
-        class "<<module>>" {
-            + All : level.Level
-            + Trace : level.Level
-            + Debug : level.Level
-            + Verbose : level.Level
-            + Info : level.Level
-            + Notice : level.Level
-            + Warning : level.Level
-            + Severe : level.Level
-            + Error : level.Level
-            + Alert : level.Level
-            + Critical : level.Level
-            + Emergency : level.Level
-            + Null : level.Level
-        }
-        "<<module>>" ..> Level : uses
-    }
-    interface baseLoggerInterface {
-        + Log(level : level.Level, message : string, parameters : ...any)
-        + Name() : string
-        + SetName(name : string)
-        + Handlers() : []handler.Interface
-        + AddHandler(handlerInterface : handler.Interface)
-        + RemoveHandler(handlerInterface : handler.Interface)
-    }
-    struct baseLogger implements baseLoggerInterface {
-        ~ name : string
-        ~ handlers : []handler.Interface
-        + Log(level : level.Level, message : string, parameters : ...any)
-        + Name() : string
-        + SetName(name : string)
-        + Handlers() : []handler.Interface
-        + AddHandler(handlerInterface : handler.Interface)
-        + RemoveHandler(handlerInterface : handler.Interface)
-    }
-    interface Interface {
-        + Name() : string
-        + Handlers() : []handler.Interface
-        + AddHandler(handlerInterface : handler.Interface)
-        + RemoveHandler(handlerInterface : handler.Interface)
-        + Trace(message : string, parameters : ...any)
-        + Debug(message : string, parameters : ...any)
-        + Verbose(message : string, parameters : ...any)
-        + Info(message : string, parameters : ...any)
-        + Notice(message : string, parameters : ...any)
-        + Warning(message : string, parameters : ...any)
-        + Severe(message : string, parameters : ...any)
-        + Error(message : string, parameters : ...any)
-        + Alert(message : string, parameters : ...any)
-        + Critical(message : string, parameters : ...any)
-        + Emergency(message : string, parameters : ...any)
-    }
-    struct Logger implements Interface {
-        ~ baseLogger : baseLoggerInterface
-        + Name() : string
-        + Handlers() : []handler.Interface
-        + AddHandler(handlerInterface : handler.Interface)
-        + RemoveHandler(handlerInterface : handler.Interface)
-        + Trace(message : string, parameters : ...any)
-        + Debug(message : string, parameters : ...any)
-        + Verbose(message : string, parameters : ...any)
-        + Info(message : string, parameters : ...any)
-        + Notice(message : string, parameters : ...any)
-        + Warning(message : string, parameters : ...any)
-        + Severe(message : string, parameters : ...any)
-        + Error(message : string, parameters : ...any)
-        + Alert(message : string, parameters : ...any)
-        + Critical(message : string, parameters : ...any)
-        + Emergency(message : string, parameters : ...any)
-    }
-    struct Configuration {
-        ~ fromLevel : level.Level
-        ~ toLevel : level.Level
-        ~ template : string
-        ~ file : string
-        ~ name : string
-    }
-    stereotype Option <<func(*Configuration)>> {}
-    class "<<module>>" {
-        ~ rootLogger : *Logger
-        ~ fromLevel : level.Level
-        ~ toLevel : level.Level
-        ~ template : string
-        ~ init()
-        + New(name : string) : *Logger
-        + WithFromLevel(fromLevel : level.Level) : Option
-        + WithToLevel(toLevel : level.Level) : Option
-        + WithTemplate(template : string) : Option
-        + WithFile(file : string) : Option
-        + WithName(name : string) : Option
-        + NewConfiguration(options : ...Option) : *Configuration
-        + Configure(configuration : *Configuration)
-        + Name() : string
-        + Template() : string
-        + FromLevel() : level.Level
-        + ToLevel() : level.Level
-        + Trace(message : string, parameters : ...any)
-        + Debug(message : string, parameters : ...any)
-        + Verbose(message : string, parameters : ...any)
-        + Info(message : string, parameters : ...any)
-        + Notice(message : string, parameters : ...any)
-        + Warning(message : string, parameters : ...any)
-        + Severe(message : string, parameters : ...any)
-        + Error(message : string, parameters : ...any)
-        + Alert(message : string, parameters : ...any)
-        + Critical(message : string, parameters : ...any)
-        + Emergency(message : string, parameters : ...any)
-    }
+    package structuredlogger {
+        package formatter {
+            struct baseFormatter {
+                ~ template : map[string]string
+                + Template() : map[string]string
+                + Format(loggerName : string, logLevel : level.Level, parameters : ...any) : map[string]interface{}
+            }
 
-    Logger *-- baseLoggerInterface
-    "<<module>>" ..> Logger : uses
-    "<<module>>" ..> Option : uses
-    "<<module>>" ..> Configuration : uses
-    Option ..> Configuration : uses
+            interface Interface {
+                + Template() : string
+                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+            }
+
+            struct JSONFormatter implements Interface {
+                ~ baseFormatter : baseInterface
+                ~ pretty : bool
+                + Template() : string
+                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+            }
+
+            struct KeyValueFormatter implements Interface {
+                ~ baseFormatter : baseInterface
+                ~ keyValueDelimiter : string
+                ~ pairSeparator : string
+                + Template() : string
+                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+            }
+
+            class "<<module>>" {
+                ~ logLevelColors : map[level.Level]string
+                ~ resetColor : string
+                + NewJSON(template : map[string]string, pretty : bool) : *JSONFormatter
+                + NewKeyValue(template : map[string]string, keyValueDelimiter : string, pairSeparator : string) : *KeyValueFormatter
+            }
+
+            JSONFormatter *-- baseFormatter : contains
+            KeyValueFormatter *-- baseFormatter : contains
+            "<<module>>" ..> JSONFormatter : uses
+            "<<module>>" ..> KeyValueFormatter : uses
+        }
+        package handler {
+            interface Interface {
+                + Writer() : io.Writer
+                + FromLevel() level.Level
+                + SetFromLevel(fromLevel level.Level)
+                + ToLevel() level.Level
+                + SetToLevel(toLevel level.Level)
+                + Formatter() : formatter.Interface
+                + Write(logName : string, logLevel : level.Level, parameters : ...any)
+            }
+
+            struct Handler implements Interface {
+                ~ *handler.Handler
+                ~ formatter : formatter.Interface
+                + Writer() : io.Writer
+                + FromLevel() : level.Level
+                + SetLevel(level : level.Level)
+                + ToLevel() : level.Level
+                + SetToLevel(level : level.Level)
+                + Formatter() : formatter.Interface
+                + Write(logName : string, logLevel : level.Level, parameters : ...any)
+            }
+
+            class "<<module>>" {
+                ~ osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File, error)
+                ~ osStdout : *File
+                ~ osStderr : *File
+                + New(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, writer : io.Writer) : *Handler
+                + NewConsoleHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+                + NewConsoleErrorHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface) : *Handler
+                + NewFileHandler(fromLevel : level.Level, toLevel : level.Level, newFormatter : formatter.Interface, file : string) : *Handler
+            }
+
+            "<<module>>" ..> Handler : uses
+        }
+        interface baseLoggerInterface {
+            + Log(level : level.Level, parameters : ...any)
+            + Name() : string
+            + SetName(name : string)
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+        }
+        struct baseLogger implements baseLoggerInterface {
+            ~ name : string
+            ~ handlers : []handler.Interface
+            + Log(level : level.Level, parameters : ...any)
+            + Name() : string
+            + SetName(name : string)
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+        }
+        interface Interface {
+            + Name() : string
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+            + Trace(parameters : ...any)
+            + Debug(parameters : ...any)
+            + Verbose(parameters : ...any)
+            + Info(parameters : ...any)
+            + Notice(parameters : ...any)
+            + Warning(parameters : ...any)
+            + Severe(parameters : ...any)
+            + Error(parameters : ...any)
+            + Alert(parameters : ...any)
+            + Critical(parameters : ...any)
+            + Emergency(parameters : ...any)
+        }
+        struct Logger implements Interface {
+            ~ baseLogger : baseLoggerInterface
+            + Name() : string
+            + Handlers() : []handler.Interface
+            + AddHandler(handlerInterface : handler.Interface)
+            + RemoveHandler(handlerInterface : handler.Interface)
+            + Trace(parameters : ...any)
+            + Debug(parameters : ...any)
+            + Verbose(parameters : ...any)
+            + Info(parameters : ...any)
+            + Notice(parameters : ...any)
+            + Warning(parameters : ...any)
+            + Severe(parameters : ...any)
+            + Error(parameters : ...any)
+            + Alert(parameters : ...any)
+            + Critical(parameters : ...any)
+            + Emergency(parameters : ...any)
+        }
+        struct Configuration {
+            ~ fromLevel : level.Level
+            ~ toLevel : level.Level
+            ~ template : map[string]string
+            ~ format : string
+            ~ pretty : bool
+            ~ keyValueDelimiter : string
+            ~ pairSeparator : string
+            ~ file : string
+            ~ name : string
+        }
+        stereotype Option <<func(*Configuration)>> {}
+        class "<<module>>" {
+            ~ rootLogger : *Logger
+            ~ fromLevel : level.Level
+            ~ toLevel : level.Level
+            ~ template : string
+            ~ init()
+            + New(name : string) : *Logger
+            + WithFromLevel(fromLevel : level.Level) : Option
+            + WithToLevel(toLevel : level.Level) : Option
+            + WithTemplate(template : map[string]string) : Option
+            + WithFile(file : string) : Option
+            + WithFormat(format : string) : Option
+            + WithPretty(pretty : bool) : Option
+            + WithKeyValueDelimiter(keyValueDelimiter : string) : Option
+            + WithPairSeparator(pairSeparator : string) : Option
+            + WithName(name : string) : Option
+            + NewConfiguration(options : ...Option) : *Configuration
+            + Configure(configuration : *Configuration)
+            + Name() : string
+            + Template() : string
+            + FromLevel() : level.Level
+            + ToLevel() : level.Level
+            + Trace(message : string, parameters : ...any)
+            + Debug(message : string, parameters : ...any)
+            + Verbose(message : string, parameters : ...any)
+            + Info(message : string, parameters : ...any)
+            + Notice(message : string, parameters : ...any)
+            + Warning(message : string, parameters : ...any)
+            + Severe(message : string, parameters : ...any)
+            + Error(message : string, parameters : ...any)
+            + Alert(message : string, parameters : ...any)
+            + Critical(message : string, parameters : ...any)
+            + Emergency(message : string, parameters : ...any)
+        }
+
+        Logger *-- baseLoggerInterface
+        "<<module>>" ..> Logger : uses
+        "<<module>>" ..> Option : uses
+        "<<module>>" ..> Configuration : uses
+        Option ..> Configuration : uses
+    }
 }
 
-pkg.logger.handler.Handler *-- pkg.logger.level.Level : contains
+pkg.common.handler.Handler *-- pkg.common.level.Level : contains
+pkg.logger.handler.Handler *-- pkg.common.handler.Handler : contains
 pkg.logger.handler.Handler *-- pkg.logger.formatter.Interface : contains
 pkg.logger.baseLogger *-- "0..*" pkg.logger.handler.Interface : contains
+pkg.logger.formatter.Formatter ..> "pkg.common.formatter.<<module>>" : uses
+pkg.structuredlogger.handler.Handler *-- pkg.common.handler.Handler : contains
+pkg.structuredlogger.handler.Handler *-- pkg.structuredlogger.formatter.Interface : contains
+pkg.structuredlogger.baseLogger *-- "0..*" pkg.structuredlogger.handler.Interface : contains
+pkg.structuredlogger.formatter.baseFormatter ..> "pkg.common.formatter.<<module>>" : uses
 
 
 @enduml

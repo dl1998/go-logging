@@ -41,25 +41,63 @@ Logger supports 11 logging levels + 2 (when not set):
 
 Default logger could be used like in the following example:
 
+- Standard logger
+
 ```go
-logging.Warning("Message for logging: %s.", "my message")
+logger.Warning("Message for logging: %s.", "my message")
+```
+
+- Structured logger
+
+```go
+structuredlogger.Warning("message", "My message.")
+```
+
+or
+
+```go
+structuredlogger.Warning(map[string]string{
+	"message": "My message.",
+})
 ```
 
 By default, root logger prints on console only, and starting from Warning level. It could be changed by setting logging 
 level:
 
+- Standard logger
+
 ```go
 logger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
 ```
 
-After changing log level to "None" it will print messages for any level.
+- Structured logger
+
+```go
+structuredlogger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
+```
+
+After changing log level to "All" it will print messages for any level.
+
+You could also change the format of the default structured logger by setting the format (default: json).
+
+```go
+structuredlogger.Configure(logger.NewConfiguration(logger.WithFormat("key-value")))
+```
 
 ### Custom Logger
 
 Alternatively you could create application logger. To do this you would need to create a new logger.
 
+- Standard logger
+
 ```go
 applicationLogger := logger.New("application-logger")
+```
+
+- Structured logger
+
+```go
+applicationStructuredLogger := structuredlogger.New("application-logger")
 ```
 
 After this you need to set up it, for this create a new formatter that says how to log the message by providing a
@@ -67,15 +105,36 @@ template.
 
 #### Formatter
 
+- Standard logger
+
 ```go
 applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
 ```
+
+- Structured logger
+    - JSON format
+    
+    ```go
+    applicationFormatter := formatter.NewJSON(map[string]string{
+        "time":    "%(timestamp)",
+        "level":   "%(level)",
+    }, false)
+    ```
+  
+    - Key-Value format
+    
+    ```go
+    applicationFormatter := formatter.NewKeyValue(map[string]string{
+        "time":    "%(timestamp)",
+        "level":   "%(level)",
+    }, "=", " ")
+    ```
 
 After creation of the formatter, you need to create a new handler that tells where to write log messages.
 
 #### Handler
 
-There are three predefined types of handler:
+There are three predefined types of handler (for standard and structured logger each):
 
 - Console Handler - it takes log level starting from which it would log messages, log level till which it would log
 messages, and formatter that tells how to log message. It logs messages to standard output.
@@ -118,9 +177,26 @@ applicationLogger.AddHandler(newFileHandler)
 Now it could be used to log the message, simply by calling respective level of logging and providing message with
 arguments.
 
+- Standard logger
+
 ```go
 applicationLogger.Info("My message: %s.", "logged using application logger")
 ```
+
+- Structured logger
+    - Varargs
+    
+    ```go
+    applicationLogger.Info("message", "Logged using structured logger with varargs.")
+    ```
+  
+    - Map
+    
+    ```go
+    applicationLogger.Info(map[string]string{
+        "message": "Logged using structured logger with map.",
+    })
+    ```
 
 ## Class Diagram
 

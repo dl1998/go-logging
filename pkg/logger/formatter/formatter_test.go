@@ -4,7 +4,7 @@ package formatter
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
-	"github.com/dl1998/go-logging/pkg/logger/level"
+	"github.com/dl1998/go-logging/pkg/common/level"
 	"testing"
 )
 
@@ -45,27 +45,6 @@ func BenchmarkFormatter_IsEqual(b *testing.B) {
 
 	for index := 0; index < b.N; index++ {
 		newFormatter.IsEqual(newFormatter)
-	}
-}
-
-// TestFormatter_EvaluatePreset tests that Formatter.EvaluatePreset correctly
-// evaluates tags.
-func TestFormatter_EvaluatePreset(t *testing.T) {
-	newFormatter := New(template)
-
-	preset := newFormatter.EvaluatePreset(message, loggerName, loggingLevel)
-
-	testutils.AssertEquals(t, message, preset["%(message)"])
-	testutils.AssertEquals(t, loggerName, preset["%(name)"])
-	testutils.AssertEquals(t, loggingLevel.String(), preset["%(level)"])
-}
-
-// BenchmarkFormatter_EvaluatePreset performs benchmarking of the Formatter.EvaluatePreset().
-func BenchmarkFormatter_EvaluatePreset(b *testing.B) {
-	newFormatter := New(template)
-
-	for index := 0; index < b.N; index++ {
-		newFormatter.EvaluatePreset(message, loggerName, loggingLevel)
 	}
 }
 

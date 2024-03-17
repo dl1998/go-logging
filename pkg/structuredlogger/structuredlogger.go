@@ -1,16 +1,16 @@
-// Package logger contains logger implementation.
-package logger
+// Package structuredlogger contains structured logger implementation.
+package structuredlogger
 
 import (
 	"github.com/dl1998/go-logging/pkg/common/level"
-	"github.com/dl1998/go-logging/pkg/logger/formatter"
-	"github.com/dl1998/go-logging/pkg/logger/handler"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
 )
 
 var rootLogger *Logger
 var fromLevel level.Level
 var toLevel level.Level
-var template string
+var template map[string]string
 
 func init() {
 	Configure(NewConfiguration())
@@ -18,7 +18,7 @@ func init() {
 
 // baseLoggerInterface defines low level logging interface.
 type baseLoggerInterface interface {
-	Log(level level.Level, message string, parameters ...any)
+	Log(level level.Level, parameters ...any)
 	Name() string
 	SetName(name string)
 	Handlers() []handler.Interface
@@ -33,9 +33,21 @@ type baseLogger struct {
 }
 
 // Log logs interpolated message with the provided level.Level.
-func (logger *baseLogger) Log(level level.Level, message string, parameters ...any) {
+func (logger *baseLogger) Log(level level.Level, parameters ...any) {
+	var parametersArray = make([]any, 0)
+	if len(parameters) == 1 {
+		parameter := parameters[0]
+		switch convertedValue := parameter.(type) {
+		case map[string]interface{}:
+			for key, value := range convertedValue {
+				parametersArray = append(parametersArray, key, value)
+			}
+		}
+	} else {
+		parametersArray = parameters
+	}
 	for _, registeredHandler := range logger.handlers {
-		registeredHandler.Write(logger.name, level, message, parameters...)
+		registeredHandler.Write(logger.name, level, parametersArray...)
 	}
 }
 
@@ -127,67 +139,71 @@ func (logger *Logger) RemoveHandler(handlerInterface handler.Interface) {
 }
 
 // Trace logs a new message using Logger with level.Trace level.
-func (logger *Logger) Trace(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Trace, message, parameters...)
+func (logger *Logger) Trace(parameters ...any) {
+	logger.baseLogger.Log(level.Trace, parameters...)
 }
 
 // Debug logs a new message using Logger with level.Debug level.
-func (logger *Logger) Debug(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Debug, message, parameters...)
+func (logger *Logger) Debug(parameters ...any) {
+	logger.baseLogger.Log(level.Debug, parameters...)
 }
 
 // Verbose logs a new message using Logger with level.Verbose level.
-func (logger *Logger) Verbose(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Verbose, message, parameters...)
+func (logger *Logger) Verbose(parameters ...any) {
+	logger.baseLogger.Log(level.Verbose, parameters...)
 }
 
 // Info logs a new message using Logger with level.Info level.
-func (logger *Logger) Info(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Info, message, parameters...)
+func (logger *Logger) Info(parameters ...any) {
+	logger.baseLogger.Log(level.Info, parameters...)
 }
 
 // Notice logs a new message using Logger with level.Notice level.
-func (logger *Logger) Notice(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Notice, message, parameters...)
+func (logger *Logger) Notice(parameters ...any) {
+	logger.baseLogger.Log(level.Notice, parameters...)
 }
 
 // Warning logs a new message using Logger with level.Warning level.
-func (logger *Logger) Warning(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Warning, message, parameters...)
+func (logger *Logger) Warning(parameters ...any) {
+	logger.baseLogger.Log(level.Warning, parameters...)
 }
 
 // Severe logs a new message using Logger with level.Severe level.
-func (logger *Logger) Severe(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Severe, message, parameters...)
+func (logger *Logger) Severe(parameters ...any) {
+	logger.baseLogger.Log(level.Severe, parameters...)
 }
 
 // Error logs a new message using Logger with level.Error level.
-func (logger *Logger) Error(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Error, message, parameters...)
+func (logger *Logger) Error(parameters ...any) {
+	logger.baseLogger.Log(level.Error, parameters...)
 }
 
 // Alert logs a new message using Logger with level.Alert level.
-func (logger *Logger) Alert(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Alert, message, parameters...)
+func (logger *Logger) Alert(parameters ...any) {
+	logger.baseLogger.Log(level.Alert, parameters...)
 }
 
 // Critical logs a new message using Logger with level.Critical level.
-func (logger *Logger) Critical(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Critical, message, parameters...)
+func (logger *Logger) Critical(parameters ...any) {
+	logger.baseLogger.Log(level.Critical, parameters...)
 }
 
 // Emergency logs a new message using Logger with level.Emergency level.
-func (logger *Logger) Emergency(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Emergency, message, parameters...)
+func (logger *Logger) Emergency(parameters ...any) {
+	logger.baseLogger.Log(level.Emergency, parameters...)
 }
 
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
-	fromLevel level.Level
-	toLevel   level.Level
-	template  string
-	file      string
-	name      string
+	fromLevel         level.Level
+	toLevel           level.Level
+	template          map[string]string
+	format            string
+	pretty            bool
+	keyValueDelimiter string
+	pairSeparator     string
+	file              string
+	name              string
 }
 
 // Option represents option for the Configuration.
@@ -208,7 +224,7 @@ func WithToLevel(toLevel level.Level) Option {
 }
 
 // WithTemplate sets template for the Configuration.
-func WithTemplate(template string) Option {
+func WithTemplate(template map[string]string) Option {
 	return func(configuration *Configuration) {
 		configuration.template = template
 	}
@@ -218,6 +234,34 @@ func WithTemplate(template string) Option {
 func WithFile(file string) Option {
 	return func(configuration *Configuration) {
 		configuration.file = file
+	}
+}
+
+// WithFormat sets format for the Configuration.
+func WithFormat(format string) Option {
+	return func(configuration *Configuration) {
+		configuration.format = format
+	}
+}
+
+// WithPretty sets pretty for the Configuration.
+func WithPretty(pretty bool) Option {
+	return func(configuration *Configuration) {
+		configuration.pretty = pretty
+	}
+}
+
+// WithKeyValueDelimiter sets keyValueDelimiter for the Configuration.
+func WithKeyValueDelimiter(keyValueDelimiter string) Option {
+	return func(configuration *Configuration) {
+		configuration.keyValueDelimiter = keyValueDelimiter
+	}
+}
+
+// WithPairSeparator sets pairSeparator for the Configuration.
+func WithPairSeparator(pairSeparator string) Option {
+	return func(configuration *Configuration) {
+		configuration.pairSeparator = pairSeparator
 	}
 }
 
@@ -233,9 +277,17 @@ func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
 		fromLevel: level.Warning,
 		toLevel:   level.Null,
-		template:  "%(level):%(name):%(message)",
-		file:      "",
-		name:      "root",
+		template: map[string]string{
+			"timestamp": "%(timestamp)",
+			"level":     "%(level)",
+			"name":      "%(name)",
+		},
+		format:            "json",
+		pretty:            false,
+		keyValueDelimiter: "=",
+		pairSeparator:     " ",
+		file:              "",
+		name:              "root",
 	}
 
 	for _, option := range options {
@@ -257,7 +309,15 @@ func Configure(configuration *Configuration) {
 
 	newLogger := New(configuration.name)
 
-	defaultFormatter := formatter.New(configuration.template)
+	var defaultFormatter formatter.Interface
+
+	if configuration.format == "json" {
+		defaultFormatter = formatter.NewJSON(configuration.template, configuration.pretty)
+	} else if configuration.format == "key-value" {
+		defaultFormatter = formatter.NewKeyValue(configuration.template, configuration.keyValueDelimiter, configuration.pairSeparator)
+	} else {
+		panic("unsupported format")
+	}
 
 	var createStdoutHandler = configuration.fromLevel.DigitRepresentation() <= level.Severe.DigitRepresentation()
 	var createStderrHandler = configuration.toLevel.DigitRepresentation() >= level.Error.DigitRepresentation()
@@ -295,7 +355,7 @@ func Name() string {
 }
 
 // Template returns template of the rootLogger.
-func Template() string {
+func Template() map[string]string {
 	return template
 }
 
@@ -310,56 +370,56 @@ func ToLevel() level.Level {
 }
 
 // Trace logs a new message using default logger with level.Trace level.
-func Trace(message string, parameters ...any) {
-	rootLogger.Trace(message, parameters...)
+func Trace(parameters ...any) {
+	rootLogger.Trace(parameters...)
 }
 
 // Debug logs a new message using default logger with level.Debug level.
-func Debug(message string, parameters ...any) {
-	rootLogger.Debug(message, parameters...)
+func Debug(parameters ...any) {
+	rootLogger.Debug(parameters...)
 }
 
 // Verbose logs a new message using default logger with level.Verbose level.
-func Verbose(message string, parameters ...any) {
-	rootLogger.Verbose(message, parameters...)
+func Verbose(parameters ...any) {
+	rootLogger.Verbose(parameters...)
 }
 
 // Info logs a new message using default logger with level.Info level.
-func Info(message string, parameters ...any) {
-	rootLogger.Info(message, parameters...)
+func Info(parameters ...any) {
+	rootLogger.Info(parameters...)
 }
 
 // Notice logs a new message using default logger with level.Notice level.
-func Notice(message string, parameters ...any) {
-	rootLogger.Notice(message, parameters...)
+func Notice(parameters ...any) {
+	rootLogger.Notice(parameters...)
 }
 
 // Warning logs a new message using default logger with level.Warning level.
-func Warning(message string, parameters ...any) {
-	rootLogger.Warning(message, parameters...)
+func Warning(parameters ...any) {
+	rootLogger.Warning(parameters...)
 }
 
 // Severe logs a new message using default logger with level.Severe level.
-func Severe(message string, parameters ...any) {
-	rootLogger.Severe(message, parameters...)
+func Severe(parameters ...any) {
+	rootLogger.Severe(parameters...)
 }
 
 // Error logs a new message using default logger with level.Error level.
-func Error(message string, parameters ...any) {
-	rootLogger.Error(message, parameters...)
+func Error(parameters ...any) {
+	rootLogger.Error(parameters...)
 }
 
 // Alert logs a new message using default logger with level.Alert level.
-func Alert(message string, parameters ...any) {
-	rootLogger.Alert(message, parameters...)
+func Alert(parameters ...any) {
+	rootLogger.Alert(parameters...)
 }
 
 // Critical logs a new message using default logger with level.Critical level.
-func Critical(message string, parameters ...any) {
-	rootLogger.Critical(message, parameters...)
+func Critical(parameters ...any) {
+	rootLogger.Critical(parameters...)
 }
 
 // Emergency logs a new message using default logger with level.Emergency level.
-func Emergency(message string, parameters ...any) {
-	rootLogger.Emergency(message, parameters...)
+func Emergency(parameters ...any) {
+	rootLogger.Emergency(parameters...)
 }
