@@ -3,11 +3,10 @@
 package formatter
 
 import (
+	commonformatter "github.com/dl1998/go-logging/pkg/common/formatter"
 	"github.com/dl1998/go-logging/pkg/common/level"
-	"runtime"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // logLevelColors maps level.Level values to ANSI color codes.
@@ -50,25 +49,6 @@ func (formatter *Formatter) IsEqual(anotherFormatter *Formatter) bool {
 	return formatter.template == anotherFormatter.template
 }
 
-// EvaluatePreset evaluates pre-defined set of formatting options and returns map
-// with mapping of the option to interpolated value.
-func (formatter *Formatter) EvaluatePreset(message string, loggerName string, logLevel level.Level) map[string]string {
-	_, functionName, functionLine, _ := runtime.Caller(2)
-	var presets = map[string]string{
-		"%(name)":      loggerName,                                   // Logger name
-		"%(message)":   message,                                      // Logged message
-		"%(time)":      time.Now().Format(time.TimeOnly),             // Current time (format: HH:MM:ss)
-		"%(date)":      time.Now().Format(time.DateOnly),             // Current date (format: yyyy-mm-dd)
-		"%(isotime)":   time.Now().Format(time.RFC3339),              // Current date and time (format: yyyy-mm-ddTHH:MM:ssGMT)
-		"%(timestamp)": strconv.FormatInt(time.Now().Unix(), 10),     // Current timestamp
-		"%(level)":     logLevel.String(),                            // Logging log level name
-		"%(levelnr)":   strconv.Itoa(logLevel.DigitRepresentation()), // Logging log level number
-		"%(fname)":     functionName,                                 // Name of the function from which logger has been called
-		"%(fline)":     strconv.Itoa(functionLine),                   // Line number from which logger has been called
-	}
-	return presets
-}
-
 // Template returns template string used by formatter.
 func (formatter *Formatter) Template() string {
 	return formatter.template
@@ -76,11 +56,23 @@ func (formatter *Formatter) Template() string {
 
 // Format formats provided message template to the interpolated string.
 func (formatter *Formatter) Format(message string, loggerName string, logLevel level.Level, colored bool) string {
-	var presets = formatter.EvaluatePreset(message, loggerName, logLevel)
+	var presets = commonformatter.EvaluatePreset(loggerName, logLevel, 2)
+	var convertedPresets = make(map[string]string, len(presets)+1)
+	for key, value := range presets {
+		switch convertedValue := value.(type) {
+		case string:
+			convertedPresets[key] = convertedValue
+		case int:
+			convertedPresets[key] = strconv.Itoa(convertedValue)
+		case int64:
+			convertedPresets[key] = strconv.FormatInt(convertedValue, 10)
+		}
+	}
+	convertedPresets["%(message)"] = message
 
 	format := formatter.template
 
-	for key, value := range presets {
+	for key, value := range convertedPresets {
 		format = strings.ReplaceAll(format, key, value)
 	}
 

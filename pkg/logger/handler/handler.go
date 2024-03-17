@@ -4,11 +4,11 @@ package handler
 
 import (
 	"fmt"
+	"github.com/dl1998/go-logging/pkg/common/handler"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"io"
 	"os"
-	"strings"
 )
 
 var osOpenFile = os.OpenFile
@@ -29,21 +29,15 @@ type Interface interface {
 // Handler struct contains information where it shall write log message, how to
 // format them and their log fromLevel.
 type Handler struct {
-	fromLevel                 level.Level
-	toLevel                   level.Level
-	formatter                 formatter.Interface
-	writer                    io.Writer
-	consoleSupportsANSIColors func() bool
+	*handler.Handler
+	formatter formatter.Interface
 }
 
 // New create a new instance of the Handler.
 func New(fromLevel level.Level, toLevel level.Level, newFormatter formatter.Interface, writer io.Writer) *Handler {
 	return &Handler{
-		fromLevel:                 fromLevel,
-		toLevel:                   toLevel,
-		formatter:                 newFormatter,
-		writer:                    writer,
-		consoleSupportsANSIColors: consoleSupportsANSIColors,
+		Handler:   handler.New(fromLevel, toLevel, writer),
+		formatter: newFormatter,
 	}
 }
 
@@ -72,39 +66,14 @@ func NewFileHandler(fromLevel level.Level, toLevel level.Level, newFormatter for
 	return New(fromLevel, toLevel, newFormatter, writer)
 }
 
-// Writer returns writer of the Handler.
-func (handler *Handler) Writer() io.Writer {
-	return handler.writer
-}
-
-// FromLevel returns log fromLevel of the Handler.
-func (handler *Handler) FromLevel() level.Level {
-	return handler.fromLevel
-}
-
-// SetFromLevel sets a new log fromLevel for the Handler.
-func (handler *Handler) SetFromLevel(fromLevel level.Level) {
-	handler.fromLevel = fromLevel
-}
-
-// ToLevel returns log toLevel of the Handler.
-func (handler *Handler) ToLevel() level.Level {
-	return handler.toLevel
-}
-
-// SetToLevel sets a new log toLevel for the Handler.
-func (handler *Handler) SetToLevel(toLevel level.Level) {
-	handler.toLevel = toLevel
-}
-
-// Formatter returns formatter.Interface used by the Handler.
+// Formatter returns formatter of the Handler.
 func (handler *Handler) Formatter() formatter.Interface {
 	return handler.formatter
 }
 
 // Write writes log message to the defined by the Handler writer.
 func (handler *Handler) Write(logName string, logLevel level.Level, message string, parameters ...any) {
-	if logLevel.DigitRepresentation() < handler.fromLevel.DigitRepresentation() || logLevel.DigitRepresentation() > handler.toLevel.DigitRepresentation() {
+	if logLevel.DigitRepresentation() < handler.FromLevel().DigitRepresentation() || logLevel.DigitRepresentation() > handler.ToLevel().DigitRepresentation() {
 		return
 	}
 
@@ -112,20 +81,13 @@ func (handler *Handler) Write(logName string, logLevel level.Level, message stri
 
 	var colored = false
 
-	if handler.consoleSupportsANSIColors() && (handler.writer == osStdout || handler.writer == osStderr) {
+	if handler.ConsoleSupportsANSIColors() && (handler.Writer() == osStdout || handler.Writer() == osStderr) {
 		colored = true
 	}
 
 	log := handler.formatter.Format(formattedMessage, logName, logLevel, colored)
 
-	if _, err := handler.writer.Write([]byte(log)); err != nil {
+	if _, err := handler.Writer().Write([]byte(log)); err != nil {
 		fmt.Println(err)
 	}
-}
-
-// consoleSupportsANSIColors returns true, if current terminal supports ANSI
-// colors, otherwise returns False.
-func consoleSupportsANSIColors() bool {
-	term := os.Getenv("TERM")
-	return strings.Contains(term, "xterm") || strings.Contains(term, "color")
 }
