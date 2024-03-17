@@ -131,7 +131,7 @@ func (formatter *KeyValueFormatter) Format(loggerName string, logLevel level.Lev
 
 	var keys = make([]string, 0, len(format))
 
-	for key, _ := range format {
+	for key := range format {
 		keys = append(keys, key)
 	}
 
