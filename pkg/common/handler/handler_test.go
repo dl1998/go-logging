@@ -1,3 +1,4 @@
+// Package handler_test has tests for handler package.
 package handler
 
 import (

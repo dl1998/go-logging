@@ -1,5 +1,5 @@
-// Package handler provides handlers for the logger, it contains logic for the
-// logging messages.
+// Package handler provides common handlers for the logger, it contains logic for
+// the logging messages.
 package handler
 
 import (

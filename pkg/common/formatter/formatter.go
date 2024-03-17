@@ -1,3 +1,4 @@
+// Package formatter provides common formatting methods for the loggers.
 package formatter
 
 import (

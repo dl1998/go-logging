@@ -1,3 +1,4 @@
+// Package formatter provides formatters for the structured logger, it contains logic for the formatting messages.
 package formatter
 
 import (

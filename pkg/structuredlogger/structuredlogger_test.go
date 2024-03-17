@@ -1,3 +1,4 @@
+// Package structuredlogger provides tests for the structuredlogger package.
 package structuredlogger
 
 import (
