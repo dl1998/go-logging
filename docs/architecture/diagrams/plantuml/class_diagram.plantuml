@@ -216,12 +216,7 @@ package pkg {
     }
     package structuredlogger {
         package formatter {
-            interface baseInterface {
-                + Template() : map[string]string
-                + Format(loggerName : string, logLevel : level.Level, parameters : ...any) : map[string]interface{}
-            }
-
-            struct baseFormatter implements baseInterface {
+            struct baseFormatter {
                 ~ template : map[string]string
                 + Template() : map[string]string
                 + Format(loggerName : string, logLevel : level.Level, parameters : ...any) : map[string]interface{}

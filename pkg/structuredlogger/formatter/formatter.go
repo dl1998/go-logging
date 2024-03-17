@@ -28,11 +28,6 @@ var logLevelColors = map[level.Level]string{
 // Reset color
 const resetColor = "\033[0m"
 
-type baseInterface interface {
-	Template() map[string]string
-	Format(loggerName string, logLevel level.Level, parameters ...any) map[string]interface{}
-}
-
 type baseFormatter struct {
 	template map[string]string
 }
