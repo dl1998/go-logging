@@ -13,3 +13,19 @@ func AssertEquals[T any](t *testing.T, expected T, actual T) {
 		t.Fatalf("\nExpected: %v\nActual: %v", expected, actual)
 	}
 }
+
+// AssertNil checks if the value is nil.
+func AssertNil(t *testing.T, value any) {
+	t.Helper()
+	if value != nil {
+		t.Fatalf("\nExpected: nil\nActual: %v", value)
+	}
+}
+
+// AssertNotNil checks if the value is not nil.
+func AssertNotNil(t *testing.T, value any) {
+	t.Helper()
+	if value == nil {
+		t.Fatalf("\nExpected: not nil\nActual: %v", value)
+	}
+}
