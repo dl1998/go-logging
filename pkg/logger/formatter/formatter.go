@@ -5,6 +5,7 @@ package formatter
 import (
 	commonformatter "github.com/dl1998/go-logging/pkg/common/formatter"
 	"github.com/dl1998/go-logging/pkg/common/level"
+	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"strconv"
 	"strings"
 )
@@ -30,7 +31,7 @@ const resetColor = "\033[0m"
 // Interface represents interface that shall be satisfied by Formatter.
 type Interface interface {
 	Template() string
-	Format(message string, loggerName string, logLevel level.Level, colored bool) string
+	Format(record logrecord.Interface, colored bool) string
 }
 
 // Formatter struct that contains necessary for the formatting fields.
@@ -55,30 +56,54 @@ func (formatter *Formatter) Template() string {
 }
 
 // Format formats provided message template to the interpolated string.
-func (formatter *Formatter) Format(message string, loggerName string, logLevel level.Level, colored bool) string {
-	var presets = commonformatter.EvaluatePreset(loggerName, logLevel, 2)
-	var convertedPresets = make(map[string]string, len(presets)+1)
-	for key, value := range presets {
-		switch convertedValue := value.(type) {
-		case string:
-			convertedPresets[key] = convertedValue
-		case int:
-			convertedPresets[key] = strconv.Itoa(convertedValue)
-		case int64:
-			convertedPresets[key] = strconv.FormatInt(convertedValue, 10)
-		}
-	}
-	convertedPresets["%(message)"] = message
-
-	format := formatter.template
-
-	for key, value := range convertedPresets {
-		format = strings.ReplaceAll(format, key, value)
-	}
+func (formatter *Formatter) Format(record logrecord.Interface, colored bool) string {
+	format := ParseTemplate(formatter.template, record)
 
 	if colored {
-		format = logLevelColors[logLevel] + format + resetColor
+		format = logLevelColors[record.Level()] + format + resetColor
 	}
 
 	return format + "\n"
+}
+
+// ParseTemplate parses template string and replaces keys with values from the log record.
+func ParseTemplate(format string, record logrecord.Interface) string {
+	format = ReplaceKey(format, "%(name)", record)
+	format = ReplaceKey(format, "%(level)", record)
+	format = ReplaceKey(format, "%(levelnr)", record)
+	format = ReplaceKey(format, "%(datetime)", record)
+	format = ReplaceKey(format, "%(timestamp)", record)
+	format = ReplaceKey(format, "%(fname)", record)
+	format = ReplaceKey(format, "%(fline)", record)
+	format = ReplaceKey(format, "%(message)", record)
+	return format
+}
+
+// ReplaceKey replaces key with value from the log record.
+func ReplaceKey(format string, key string, record logrecord.Interface) string {
+	if strings.Contains(format, key) {
+		value := ParseKey(key, record)
+		return strings.ReplaceAll(format, key, value)
+	}
+	return format
+}
+
+// ParseKey parses the key and returns the value.
+func ParseKey(key string, record logrecord.Interface) string {
+	switch key {
+	case "%(message)":
+		return record.Message()
+	default:
+		value := commonformatter.ParseKey(key, record)
+		switch convertedValue := value.(type) {
+		case int64:
+			return strconv.FormatInt(convertedValue, 10)
+		case int:
+			return strconv.Itoa(convertedValue)
+		case string:
+			return convertedValue
+		default:
+			return value.(string)
+		}
+	}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/common/handler"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
+	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"io"
 	"os"
 )
@@ -23,7 +24,7 @@ type Interface interface {
 	ToLevel() level.Level
 	SetToLevel(toLevel level.Level)
 	Formatter() formatter.Interface
-	Write(logName string, logLevel level.Level, message string, parameters ...any)
+	Write(record logrecord.Interface)
 }
 
 // Handler struct contains information where it shall write log message, how to
@@ -72,12 +73,10 @@ func (handler *Handler) Formatter() formatter.Interface {
 }
 
 // Write writes log message to the defined by the Handler writer.
-func (handler *Handler) Write(logName string, logLevel level.Level, message string, parameters ...any) {
-	if logLevel.DigitRepresentation() < handler.FromLevel().DigitRepresentation() || logLevel.DigitRepresentation() > handler.ToLevel().DigitRepresentation() {
+func (handler *Handler) Write(record logrecord.Interface) {
+	if record.Level().DigitRepresentation() < handler.FromLevel().DigitRepresentation() || record.Level().DigitRepresentation() > handler.ToLevel().DigitRepresentation() {
 		return
 	}
-
-	formattedMessage := fmt.Sprintf(message, parameters...)
 
 	var colored = false
 
@@ -85,7 +84,7 @@ func (handler *Handler) Write(logName string, logLevel level.Level, message stri
 		colored = true
 	}
 
-	log := handler.formatter.Format(formattedMessage, logName, logLevel, colored)
+	log := handler.formatter.Format(record, colored)
 
 	if _, err := handler.Writer().Write([]byte(log)); err != nil {
 		fmt.Println(err)

@@ -3,8 +3,9 @@ package formatter
 
 import (
 	"encoding/json"
-	commonformatter "github.com/dl1998/go-logging/pkg/common/formatter"
+	commonFormatter "github.com/dl1998/go-logging/pkg/common/formatter"
 	"github.com/dl1998/go-logging/pkg/common/level"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
 	"sort"
 	"strconv"
 	"strings"
@@ -28,50 +29,49 @@ var logLevelColors = map[level.Level]string{
 // Reset color
 const resetColor = "\033[0m"
 
+// baseFormatter struct that contains necessary for the formatting fields.
 type baseFormatter struct {
+	// template contains key-value pairs with template for the formatter.
 	template map[string]string
 }
 
+// Template returns template string used by formatter.
 func (formatter *baseFormatter) Template() map[string]string {
 	return formatter.template
 }
 
-func (formatter *baseFormatter) Format(loggerName string, logLevel level.Level, parameters ...any) map[string]interface{} {
-	var presets = commonformatter.EvaluatePreset(loggerName, logLevel, 3)
-
+// Format formats provided message template to the interpolated string.
+func (formatter *baseFormatter) Format(record logrecord.Interface) map[string]interface{} {
 	format := make(map[string]interface{})
 
 	for key, value := range formatter.template {
-		if presetValue, ok := presets[value]; ok {
-			format[key] = presetValue
-		} else {
-			format[key] = value
-		}
+		format[key] = commonFormatter.ParseKey(value, record)
 	}
 
-	var key string
-
-	for index := 0; index < len(parameters); index++ {
-		if index%2 == 0 {
-			key = parameters[index].(string)
+	for key, value := range record.Parameters() {
+		if stringValue, ok := value.(string); ok {
+			format[key] = commonFormatter.ParseKey(stringValue, record)
 		} else {
-			format[key] = parameters[index]
+			format[key] = value
 		}
 	}
 
 	return format
 }
 
+// Interface represents interface that shall be satisfied by Formatter.
 type Interface interface {
 	Template() map[string]string
-	Format(loggerName string, logLevel level.Level, colored bool, parameters ...any) string
+	Format(record logrecord.Interface, colored bool) string
 }
 
+// JSONFormatter struct that contains necessary for the formatting fields.
 type JSONFormatter struct {
 	*baseFormatter
 	pretty bool
 }
 
+// NewJSON create a new instance of the JSONFormatter.
 func NewJSON(template map[string]string, pretty bool) *JSONFormatter {
 	return &JSONFormatter{
 		baseFormatter: &baseFormatter{
@@ -81,8 +81,9 @@ func NewJSON(template map[string]string, pretty bool) *JSONFormatter {
 	}
 }
 
-func (formatter *JSONFormatter) Format(loggerName string, logLevel level.Level, colored bool, parameters ...any) string {
-	var format = formatter.baseFormatter.Format(loggerName, logLevel, parameters...)
+// Format formats provided message template to the interpolated string.
+func (formatter *JSONFormatter) Format(record logrecord.Interface, colored bool) string {
+	var format = formatter.baseFormatter.Format(record)
 
 	var data []byte
 	var err error
@@ -100,20 +101,25 @@ func (formatter *JSONFormatter) Format(loggerName string, logLevel level.Level, 
 	formattedString := string(data)
 
 	if colored && !formatter.pretty {
-		formattedString = logLevelColors[logLevel] + formattedString + resetColor
+		formattedString = logLevelColors[record.Level()] + formattedString + resetColor
 	} else if colored && formatter.pretty {
-		formattedString = logLevelColors[logLevel] + strings.ReplaceAll(formattedString, "\n", resetColor+"\n"+logLevelColors[logLevel]) + resetColor
+		formattedString = logLevelColors[record.Level()] + strings.ReplaceAll(formattedString, "\n", resetColor+"\n"+logLevelColors[record.Level()]) + resetColor
 	}
 
 	return formattedString + "\n"
 }
 
+// KeyValueFormatter struct that contains necessary for the formatting fields.
 type KeyValueFormatter struct {
+	// baseFormatter is a base formatter.
 	*baseFormatter
+	// keyValueDelimiter is a delimiter between key and value.
 	keyValueDelimiter string
-	pairSeparator     string
+	// pairSeparator is a separator between key-value pairs.
+	pairSeparator string
 }
 
+// NewKeyValue create a new instance of the KeyValueFormatter.
 func NewKeyValue(template map[string]string, keyValueDelimiter string, pairSeparator string) *KeyValueFormatter {
 	return &KeyValueFormatter{
 		baseFormatter: &baseFormatter{
@@ -124,8 +130,9 @@ func NewKeyValue(template map[string]string, keyValueDelimiter string, pairSepar
 	}
 }
 
-func (formatter *KeyValueFormatter) Format(loggerName string, logLevel level.Level, colored bool, parameters ...any) string {
-	var format = formatter.baseFormatter.Format(loggerName, logLevel, parameters...)
+// Format formats provided message template to the interpolated string.
+func (formatter *KeyValueFormatter) Format(record logrecord.Interface, colored bool) string {
+	var format = formatter.baseFormatter.Format(record)
 
 	var result strings.Builder
 
@@ -163,7 +170,10 @@ func (formatter *KeyValueFormatter) Format(loggerName string, logLevel level.Lev
 	formattedString := strings.TrimSuffix(result.String(), formatter.pairSeparator)
 
 	if colored {
-		formattedString = logLevelColors[logLevel] + formattedString + resetColor
+		formattedString = logLevelColors[record.Level()] + formattedString + resetColor
+		if formatter.pairSeparator == "\n" {
+			formattedString = strings.ReplaceAll(formattedString, "\n", resetColor+"\n"+logLevelColors[record.Level()])
+		}
 	}
 
 	return formattedString + "\n"

@@ -21,23 +21,24 @@ const (
 	Null
 )
 
+var mapping = map[Level]string{
+	All:       "all",
+	Trace:     "trace",
+	Debug:     "debug",
+	Verbose:   "verbose",
+	Info:      "info",
+	Notice:    "notice",
+	Warning:   "warning",
+	Severe:    "severe",
+	Error:     "error",
+	Alert:     "alert",
+	Critical:  "critical",
+	Emergency: "emergency",
+	Null:      "null",
+}
+
 // String returns string representation of the Level.
 func (level Level) String() string {
-	mapping := map[Level]string{
-		All:       "all",
-		Trace:     "trace",
-		Debug:     "debug",
-		Verbose:   "verbose",
-		Info:      "info",
-		Notice:    "notice",
-		Warning:   "warning",
-		Severe:    "severe",
-		Error:     "error",
-		Alert:     "alert",
-		Critical:  "critical",
-		Emergency: "emergency",
-		Null:      "null",
-	}
 	return mapping[level]
 }
 

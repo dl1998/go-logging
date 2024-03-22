@@ -5,7 +5,7 @@ package pkg {
     package common {
         package formatter {
             class "<<module>>" {
-                + EvaluatePreset(loggerName : string, logLevel : level.Level, skipCaller : int) : map[string]interface{}
+                + ParseKey(key : string, record : logrecord.Interface) : interface{}
             }
         }
         package handler {
@@ -43,6 +43,7 @@ package pkg {
                 + Previous() : Level
             }
             class "<<module>>" {
+                ~ mapping : map[Level]string
                 + All : level.Level
                 + Trace : level.Level
                 + Debug : level.Level
@@ -59,19 +60,48 @@ package pkg {
             }
             "<<module>>" ..> Level : uses
         }
+        package logrecord {
+            interface Interface {
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+            }
+            struct LogRecord implements Interface {
+                ~ name : string
+                ~ timeFormat : string
+                ~ timestamp : time.Time
+                ~ level : level.Level
+                ~ fileName : string
+                ~ fileLine : int
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+            }
+            class "<<module>>" {
+                + New(name : string, level : level.Level, timeFormat : string, skipCaller : int) : *LogRecord
+            }
+
+            "<<module>>" ..> LogRecord : uses
+        }
     }
     package logger {
         package formatter {
             interface Interface {
                 + Template() : string
-                + Format(message : string, loggerName : string, logLevel : level.Level, colored : bool) : string
+                + Format(record : logrecord.Interface, colored : bool) : string
             }
 
             struct Formatter implements Interface {
                 ~ template : string
                 + IsEqual(anotherFormatter : *Formatter) : bool
                 + Template() : string
-                + Format(message : string, loggerName : string, logLevel : level.Level, colored : bool) : string
+                + Format(record : logrecord.Interface, colored : bool) : string
             }
 
             class "<<module>>" {
@@ -90,7 +120,7 @@ package pkg {
                 + ToLevel() level.Level
                 + SetToLevel(toLevel level.Level)
                 + Formatter() : formatter.Interface
-                + Write(logName : string, logLevel : level.Level, message : string, parameters : ...any)
+                + Write(record : logrecord.Interface)
             }
             struct Handler implements Interface {
                 ~ *handler.Handler
@@ -101,7 +131,7 @@ package pkg {
                 + ToLevel() : level.Level
                 + SetToLevel(level : level.Level)
                 + Formatter() : formatter.Interface
-                + Write(logName : string, logLevel : level.Level, message : string, parameters : ...any)
+                + Write(record : logrecord.Interface)
             }
             class "<<module>>" {
                 ~ osOpenFile : os.OpenFile(name : string, flag : int, perm : FileMode) : (*File, error)
@@ -115,6 +145,33 @@ package pkg {
             }
 
             "<<module>>" ..> Handler : uses
+        }
+        package logrecord {
+            interface Interface {
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+                + Message() : string
+            }
+            struct LogRecord implements Interface {
+                ~ *logrecord.LogRecord
+                ~ message : string
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+                + Message() : string
+            }
+            class "<<module>>" {
+                + New(name : string, level : level.Level, timeFormat : string, message : string, parameters : []any, skipCaller : int) : *LogRecord
+            }
+
+            "<<module>>" ..> LogRecord : uses
         }
         interface baseLoggerInterface {
             + Log(level : level.Level, message : string, parameters : ...any)
@@ -219,19 +276,19 @@ package pkg {
             struct baseFormatter {
                 ~ template : map[string]string
                 + Template() : map[string]string
-                + Format(loggerName : string, logLevel : level.Level, parameters : ...any) : map[string]interface{}
+                + Format(record : logrecord.Interface) : map[string]interface{}
             }
 
             interface Interface {
                 + Template() : string
-                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+                + Format(record : logrecord.Interface, colored : bool) : string
             }
 
             struct JSONFormatter implements Interface {
                 ~ baseFormatter : baseInterface
                 ~ pretty : bool
                 + Template() : string
-                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+                + Format(record : logrecord.Interface, colored : bool) : string
             }
 
             struct KeyValueFormatter implements Interface {
@@ -239,7 +296,7 @@ package pkg {
                 ~ keyValueDelimiter : string
                 ~ pairSeparator : string
                 + Template() : string
-                + Format(loggerName : string, logLevel : level.Level, colored : bool, parameters : ...any) : string
+                + Format(record : logrecord.Interface, colored : bool) : string
             }
 
             class "<<module>>" {
@@ -262,7 +319,7 @@ package pkg {
                 + ToLevel() level.Level
                 + SetToLevel(toLevel level.Level)
                 + Formatter() : formatter.Interface
-                + Write(logName : string, logLevel : level.Level, parameters : ...any)
+                + Write(record : logrecord.Interface)
             }
 
             struct Handler implements Interface {
@@ -274,7 +331,7 @@ package pkg {
                 + ToLevel() : level.Level
                 + SetToLevel(level : level.Level)
                 + Formatter() : formatter.Interface
-                + Write(logName : string, logLevel : level.Level, parameters : ...any)
+                + Write(record : logrecord.Interface)
             }
 
             class "<<module>>" {
@@ -288,6 +345,33 @@ package pkg {
             }
 
             "<<module>>" ..> Handler : uses
+        }
+        package logrecord {
+            interface Interface {
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+                + Parameters() : map[string]interface{}
+            }
+            struct LogRecord implements Interface {
+                ~ *logrecord.LogRecord
+                ~ parameters : map[string]interface{}
+                + Name() : string
+                + Time() : string
+                + Timestamp() : int64
+                + Level() : level.Level
+                + FileName() : string
+                + FileLine() : int
+                + Parameters() : map[string]interface{}
+            }
+            class "<<module>>" {
+                + New(name : string, level : level.Level, timeFormat : string, parameters : map[string]interface{}, skipCaller : int) : *LogRecord
+            }
+
+            "<<module>>" ..> LogRecord : uses
         }
         interface baseLoggerInterface {
             + Log(level : level.Level, parameters : ...any)
@@ -358,7 +442,7 @@ package pkg {
             ~ rootLogger : *Logger
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
-            ~ template : string
+            ~ template : map[string]string
             ~ init()
             + New(name : string) : *Logger
             + WithFromLevel(fromLevel : level.Level) : Option
@@ -397,6 +481,7 @@ package pkg {
     }
 }
 
+"pkg.common.formatter.<<module>>" ..> "pkg.common.logrecord.Interface" : uses
 pkg.common.handler.Handler *-- pkg.common.level.Level : contains
 pkg.logger.handler.Handler *-- pkg.common.handler.Handler : contains
 pkg.logger.handler.Handler *-- pkg.logger.formatter.Interface : contains
@@ -406,6 +491,10 @@ pkg.structuredlogger.handler.Handler *-- pkg.common.handler.Handler : contains
 pkg.structuredlogger.handler.Handler *-- pkg.structuredlogger.formatter.Interface : contains
 pkg.structuredlogger.baseLogger *-- "0..*" pkg.structuredlogger.handler.Interface : contains
 pkg.structuredlogger.formatter.baseFormatter ..> "pkg.common.formatter.<<module>>" : uses
+pkg.logger.logrecord.LogRecord *-- "pkg.common.logrecord.LogRecord" : contains
+pkg.structuredlogger.logrecord.LogRecord *-- "pkg.common.logrecord.LogRecord" : contains
+pkg.logger.handler.Handler ..> pkg.logger.logrecord.Interface : uses
+pkg.structuredlogger.handler.Handler ..> pkg.structuredlogger.logrecord.Interface : uses
 
 
 @enduml
