@@ -6,6 +6,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
 	"io"
 	"testing"
 )
@@ -15,10 +16,8 @@ var (
 	parameters = []any{
 		"message", "test",
 	}
-	parametersWithMap = []any{
-		map[string]interface{}{
-			"message": "test",
-		},
+	parametersWithMap = map[string]interface{}{
+		"message": "test",
 	}
 	pretty = false
 )
@@ -158,11 +157,10 @@ func (mock *MockHandler) Formatter() formatter.Interface {
 }
 
 // Write mocks Write from Handler.
-func (mock *MockHandler) Write(logName string, logLevel level.Level, parameters ...any) {
+func (mock *MockHandler) Write(logRecord *logrecord.LogRecord) {
 	mock.CalledName = "Write"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), logName, logLevel)
-	mock.Parameters = append(mock.Parameters, parameters...)
+	mock.Parameters = append(make([]any, 0), logRecord)
 	mock.Return = nil
 }
 
@@ -181,15 +179,19 @@ func TestBaseLogger_Log(t *testing.T) {
 
 	tests := map[string]struct {
 		parameters         []any
-		expectedParameters []any
+		expectedParameters map[string]interface{}
 	}{
 		"Varargs": {
 			parameters:         parameters,
-			expectedParameters: parameters,
+			expectedParameters: parametersWithMap,
+		},
+		"Varargs with odd number of parameters": {
+			parameters:         []any{"message", "test", "message2"},
+			expectedParameters: parametersWithMap,
 		},
 		"Map": {
-			parameters:         parametersWithMap,
-			expectedParameters: parameters,
+			parameters:         []any{parametersWithMap},
+			expectedParameters: parametersWithMap,
 		},
 	}
 
@@ -197,9 +199,11 @@ func TestBaseLogger_Log(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			newBaseLogger.Log(logLevel, test.parameters...)
 
-			testutils.AssertEquals(t, loggerName, newHandler.Parameters[0].(string))
-			testutils.AssertEquals(t, logLevel, newHandler.Parameters[1].(level.Level))
-			testutils.AssertEquals(t, test.expectedParameters, newHandler.Parameters[2:len(newHandler.Parameters)])
+			logRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
+
+			testutils.AssertEquals(t, loggerName, logRecord.Name())
+			testutils.AssertEquals(t, logLevel, logRecord.Level())
+			testutils.AssertEquals(t, test.expectedParameters, logRecord.Parameters())
 		})
 	}
 }
@@ -222,7 +226,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 			parameters: parameters,
 		},
 		"Map": {
-			parameters: parametersWithMap,
+			parameters: []any{parametersWithMap},
 		},
 	}
 

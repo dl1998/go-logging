@@ -7,17 +7,22 @@ import (
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
+	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"io"
 	"os"
 	"testing"
 )
 
 const (
-	template  = "%(level):%(name):%(message)"
-	testFile  = "/tmp/test_file.log"
-	fromLevel = level.Warning
-	toLevel   = level.Null
+	template   = "%(level):%(name):%(message)"
+	testFile   = "/tmp/test_file.log"
+	fromLevel  = level.Warning
+	toLevel    = level.Null
+	loggerName = "test"
+	message    = "Test message."
 )
+
+var emptyParameters = make([]any, 0)
 
 // TestNew tests that New creates a new Handler instance.
 func TestNew(t *testing.T) {
@@ -165,7 +170,7 @@ func BenchmarkHandler_Formatter(b *testing.B) {
 	}
 }
 
-// setupHandler is a helper function to setup a new handler for testing purposes.
+// setupHandler is a helper function to set up a new handler for testing purposes.
 func setupHandler(fromLevel, toLevel level.Level, supportsANSI bool, formatterTemplate string) *Handler {
 	newFormatter := formatter.New(formatterTemplate)
 	newHandler := NewConsoleHandler(fromLevel, toLevel, newFormatter)
@@ -178,9 +183,7 @@ func setupHandler(fromLevel, toLevel level.Level, supportsANSI bool, formatterTe
 // TestHandler_Write tests that Handler.Write() writes formatted log to the
 // correct writer.
 func TestHandler_Write(t *testing.T) {
-	logName := "test"
 	logLevel := level.Debug
-	message := "Test message."
 
 	originalStdout := osStdout
 
@@ -192,7 +195,9 @@ func TestHandler_Write(t *testing.T) {
 
 	var bufferStdout bytes.Buffer
 
-	handler.Write(logName, logLevel, message)
+	record := logrecord.New(loggerName, logLevel, "", message, emptyParameters, 1)
+
+	handler.Write(record)
 
 	_ = writerStdout.Close()
 
@@ -205,9 +210,7 @@ func TestHandler_Write(t *testing.T) {
 
 // TestHandler_WriteError tests that Handler.Write() returns error if writer fails.
 func TestHandler_WriteError(t *testing.T) {
-	logName := "test"
 	logLevel := level.Debug
-	message := "Test message."
 
 	originalStdout := osStdout
 
@@ -219,7 +222,9 @@ func TestHandler_WriteError(t *testing.T) {
 
 	var bufferStdout bytes.Buffer
 
-	handler.Write(logName, logLevel, message)
+	record := logrecord.New(loggerName, logLevel, "", message, emptyParameters, 1)
+
+	handler.Write(record)
 
 	_ = writerStdout.Close()
 
@@ -232,9 +237,7 @@ func TestHandler_WriteError(t *testing.T) {
 
 // BenchmarkHandler_Write performs benchmarking of the Handler.Write().
 func BenchmarkHandler_Write(b *testing.B) {
-	logName := "test"
 	logLevel := level.Warning
-	message := "Test message."
 
 	newFormatter := formatter.New(template)
 
@@ -242,7 +245,11 @@ func BenchmarkHandler_Write(b *testing.B) {
 
 	newHandler.Handler.SetWriter(io.Discard)
 
+	record := logrecord.New(loggerName, logLevel, "", message, emptyParameters, 1)
+
+	b.ResetTimer()
+
 	for index := 0; index < b.N; index++ {
-		newHandler.Write(logName, logLevel, message)
+		newHandler.Write(record)
 	}
 }

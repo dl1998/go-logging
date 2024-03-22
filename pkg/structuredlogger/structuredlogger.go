@@ -5,6 +5,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
 )
 
 var rootLogger *Logger
@@ -33,21 +34,25 @@ type baseLogger struct {
 }
 
 // Log logs interpolated message with the provided level.Level.
-func (logger *baseLogger) Log(level level.Level, parameters ...any) {
-	var parametersArray = make([]any, 0)
-	if len(parameters) == 1 {
-		parameter := parameters[0]
-		switch convertedValue := parameter.(type) {
-		case map[string]interface{}:
-			for key, value := range convertedValue {
-				parametersArray = append(parametersArray, key, value)
-			}
+func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
+	var parametersMap = make(map[string]interface{})
+	parametersCount := len(parameters)
+
+	if parametersCount == 1 {
+		parametersMap = parameters[0].(map[string]interface{})
+	} else if parametersCount > 1 {
+		if parametersCount%2 != 0 {
+			parametersCount--
 		}
-	} else {
-		parametersArray = parameters
+		for index := 0; index < parametersCount; index += 2 {
+			parametersMap[parameters[index].(string)] = parameters[index+1]
+		}
 	}
+
+	logRecord := logrecord.New(logger.name, logLevel, "", parametersMap, 3)
+
 	for _, registeredHandler := range logger.handlers {
-		registeredHandler.Write(logger.name, level, parametersArray...)
+		registeredHandler.Write(logRecord)
 	}
 }
 

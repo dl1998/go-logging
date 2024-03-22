@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
 	"math"
 	"testing"
 )
@@ -76,10 +77,11 @@ func TestJSONFormatter_Format(t *testing.T) {
 	}
 
 	for testName, parameters := range tests {
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
 		t.Run(testName, func(t *testing.T) {
 			newFormatter := NewJSON(parameters.template, parameters.pretty)
 
-			testutils.AssertEquals(t, parameters.expected, newFormatter.Format(loggerName, loggingLevel, parameters.colored, "message", message))
+			testutils.AssertEquals(t, parameters.expected, newFormatter.Format(record, parameters.colored))
 		})
 	}
 }
@@ -88,7 +90,9 @@ func TestJSONFormatter_Format(t *testing.T) {
 func TestJSONFormatter_FormatError(t *testing.T) {
 	newFormatter := NewJSON(template, pretty)
 
-	testutils.AssertEquals(t, "", newFormatter.Format(loggerName, loggingLevel, false, "key", math.Inf(1)))
+	record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"key": math.Inf(1)}, 0)
+
+	testutils.AssertEquals(t, "", newFormatter.Format(record, false))
 }
 
 // BenchmarkJSONFormatter_Format performs benchmarking of the JSONFormatter.Format().
@@ -121,11 +125,14 @@ func BenchmarkJSONFormatter_Format(b *testing.B) {
 	}
 
 	for testName, parameters := range benchmarks {
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
 		b.Run(testName, func(b *testing.B) {
+			b.ResetTimer()
+
 			newFormatter := NewJSON(parameters.template, parameters.pretty)
 
 			for index := 0; index < b.N; index++ {
-				newFormatter.Format(loggerName, loggingLevel, parameters.colored, "message", message)
+				newFormatter.Format(record, parameters.colored)
 			}
 		})
 	}
@@ -190,13 +197,21 @@ func TestKeyValueFormatter_Format(t *testing.T) {
 			colored:   true,
 			expected:  fmt.Sprintf("%sbool=%t%sfloat32=%g%sfloat64=%g%sint=%d%sint64=%d%slevel=%q%smessage=%q%sname=%q%sstatic=%q%s\n", color, boolValue, pairSeparator, float32Value, pairSeparator, float64Value, pairSeparator, intValue, pairSeparator, int64Value, pairSeparator, loggingLevel.String(), pairSeparator, message, pairSeparator, loggerName, pairSeparator, static, resetColor),
 		},
+		"Key Value Colored New Line Pair Separator": {
+			template:  template,
+			delimiter: keyValueDelimiter,
+			separator: "\n",
+			colored:   true,
+			expected:  fmt.Sprintf("%sbool=%t%s\n%sfloat32=%g%s\n%sfloat64=%g%s\n%sint=%d%s\n%sint64=%d%s\n%slevel=%q%s\n%smessage=%q%s\n%sname=%q%s\n%sstatic=%q%s\n", color, boolValue, resetColor, color, float32Value, resetColor, color, float64Value, resetColor, color, intValue, resetColor, color, int64Value, resetColor, color, loggingLevel.String(), resetColor, color, message, resetColor, color, loggerName, resetColor, color, static, resetColor),
+		},
 	}
 
 	for testName, parameters := range tests {
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message, "bool": boolValue, "int": intValue, "int64": int64Value, "float64": float64Value, "float32": float32Value}, 0)
 		t.Run(testName, func(t *testing.T) {
 			newFormatter := NewKeyValue(parameters.template, parameters.delimiter, parameters.separator)
 
-			testutils.AssertEquals(t, parameters.expected, newFormatter.Format(loggerName, loggingLevel, parameters.colored, "message", message, "bool", boolValue, "int", intValue, "int64", int64Value, "float64", float64Value, "float32", float32Value))
+			testutils.AssertEquals(t, parameters.expected, newFormatter.Format(record, parameters.colored))
 		})
 	}
 }
@@ -221,14 +236,23 @@ func BenchmarkKeyValueFormatter_Format(b *testing.B) {
 			separator: pairSeparator,
 			colored:   true,
 		},
+		"Key Value Colored New Line Pair Separator": {
+			template:  template,
+			delimiter: keyValueDelimiter,
+			separator: "\n",
+			colored:   true,
+		},
 	}
 
 	for testName, parameters := range benchmarks {
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
 		b.Run(testName, func(b *testing.B) {
+			b.ResetTimer()
+
 			newFormatter := NewKeyValue(parameters.template, parameters.delimiter, parameters.separator)
 
 			for index := 0; index < b.N; index++ {
-				newFormatter.Format(loggerName, loggingLevel, parameters.colored, "message", message)
+				newFormatter.Format(record, parameters.colored)
 			}
 		})
 	}

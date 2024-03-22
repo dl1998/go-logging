@@ -5,6 +5,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
+	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 )
 
 var rootLogger *Logger
@@ -34,8 +35,9 @@ type baseLogger struct {
 
 // Log logs interpolated message with the provided level.Level.
 func (logger *baseLogger) Log(level level.Level, message string, parameters ...any) {
+	record := logrecord.New(logger.name, level, template, message, parameters, 3)
 	for _, registeredHandler := range logger.handlers {
-		registeredHandler.Write(logger.name, level, message, parameters...)
+		registeredHandler.Write(record)
 	}
 }
 

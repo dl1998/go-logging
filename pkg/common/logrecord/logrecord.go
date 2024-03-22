@@ -7,6 +7,15 @@ import (
 	"time"
 )
 
+type Interface interface {
+	Name() string
+	Time() string
+	Timestamp() int64
+	Level() level.Level
+	FileName() string
+	FileLine() int
+}
+
 // LogRecord struct represents a log record.
 type LogRecord struct {
 	// Name of the logger.

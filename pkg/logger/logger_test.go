@@ -2,10 +2,12 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
+	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"io"
 	"testing"
 )
@@ -149,11 +151,10 @@ func (mock *MockHandler) Formatter() formatter.Interface {
 }
 
 // Write mocks Write from Handler.
-func (mock *MockHandler) Write(logName string, level level.Level, message string, parameters ...any) {
+func (mock *MockHandler) Write(logRecord *logrecord.LogRecord) {
 	mock.CalledName = "Write"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), logName, level, message)
-	mock.Parameters = append(mock.Parameters, parameters...)
+	mock.Parameters = append(make([]any, 0), logRecord)
 	mock.Return = nil
 }
 
@@ -172,10 +173,11 @@ func TestBaseLogger_Log(t *testing.T) {
 
 	newBaseLogger.Log(logLevel, message, parameters...)
 
-	testutils.AssertEquals(t, loggerName, newHandler.Parameters[0].(string))
-	testutils.AssertEquals(t, logLevel, newHandler.Parameters[1].(level.Level))
-	testutils.AssertEquals(t, message, newHandler.Parameters[2].(string))
-	testutils.AssertEquals(t, parameters, newHandler.Parameters[3:len(newHandler.Parameters)])
+	handlerRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
+
+	testutils.AssertEquals(t, loggerName, handlerRecord.Name())
+	testutils.AssertEquals(t, logLevel, handlerRecord.Level())
+	testutils.AssertEquals(t, fmt.Sprintf(message, parameters...), handlerRecord.Message())
 }
 
 // BenchmarkBaseLogger_Log perform benchmarking of the baseLogger.Log().
