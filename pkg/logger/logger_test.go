@@ -151,10 +151,10 @@ func (mock *MockHandler) Formatter() formatter.Interface {
 }
 
 // Write mocks Write from Handler.
-func (mock *MockHandler) Write(logRecord *logrecord.LogRecord) {
+func (mock *MockHandler) Write(record logrecord.Interface) {
 	mock.CalledName = "Write"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), logRecord)
+	mock.Parameters = append(make([]any, 0), record)
 	mock.Return = nil
 }
 
