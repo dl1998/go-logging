@@ -53,11 +53,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          path: 'main'
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          path: 'pr'
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.22'
 
-      - name: Run benchmarks
-        run: go test -bench=. ./...
+      - name: Run benchmarks (main)
+        run: cd main && go test -bench=. ./... | tee benchmark_main.txt
+
+      - name: Run benchmarks (PR)
+        run: cd pr && go test -bench=. ./... | tee benchmark_pr.txt
+
+      - name: Compare benchmark result
+        uses: openpgpjs/github-action-pull-request-benchmark@v1
+        with:
+          name: 'Time benchmark'
+          # What benchmark tool the benchmarks.txt files came from
+          tool: 'go'
+          # Where the two output files from the benchmark tool are stored
+          pr-benchmark-file-path: pr/benchmark_pr.txt
+          base-benchmark-file-path: main/benchmark_main.txt
+          # A comment will be left on the latest PR commit if `alert-threshold` is exceeded
+          comment-on-alert: true
+          alert-threshold: '130%'
+          # Workflow will fail if `fail-threshold` is exceeded
+          fail-on-alert: true
+          fail-threshold: '150%'
+          # A token is needed to leave commit comments
+          github-token: ${{ secrets.GITHUB_TOKEN }}
