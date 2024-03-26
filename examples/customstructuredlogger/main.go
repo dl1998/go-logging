@@ -6,6 +6,7 @@ import (
 	logger "github.com/dl1998/go-logging/pkg/structuredlogger"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"time"
 )
 
 func main() {
@@ -14,7 +15,7 @@ func main() {
 		"level":     "%(level)",
 	}
 
-	applicationLogger := logger.New("example")
+	applicationLogger := logger.New("example", time.RFC3339)
 
 	applicationLogger.Debug("message", "This message will not be displayed, because there are no handlers registered.")
 
