@@ -8,6 +8,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
 	"os"
+	"time"
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 		}
 	}
 
-	applicationLogger := logger.New("file-logger")
+	applicationLogger := logger.New("file-logger", time.RFC3339)
 
 	applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
 	fileHandler := handler.NewFileHandler(level.Warning, level.Null, applicationFormatter, fmt.Sprintf("%s/file.log", directory))

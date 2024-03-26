@@ -6,10 +6,11 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
+	"time"
 )
 
 func main() {
-	applicationLogger := logger.New("example")
+	applicationLogger := logger.New("example", time.RFC3339)
 
 	applicationLogger.Debug("This message will not be displayed, because there are no handlers registered.")
 

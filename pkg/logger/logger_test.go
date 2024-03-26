@@ -10,6 +10,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"io"
 	"testing"
+	"time"
 )
 
 var (
@@ -19,6 +20,7 @@ var (
 	parameters     = []any{
 		"test",
 	}
+	timeFormat = time.RFC3339
 )
 
 // MockLogger is used to mock baseLogger.
@@ -346,7 +348,7 @@ func BenchmarkBaseLogger_RemoveHandler(b *testing.B) {
 
 // TestNew tests that New creates a new logger.
 func TestNew(t *testing.T) {
-	newLogger := New(loggerName)
+	newLogger := New(loggerName, timeFormat)
 
 	testutils.AssertEquals(t, loggerName, newLogger.Name())
 
@@ -358,7 +360,7 @@ func TestNew(t *testing.T) {
 // BenchmarkNew perform benchmarking of the New().
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		New(loggerName)
+		New(loggerName, timeFormat)
 	}
 }
 
