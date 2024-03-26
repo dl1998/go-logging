@@ -13,8 +13,10 @@ go get github.com/dl1998/go-logging
 or
 
 ```bash
-go install github.com/dl1998/go-logging@v1.0.0
+go install github.com/dl1998/go-logging@[version]
 ```
+
+***Note: replace `[version]` with the version you want to install.***
 
 ## Usage
 
@@ -82,6 +84,34 @@ You could also change the format of the default structured logger by setting the
 ```go
 structuredlogger.Configure(logger.NewConfiguration(logger.WithFormat("key-value")))
 ```
+
+All options available for the configuration are:
+
+- For Standard Logger
+
+| Method         |            Default            | Description                                                                        |
+|----------------|:-----------------------------:|------------------------------------------------------------------------------------|
+| WithFromLevel  |         level.Warning         | Set logging level from which logger should log messages.                           |
+| WithToLevel    |          level.Null           | Set logging level till which logger should log messages.                           |
+| WithTemplate   | "%(level):%(name):%(message)" | Set template for logging message.                                                  |
+| WithFile       |              ""               | Set file where to log messages, if not set, then logging to file will be disabled. |
+| WithName       |            "root"             | Set logger name.                                                                   |
+| WithTimeFormat |         time.RFC3339          | Set time format for logging message.                                               |
+
+- For Structured Logger
+
+| Method                |                                                       Default                                                       | Description                                                                                                                           |
+|-----------------------|:-------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
+| WithFromLevel         |                                                    level.Warning                                                    | Set logging level from which logger should log messages.                                                                              |
+| WithToLevel           |                                                     level.Null                                                      | Set logging level till which logger should log messages.                                                                              |
+| WithTemplate          | map[string]string {<br/>"timestamp": "%(timestamp)",<br/>"level":     "%(level)",<br/>"name":      "%(name)",<br/>} | Set template for logging structure.                                                                                                   |
+| WithFile              |                                                         ""                                                          | Set file where to log messages, if not set, then logging to file will be disabled.                                                    |
+| WithFormat            |                                                       "json"                                                        | Set format for structured logging.<br/><br/>Could be one of the following<br/><ul><li>json</li><li>key-value</li></ul>                |
+| WithPretty            |                                                        false                                                        | Set if json message should be pretty printed.<br/>*Option works only with "json" format.*                                             |
+| WithKeyValueDelimiter |                                                         ":"                                                         | Set key-value delimiter (eg. "key=value", where '=' is the delimiter).<br/>*Option works only with "key-value" format.*               |
+| WithPairSeparator     |                                                         " "                                                         | Set key-value separator (eg. "key1=value1,key2=value2", where ',' is the separator).<br/>*Option works only with "key-value" format.* |
+| WithName              |                                                       "root"                                                        | Set logger name.                                                                                                                      |
+| WithTimeFormat        |                                                    time.RFC3339                                                     | Set time format for logging message.                                                                                                  |
 
 ### Custom Logger
 

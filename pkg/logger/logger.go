@@ -6,6 +6,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
 	"github.com/dl1998/go-logging/pkg/logger/logrecord"
+	"time"
 )
 
 var rootLogger *Logger
@@ -243,11 +244,12 @@ func WithTimeFormat(timeFormat string) Option {
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
-		fromLevel: level.Warning,
-		toLevel:   level.Null,
-		template:  "%(level):%(name):%(message)",
-		file:      "",
-		name:      "root",
+		fromLevel:  level.Warning,
+		toLevel:    level.Null,
+		template:   "%(level):%(name):%(message)",
+		file:       "",
+		name:       "root",
+		timeFormat: time.RFC3339,
 	}
 
 	for _, option := range options {
