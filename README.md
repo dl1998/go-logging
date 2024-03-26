@@ -4,7 +4,6 @@
 
 Go logger implements logger for Golang, current implementation is majorly inspired by Python logger.
 
-
 ## Installation
 
 ```bash
@@ -57,11 +56,11 @@ or
 
 ```go
 structuredlogger.Warning(map[string]string{
-	"message": "My message.",
+    "message": "My message.",
 })
 ```
 
-By default, root logger prints on console only, and starting from Warning level. It could be changed by setting logging 
+By default, root logger prints on console only, and starting from Warning level. It could be changed by setting logging
 level:
 
 - Standard logger
@@ -91,13 +90,13 @@ Alternatively you could create application logger. To do this you would need to 
 - Standard logger
 
 ```go
-applicationLogger := logger.New("application-logger")
+applicationLogger := logger.New("application-logger", time.RFC3339)
 ```
 
 - Structured logger
 
 ```go
-applicationStructuredLogger := structuredlogger.New("application-logger")
+applicationStructuredLogger := structuredlogger.New("application-logger", time.RFC3339)
 ```
 
 After this you need to set up it, for this create a new formatter that says how to log the message by providing a
@@ -105,24 +104,37 @@ template.
 
 #### Formatter
 
+Available template options:
+
+|    Option    |      Scope      | Description                                                                  |
+|:------------:|:---------------:|------------------------------------------------------------------------------|
+|   %(name)    |      Both       | Logger name.                                                                 |
+|   %(level)   |      Both       | Log level name.                                                              |
+|  %(levelnr)  |      Both       | Log level number.                                                            |
+| %(datetime)  |      Both       | Current date and/or time formatted using time format. Default: time.RFC3339. |
+| %(timestamp) |      Both       | Current timestamp.                                                           |
+|   %(fname)   |      Both       | Name of the file from which logger has been called.                          |
+|   %(fline)   |      Both       | Line in the file in which logger has been called.                            |
+|  %(message)  | standard logger | Log message.                                                                 |
+
 - Standard logger
 
 ```go
-applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
+applicationFormatter := formatter.New("%(datetime) [%(level)] %(message)")
 ```
 
 - Structured logger
     - JSON format
-    
+
     ```go
     applicationFormatter := formatter.NewJSON(map[string]string{
         "time":    "%(timestamp)",
         "level":   "%(level)",
     }, false)
     ```
-  
+
     - Key-Value format
-    
+
     ```go
     applicationFormatter := formatter.NewKeyValue(map[string]string{
         "time":    "%(timestamp)",
@@ -137,21 +149,21 @@ After creation of the formatter, you need to create a new handler that tells whe
 There are three predefined types of handler (for standard and structured logger each):
 
 - Console Handler - it takes log level starting from which it would log messages, log level till which it would log
-messages, and formatter that tells how to log message. It logs messages to standard output.
+  messages, and formatter that tells how to log message. It logs messages to standard output.
 
 ```go
 newConsoleHandler := handler.NewConsoleHandler(level.Debug, level.Null, applicationFormatter)
 ```
 
 - Console Error Handler - it takes log level starting from which it would log messages, log level till which it would
-log messages, and formatter that tells how to log message. It logs messages to error output.
+  log messages, and formatter that tells how to log message. It logs messages to error output.
 
 ```go
 newConsoleErrorHandler := handler.NewConsoleErrorHandler(level.Debug, level.Null, applicationFormatter)
 ```
 
 - File Handler - it takes log level starting from which it would log messages, log level till which it would
-log messages, formatter that tells how to log message, and path to the file where to log those data.
+  log messages, formatter that tells how to log message, and path to the file where to log those data.
 
 ```go
 newFileHandler := handler.NewFileHandler(level.Debug, level.Null, applicationFormatter, "system.log")
@@ -185,13 +197,13 @@ applicationLogger.Info("My message: %s.", "logged using application logger")
 
 - Structured logger
     - Varargs
-    
+
     ```go
     applicationLogger.Info("message", "Logged using structured logger with varargs.")
     ```
-  
+
     - Map
-    
+
     ```go
     applicationLogger.Info(map[string]string{
         "message": "Logged using structured logger with map.",
