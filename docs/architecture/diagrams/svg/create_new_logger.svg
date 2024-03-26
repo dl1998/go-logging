@@ -4,14 +4,14 @@
      viewBox="0 0 676 346" width="676px" zoomAndPan="magnify">
     <defs/>
     <g>
-        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="190" y="67.7988"/>
-        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="269" y="127.1094"/>
+        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="210" y="67.7988"/>
+        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="289" y="127.1094"/>
         <rect fill="#FFFFFF" height="35.3105" style="stroke:#181818;stroke-width:1.0;" width="10" x="378" y="186.4199"/>
         <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="29" x2="29" y1="36.4883"
               y2="311.3516"/>
-        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="194.5" x2="194.5" y1="36.4883"
+        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="214.5" x2="214.5" y1="36.4883"
               y2="311.3516"/>
-        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="273.5" x2="273.5" y1="36.4883"
+        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="293.5" x2="293.5" y1="36.4883"
               y2="311.3516"/>
         <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="382.5" x2="382.5" y1="36.4883"
               y2="311.3516"/>
@@ -26,23 +26,23 @@
               y="330.8867">main
         </text>
         <rect fill="#E2E2F0" height="30.4883" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="59"
-              x="165.5" y="5"/>
-        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45" x="172.5"
+              x="185.5" y="5"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45" x="192.5"
               y="25.5352">logger
         </text>
         <rect fill="#E2E2F0" height="30.4883" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="59"
-              x="165.5" y="310.3516"/>
-        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45" x="172.5"
+              x="185.5" y="310.3516"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45" x="192.5"
               y="330.8867">logger
         </text>
         <rect fill="#E2E2F0" height="30.4883" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="79"
-              x="234.5" y="5"/>
-        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="241.5"
+              x="254.5" y="5"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="261.5"
               y="25.5352">formatter
         </text>
         <rect fill="#E2E2F0" height="30.4883" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="79"
-              x="234.5" y="310.3516"/>
-        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="241.5"
+              x="254.5" y="310.3516"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="261.5"
               y="330.8867">formatter
         </text>
         <rect fill="#E2E2F0" height="30.4883" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="67"
@@ -55,21 +55,21 @@
         <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="53" x="356.5"
               y="330.8867">handler
         </text>
-        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="190" y="67.7988"/>
-        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="269" y="127.1094"/>
+        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="210" y="67.7988"/>
+        <rect fill="#FFFFFF" height="30" style="stroke:#181818;stroke-width:1.0;" width="10" x="289" y="127.1094"/>
         <rect fill="#FFFFFF" height="35.3105" style="stroke:#181818;stroke-width:1.0;" width="10" x="378" y="186.4199"/>
-        <polygon fill="#181818" points="178,63.7988,188,67.7988,178,71.7988,182,67.7988"
+        <polygon fill="#181818" points="198,63.7988,208,67.7988,198,71.7988,202,67.7988"
                  style="stroke:#181818;stroke-width:1.0;"/>
-        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="184" y1="67.7988" y2="67.7988"/>
+        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="204" y1="67.7988" y2="67.7988"/>
         <text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing"
               textLength="9" x="36" y="63.0566">1
         </text>
-        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="69" x="49"
-              y="63.0566">New(name)
+        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149" x="49"
+              y="63.0566">New(name, timeFormat)
         </text>
-        <polygon fill="#181818" points="257,123.1094,267,127.1094,257,131.1094,261,127.1094"
+        <polygon fill="#181818" points="277,123.1094,287,127.1094,277,131.1094,281,127.1094"
                  style="stroke:#181818;stroke-width:1.0;"/>
-        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="263" y1="127.1094" y2="127.1094"/>
+        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="283" y1="127.1094" y2="127.1094"/>
         <text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing"
               textLength="9" x="36" y="122.3672">2
         </text>
@@ -103,14 +103,14 @@
         <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="394" x="40"
               y="259.2988">Calling AddHandler on the instance of Logger returned by New
         </text>
-        <polygon fill="#181818" points="183,289.3516,193,293.3516,183,297.3516,187,293.3516"
+        <polygon fill="#181818" points="203,289.3516,213,293.3516,203,297.3516,207,293.3516"
                  style="stroke:#181818;stroke-width:1.0;"/>
-        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="189" y1="293.3516" y2="293.3516"/>
+        <line style="stroke:#181818;stroke-width:1.0;" x1="29" x2="209" y1="293.3516" y2="293.3516"/>
         <text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing"
               textLength="9" x="36" y="288.6094">5
         </text>
         <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="129" x="49"
               y="288.6094">AddHandler(handler)
-        </text><!--SRC=[VP71ReCm38RlF8Ller8xxXmcJRtiKEqTN692fCHcmRJQso_G51YJTahoo_xy-yzBfzeFTLNr7bd7u5yR2TL0NoDnGoVZq4OCHO6Z2e_XIh4eUepg6jUd1WZe-9VWnTfKj9LQYG5LTsg7RFo4cn1mUikTDNpIlMGCT2YmKNT3fIVKq5vPcfSPZtwba1RIBMDriS6iuaBAlcREMNWGJnyFgMoZX0lTo1z19LyMmcRKSxLyxgd_SuvmZsxcRNmkOR6aLtIsKv1sJh-6CthlsCAxCTaf28Ds18u7nVIFK-rbJWmYwHYP35o_9oz_qbyXPHvw-040]-->
+        </text><!--SRC=[VP71ReCm38RlF8Ller8xxXmcJPMc7QgzWqiCH4fi6aohldq3JO4nQQSal-Bl_ss_jQfTNnP5vv1ryEwz4b_qT1c8ApeOYqr0dsKugF3WpnIohCEWjh9TB02Fbdy9JfecVbfBjGIFgXkrHJPkn8q8E7oaoX9-w9OpUjg3MazVK_4kmqhj5PLU1eQsoWoQ_Pui9H-RKrenbaGhp2BEf9HnuXo5Ut7q_PJoEeW_qPLSZ2dfCXDMLgysqxcb_i_PmotOYRVAEG-E9Rw2RLe5gQTDb714vomty6bCIWh2e2s1vLunxdJyUvec1e5q24m6plSnovzDB90ycUuU]-->
     </g>
 </svg>

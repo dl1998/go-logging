@@ -183,6 +183,7 @@ package pkg {
         }
         struct baseLogger implements baseLoggerInterface {
             ~ name : string
+            ~ timeFormat : string
             ~ handlers : []handler.Interface
             + Log(level : level.Level, message : string, parameters : ...any)
             + Name() : string
@@ -232,6 +233,7 @@ package pkg {
             ~ template : string
             ~ file : string
             ~ name : string
+            ~ timeFormat : string
         }
         stereotype Option <<func(*Configuration)>> {}
         class "<<module>>" {
@@ -240,12 +242,13 @@ package pkg {
             ~ toLevel : level.Level
             ~ template : string
             ~ init()
-            + New(name : string) : *Logger
+            + New(name : string, timeFormat : string) : *Logger
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : string) : Option
             + WithFile(file : string) : Option
             + WithName(name : string) : Option
+            + WithTimeFormat(timeFormat : string) : Option
             + NewConfiguration(options : ...Option) : *Configuration
             + Configure(configuration : *Configuration)
             + Name() : string
@@ -383,6 +386,7 @@ package pkg {
         }
         struct baseLogger implements baseLoggerInterface {
             ~ name : string
+            ~ timeFormat : string
             ~ handlers : []handler.Interface
             + Log(level : level.Level, parameters : ...any)
             + Name() : string
@@ -436,6 +440,7 @@ package pkg {
             ~ pairSeparator : string
             ~ file : string
             ~ name : string
+            ~ timeFormat : string
         }
         stereotype Option <<func(*Configuration)>> {}
         class "<<module>>" {
@@ -444,7 +449,7 @@ package pkg {
             ~ toLevel : level.Level
             ~ template : map[string]string
             ~ init()
-            + New(name : string) : *Logger
+            + New(name : string, timeFormat : string) : *Logger
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : map[string]string) : Option
@@ -454,6 +459,7 @@ package pkg {
             + WithKeyValueDelimiter(keyValueDelimiter : string) : Option
             + WithPairSeparator(pairSeparator : string) : Option
             + WithName(name : string) : Option
+            + WithTimeFormat(timeFormat : string) : Option
             + NewConfiguration(options : ...Option) : *Configuration
             + Configure(configuration : *Configuration)
             + Name() : string

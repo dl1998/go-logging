@@ -29,13 +29,14 @@ type baseLoggerInterface interface {
 
 // baseLogger struct contains basic fields for the logger.
 type baseLogger struct {
-	name     string
-	handlers []handler.Interface
+	name       string
+	timeFormat string
+	handlers   []handler.Interface
 }
 
 // Log logs interpolated message with the provided level.Level.
 func (logger *baseLogger) Log(level level.Level, message string, parameters ...any) {
-	record := logrecord.New(logger.name, level, template, message, parameters, 3)
+	record := logrecord.New(logger.name, level, logger.timeFormat, message, parameters, 3)
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(record)
 	}
@@ -98,11 +99,12 @@ type Logger struct {
 }
 
 // New creates a new instance of the Logger.
-func New(name string) *Logger {
+func New(name string, timeFormat string) *Logger {
 	return &Logger{
 		baseLogger: &baseLogger{
-			name:     name,
-			handlers: make([]handler.Interface, 0),
+			name:       name,
+			timeFormat: timeFormat,
+			handlers:   make([]handler.Interface, 0),
 		},
 	}
 }
@@ -185,11 +187,12 @@ func (logger *Logger) Emergency(message string, parameters ...any) {
 
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
-	fromLevel level.Level
-	toLevel   level.Level
-	template  string
-	file      string
-	name      string
+	fromLevel  level.Level
+	toLevel    level.Level
+	template   string
+	file       string
+	name       string
+	timeFormat string
 }
 
 // Option represents option for the Configuration.
@@ -230,6 +233,13 @@ func WithName(name string) Option {
 	}
 }
 
+// WithTimeFormat sets timeFormat for the Configuration.
+func WithTimeFormat(timeFormat string) Option {
+	return func(configuration *Configuration) {
+		configuration.timeFormat = timeFormat
+	}
+}
+
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
@@ -257,7 +267,7 @@ func Configure(configuration *Configuration) {
 	toLevel = configuration.toLevel
 	template = configuration.template
 
-	newLogger := New(configuration.name)
+	newLogger := New(configuration.name, configuration.timeFormat)
 
 	defaultFormatter := formatter.New(configuration.template)
 

@@ -29,8 +29,9 @@ type baseLoggerInterface interface {
 
 // baseLogger struct contains basic fields for the logger.
 type baseLogger struct {
-	name     string
-	handlers []handler.Interface
+	name       string
+	timeFormat string
+	handlers   []handler.Interface
 }
 
 // Log logs interpolated message with the provided level.Level.
@@ -49,7 +50,7 @@ func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
 		}
 	}
 
-	logRecord := logrecord.New(logger.name, logLevel, "", parametersMap, 3)
+	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 3)
 
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(logRecord)
@@ -113,11 +114,12 @@ type Logger struct {
 }
 
 // New creates a new instance of the Logger.
-func New(name string) *Logger {
+func New(name string, timeFormat string) *Logger {
 	return &Logger{
 		baseLogger: &baseLogger{
-			name:     name,
-			handlers: make([]handler.Interface, 0),
+			name:       name,
+			timeFormat: timeFormat,
+			handlers:   make([]handler.Interface, 0),
 		},
 	}
 }
@@ -209,6 +211,7 @@ type Configuration struct {
 	pairSeparator     string
 	file              string
 	name              string
+	timeFormat        string
 }
 
 // Option represents option for the Configuration.
@@ -277,6 +280,13 @@ func WithName(name string) Option {
 	}
 }
 
+// WithTimeFormat sets timeFormat for the Configuration.
+func WithTimeFormat(timeFormat string) Option {
+	return func(configuration *Configuration) {
+		configuration.timeFormat = timeFormat
+	}
+}
+
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
@@ -312,7 +322,7 @@ func Configure(configuration *Configuration) {
 	toLevel = configuration.toLevel
 	template = configuration.template
 
-	newLogger := New(configuration.name)
+	newLogger := New(configuration.name, configuration.timeFormat)
 
 	var defaultFormatter formatter.Interface
 
