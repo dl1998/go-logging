@@ -1001,23 +1001,52 @@ func BenchmarkWithName(b *testing.B) {
 	}
 }
 
+// TestWithTimeFormat tests that WithTimeFormat sets the time format in the
+// Configuration.
+func TestWithTimeFormat(t *testing.T) {
+	configuration := NewConfiguration()
+
+	timeFormat := time.RFC3339
+
+	option := WithTimeFormat(timeFormat)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.timeFormat, timeFormat)
+}
+
+// BenchmarkWithTimeFormat perform benchmarking of the WithTimeFormat().
+func BenchmarkWithTimeFormat(b *testing.B) {
+	configuration := NewConfiguration()
+
+	timeFormat := time.RFC3339
+
+	option := WithTimeFormat(timeFormat)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
 // TestNewConfiguration tests that NewConfiguration creates a new Configuration.
 func TestNewConfiguration(t *testing.T) {
 	tests := map[string]struct {
-		options           []Option
-		expectedFromLevel level.Level
-		expectedToLevel   level.Level
-		expectedTemplate  map[string]string
-		expectedFile      string
-		expectedName      string
+		options            []Option
+		expectedFromLevel  level.Level
+		expectedToLevel    level.Level
+		expectedTemplate   map[string]string
+		expectedFile       string
+		expectedName       string
+		expectedTimeFormat string
 	}{
 		"Empty": {
-			options:           []Option{},
-			expectedFromLevel: level.Warning,
-			expectedToLevel:   level.Null,
-			expectedTemplate:  template,
-			expectedFile:      "",
-			expectedName:      "root",
+			options:            []Option{},
+			expectedFromLevel:  level.Warning,
+			expectedToLevel:    level.Null,
+			expectedTemplate:   template,
+			expectedFile:       "",
+			expectedName:       "root",
+			expectedTimeFormat: time.RFC3339,
 		},
 		"Non Standard": {
 			options: []Option{
@@ -1029,6 +1058,7 @@ func TestNewConfiguration(t *testing.T) {
 				}),
 				WithFile("file.log"),
 				WithName("test"),
+				WithTimeFormat(time.DateTime),
 			},
 			expectedFromLevel: level.All,
 			expectedToLevel:   level.Emergency,
@@ -1036,8 +1066,9 @@ func TestNewConfiguration(t *testing.T) {
 				"level-number": "%(levelnr)",
 				"name":         "%(name)",
 			},
-			expectedFile: "file.log",
-			expectedName: "test",
+			expectedFile:       "file.log",
+			expectedName:       "test",
+			expectedTimeFormat: time.DateTime,
 		},
 	}
 	for name, configuration := range tests {
@@ -1049,6 +1080,7 @@ func TestNewConfiguration(t *testing.T) {
 			testutils.AssertEquals(t, configuration.expectedTemplate, newConfiguration.template)
 			testutils.AssertEquals(t, configuration.expectedFile, newConfiguration.file)
 			testutils.AssertEquals(t, configuration.expectedName, newConfiguration.name)
+			testutils.AssertEquals(t, configuration.expectedTimeFormat, newConfiguration.timeFormat)
 		})
 	}
 }

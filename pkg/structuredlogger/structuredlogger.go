@@ -6,6 +6,7 @@ import (
 	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
+	"time"
 )
 
 var rootLogger *Logger
@@ -303,6 +304,7 @@ func NewConfiguration(options ...Option) *Configuration {
 		pairSeparator:     " ",
 		file:              "",
 		name:              "root",
+		timeFormat:        time.RFC3339,
 	}
 
 	for _, option := range options {
