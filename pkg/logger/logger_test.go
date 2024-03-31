@@ -9,16 +9,6 @@ import (
 	"time"
 )
 
-var (
-	loggerTemplate = "%(level):%(name):%(message)"
-	loggerName     = "test"
-	message        = "Test Message: %s."
-	parameters     = []any{
-		"test",
-	}
-	timeFormat = time.RFC3339
-)
-
 // TestNew tests that New creates a new logger.
 func TestNew(t *testing.T) {
 	newLogger := New(loggerName, timeFormat)
@@ -37,7 +27,7 @@ func BenchmarkNew(b *testing.B) {
 	}
 }
 
-// TestLogger_Name tests that Logger.Name returns name of the logger.
+// TestLogger_Name tests that Logger.Name returns loggerName of the logger.
 func TestLogger_Name(t *testing.T) {
 	mockLogger := &MockLogger{}
 
@@ -420,7 +410,7 @@ func TestWithFromLevel(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.fromLevel, level.Trace)
+	testutils.AssertEquals(t, level.Trace, configuration.fromLevel)
 }
 
 // BenchmarkWithFromLevel perform benchmarking of the WithFromLevel().
@@ -442,7 +432,7 @@ func TestWithToLevel(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.toLevel, level.Trace)
+	testutils.AssertEquals(t, level.Trace, configuration.toLevel)
 }
 
 // BenchmarkWithToLevel perform benchmarking of the WithToLevel().
@@ -461,22 +451,18 @@ func BenchmarkWithToLevel(b *testing.B) {
 func TestWithTemplate(t *testing.T) {
 	configuration := NewConfiguration()
 
-	template := "%(message):%(name):%(level)"
-
-	option := WithTemplate(template)
+	option := WithTemplate(loggerTemplate)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.template, template)
+	testutils.AssertEquals(t, loggerTemplate, configuration.template)
 }
 
 // BenchmarkWithTemplate perform benchmarking of the WithTemplate().
 func BenchmarkWithTemplate(b *testing.B) {
 	configuration := NewConfiguration()
 
-	template := "%(message):%(name):%(level)"
-
-	option := WithTemplate(template)
+	option := WithTemplate(loggerTemplate)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -493,7 +479,7 @@ func TestWithFile(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.file, file)
+	testutils.AssertEquals(t, file, configuration.file)
 }
 
 // BenchmarkWithFile perform benchmarking of the WithFile().
@@ -509,7 +495,7 @@ func BenchmarkWithFile(b *testing.B) {
 	}
 }
 
-// TestWithName tests that WithName sets the name in the Configuration.
+// TestWithName tests that WithName sets the loggerName in the Configuration.
 func TestWithName(t *testing.T) {
 	configuration := NewConfiguration()
 
@@ -519,7 +505,7 @@ func TestWithName(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.name, name)
+	testutils.AssertEquals(t, name, configuration.name)
 }
 
 // BenchmarkWithName perform benchmarking of the WithName().
@@ -546,7 +532,7 @@ func TestWithTimeFormat(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.timeFormat, timeFormat)
+	testutils.AssertEquals(t, timeFormat, configuration.timeFormat)
 }
 
 // BenchmarkWithTimeFormat perform benchmarking of the WithTimeFormat().
@@ -577,7 +563,7 @@ func TestNewConfiguration(t *testing.T) {
 			options:            []Option{},
 			expectedFromLevel:  level.Warning,
 			expectedToLevel:    level.Null,
-			expectedTemplate:   "%(level):%(name):%(message)",
+			expectedTemplate:   loggerTemplate,
 			expectedFile:       "",
 			expectedName:       "root",
 			expectedTimeFormat: time.RFC3339,
@@ -669,7 +655,7 @@ func BenchmarkConfigure(b *testing.B) {
 	}
 }
 
-// TestName tests that Name returns name of the default logger.
+// TestName tests that Name returns loggerName of the default logger.
 func TestName(t *testing.T) {
 	Configure(NewConfiguration())
 
@@ -689,7 +675,7 @@ func BenchmarkName(b *testing.B) {
 func TestTemplate(t *testing.T) {
 	Configure(NewConfiguration())
 
-	testutils.AssertEquals(t, "%(level):%(name):%(message)", Template())
+	testutils.AssertEquals(t, loggerTemplate, Template())
 }
 
 // BenchmarkTemplate perform benchmarking of the Template().

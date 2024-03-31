@@ -9,6 +9,17 @@ import (
 	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"io"
 	"testing"
+	"time"
+)
+
+var (
+	loggerTemplate = "%(level):%(name):%(message)"
+	loggerName     = "test"
+	message        = "Test Message: %s."
+	parameters     = []any{
+		"test",
+	}
+	timeFormat = time.RFC3339
 )
 
 // MockLogger is used to mock baseLogger.
@@ -186,7 +197,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 	}
 }
 
-// TestBaseLogger_Name tests that baseLogger.Name returns name of the logger.
+// TestBaseLogger_Name tests that baseLogger.Name returns loggerName of the logger.
 func TestBaseLogger_Name(t *testing.T) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
@@ -212,7 +223,7 @@ func BenchmarkBaseLogger_Name(b *testing.B) {
 	}
 }
 
-// TestBaseLogger_SetName tests that baseLogger.SetName set a new name for the
+// TestBaseLogger_SetName tests that baseLogger.SetName set a new loggerName for the
 // logger.
 func TestBaseLogger_SetName(t *testing.T) {
 	newBaseLogger := &baseLogger{
@@ -222,7 +233,7 @@ func TestBaseLogger_SetName(t *testing.T) {
 		},
 	}
 
-	newName := "new-name"
+	newName := "new-loggerName"
 
 	newBaseLogger.SetName(newName)
 
@@ -238,7 +249,7 @@ func BenchmarkBaseLogger_SetName(b *testing.B) {
 		},
 	}
 
-	newName := "new-name"
+	newName := "new-loggerName"
 
 	for index := 0; index < b.N; index++ {
 		newBaseLogger.SetName(newName)

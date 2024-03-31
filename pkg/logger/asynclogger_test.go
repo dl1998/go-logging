@@ -2,18 +2,40 @@ package logger
 
 import (
 	"github.com/dl1998/go-logging/internal/testutils"
+	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
 	"github.com/dl1998/go-logging/pkg/logger/logrecord"
 	"sync"
 	"testing"
-	"time"
 )
 
 var (
-	name             = "test"
 	messageQueueSize = 1
-	testTimeFormat   = time.RFC3339
 )
+
+// TestBaseAsyncLogger_startListeningMessages tests that
+// baseAsyncLogger.startListeningMessages method processes logs from the message
+// queue.
+func TestBaseAsyncLogger_startListeningMessages(t *testing.T) {
+	mockHandler := &MockHandler{}
+	newBaseAsyncLogger := &baseAsyncLogger{
+		baseLogger: &baseLogger{
+			name:     loggerName,
+			handlers: []handler.Interface{mockHandler},
+		},
+		messageQueue: make(chan logrecord.Interface, messageQueueSize),
+		waitGroup:    sync.WaitGroup{},
+	}
+
+	record := logrecord.New(loggerName, 0, timeFormat, message, parameters, 3)
+	newBaseAsyncLogger.messageQueue <- record
+
+	go newBaseAsyncLogger.startListeningMessages()
+	newBaseAsyncLogger.waitGroup.Add(1)
+	newBaseAsyncLogger.waitGroup.Wait()
+
+	testutils.AssertEquals(t, record, mockHandler.Parameters[0].(*logrecord.LogRecord))
+}
 
 // TestBaseAsyncLogger_WaitToFinishLogging tests
 // baseAsyncLogger.WaitToFinishLogging method of the baseAsyncLogger.
@@ -21,7 +43,7 @@ func TestBaseAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
-			name:     name,
+			name:     loggerName,
 			handlers: []handler.Interface{mockHandler},
 		},
 		messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -47,7 +69,7 @@ func TestBaseAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
-			name:     name,
+			name:     loggerName,
 			handlers: []handler.Interface{mockHandler},
 		},
 		messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -63,17 +85,22 @@ func TestBaseAsyncLogger_Open(t *testing.T) {
 // baseAsyncLogger.
 func BenchmarkBaseAsyncLogger_Open(b *testing.B) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     name,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
+	loggers := make([]*baseAsyncLogger, b.N)
+	for index := range loggers {
+		loggers[index] = &baseAsyncLogger{
+			baseLogger: &baseLogger{
+				name:     loggerName,
+				handlers: []handler.Interface{mockHandler},
+			},
+			messageQueue: make(chan logrecord.Interface, messageQueueSize),
+			waitGroup:    sync.WaitGroup{},
+		}
 	}
 
-	for index := 0; index < b.N; index++ {
-		newBaseAsyncLogger.Open(messageQueueSize)
+	b.ResetTimer()
+
+	for index := range loggers {
+		loggers[index].Open(messageQueueSize)
 	}
 }
 
@@ -93,7 +120,7 @@ func TestBaseAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
-			name:     name,
+			name:     loggerName,
 			handlers: []handler.Interface{mockHandler},
 		},
 		messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -111,7 +138,7 @@ func BenchmarkBaseAsyncLogger_Close(b *testing.B) {
 	loggers := make([]*baseAsyncLogger, b.N)
 	mockHandler := &MockHandler{}
 	newBaseLogger := &baseLogger{
-		name:     name,
+		name:     loggerName,
 		handlers: []handler.Interface{mockHandler},
 	}
 
@@ -135,7 +162,7 @@ func TestBaseAsyncLogger_Log(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
-			name:     name,
+			name:     loggerName,
 			handlers: []handler.Interface{mockHandler},
 		},
 		messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -156,7 +183,7 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
-			name:     name,
+			name:     loggerName,
 			handlers: []handler.Interface{mockHandler},
 		},
 		messageQueue: make(chan logrecord.Interface, b.N),
@@ -166,16 +193,16 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	b.ResetTimer()
 
 	for index := 0; index < b.N; index++ {
-		newBaseAsyncLogger.Log(0, "test")
+		newBaseAsyncLogger.Log(level.Trace, message, parameters...)
 	}
 }
 
 // TestNewAsyncLogger tests NewAsyncLogger function of the baseAsyncLogger.
 func TestNewAsyncLogger(t *testing.T) {
-	newAsyncLogger := NewAsyncLogger(name, testTimeFormat, messageQueueSize)
+	newAsyncLogger := NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
 
 	testutils.AssertNotNil(t, newAsyncLogger)
-	testutils.AssertEquals(t, name, newAsyncLogger.Name())
+	testutils.AssertEquals(t, loggerName, newAsyncLogger.Name())
 	testutils.AssertEquals(t, messageQueueSize, cap(newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue))
 }
 
@@ -183,7 +210,7 @@ func TestNewAsyncLogger(t *testing.T) {
 // baseAsyncLogger.
 func BenchmarkNewAsyncLogger(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		NewAsyncLogger(name, testTimeFormat, messageQueueSize)
+		NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
 	}
 }
 
@@ -195,7 +222,7 @@ func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
-					name:     name,
+					name:     loggerName,
 					handlers: []handler.Interface{mockHandler},
 				},
 				messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -224,7 +251,7 @@ func BenchmarkAsyncLogger_WaitToFinishLogging(b *testing.B) {
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
-					name:     name,
+					name:     loggerName,
 					handlers: []handler.Interface{mockHandler},
 				},
 				messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -245,7 +272,7 @@ func TestAsyncLogger_Open(t *testing.T) {
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
-					name:     name,
+					name:     loggerName,
 					handlers: []handler.Interface{mockHandler},
 				},
 				messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -263,21 +290,26 @@ func TestAsyncLogger_Open(t *testing.T) {
 // AsyncLogger.
 func BenchmarkAsyncLogger_Open(b *testing.B) {
 	mockHandler := &MockHandler{}
-	newAsyncLogger := &AsyncLogger{
-		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     name,
-					handlers: []handler.Interface{mockHandler},
+	loggers := make([]*AsyncLogger, b.N)
+	for index := range loggers {
+		loggers[index] = &AsyncLogger{
+			Logger: &Logger{
+				baseLogger: &baseAsyncLogger{
+					baseLogger: &baseLogger{
+						name:     loggerName,
+						handlers: []handler.Interface{mockHandler},
+					},
+					messageQueue: make(chan logrecord.Interface, messageQueueSize),
+					waitGroup:    sync.WaitGroup{},
 				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
 			},
-		},
+		}
 	}
 
-	for index := 0; index < b.N; index++ {
-		newAsyncLogger.Open(messageQueueSize)
+	b.ResetTimer()
+
+	for index := range loggers {
+		loggers[index].Open(messageQueueSize)
 	}
 }
 
@@ -288,7 +320,7 @@ func TestAsyncLogger_Close(t *testing.T) {
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
-					name:     name,
+					name:     loggerName,
 					handlers: []handler.Interface{mockHandler},
 				},
 				messageQueue: make(chan logrecord.Interface, messageQueueSize),
@@ -305,28 +337,24 @@ func TestAsyncLogger_Close(t *testing.T) {
 // BenchmarkAsyncLogger_Close benchmarks AsyncLogger.Close method of the
 // AsyncLogger.
 func BenchmarkAsyncLogger_Close(b *testing.B) {
-	loggers := make([]*AsyncLogger, b.N)
-	mockHandler := &MockHandler{}
-	newBaseLogger := &baseLogger{
-		name:     name,
-		handlers: []handler.Interface{mockHandler},
-	}
-
-	for index := range loggers {
-		loggers[index] = &AsyncLogger{
-			Logger: &Logger{
-				baseLogger: &baseAsyncLogger{
-					baseLogger:   newBaseLogger,
-					messageQueue: make(chan logrecord.Interface, messageQueueSize),
-					waitGroup:    sync.WaitGroup{},
-				},
-			},
+	b.RunParallel(func(pb *testing.PB) {
+		mockHandler := &MockHandler{}
+		newBaseLogger := &baseLogger{
+			name:     loggerName,
+			handlers: []handler.Interface{mockHandler},
 		}
-	}
 
-	b.ResetTimer()
-
-	for _, logger := range loggers {
-		logger.Close()
-	}
+		for pb.Next() {
+			logger := &AsyncLogger{
+				Logger: &Logger{
+					baseLogger: &baseAsyncLogger{
+						baseLogger:   newBaseLogger,
+						messageQueue: make(chan logrecord.Interface, messageQueueSize),
+						waitGroup:    sync.WaitGroup{},
+					},
+				},
+			}
+			logger.Close()
+		}
+	})
 }
