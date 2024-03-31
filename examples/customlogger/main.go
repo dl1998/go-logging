@@ -14,7 +14,7 @@ func main() {
 
 	applicationLogger.Debug("This message will not be displayed, because there are no handlers registered.")
 
-	applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
+	applicationFormatter := formatter.New("%(datetime) [%(level)] %(message)")
 	consoleHandler := handler.NewConsoleHandler(level.Debug, level.Null, applicationFormatter)
 	applicationLogger.AddHandler(consoleHandler)
 

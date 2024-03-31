@@ -2,13 +2,24 @@
 
 This package contains examples how to use logger.
 
+## customasynclogger
+
+Demonstrates how to create a new custom logger for the application.
+
+It creates an async logger with provided queue size that writes messages on the console asynchronously. It also provides
+an example how to wait for all messages to be written.
+
 ## customlogger
 
-Demonstrates how to create a new custom logger for the application. It creates a simple logger that writes messages on the console.
+Demonstrates how to create a new custom logger for the application.
+
+It creates a simple logger that writes messages on the console.
 
 ## customstructuredlogger
 
-Demonstrates how to create a new custom logger for the application. It creates a simple logger that writes messages on the console in structured format.
+Demonstrates how to create a new custom logger for the application.
+
+It creates a simple logger that writes messages on the console in structured format.
 
 ## defaultlogger
 

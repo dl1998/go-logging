@@ -227,6 +227,28 @@ package pkg {
             + Critical(message : string, parameters : ...any)
             + Emergency(message : string, parameters : ...any)
         }
+        struct baseAsyncLogger implements baseLoggerInterface {
+            ~ *baseLogger
+            ~ messageQueue : chan logrecord.Interface
+            ~ waitGroup sync.WaitGroup
+            ~ startListeningMessages()
+            + WaitToFinishLogging()
+            + Open(queueSize : int)
+            + Close()
+            + Log(level : level.Level, message : string, parameters : ...any)
+        }
+        interface AsyncLoggerInterface extends Interface {
+            + Interface
+            + WaitToFinishLogging()
+            + Open(queueSize : int)
+            + Close()
+        }
+        struct AsyncLogger implements AsyncLoggerInterface {
+            + *Logger
+            + WaitToFinishLogging()
+            + Open(queueSize : int)
+            + Close()
+        }
         struct Configuration {
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
@@ -243,6 +265,7 @@ package pkg {
             ~ template : string
             ~ init()
             + New(name : string, timeFormat : string) : *Logger
+            + NewAsyncLogger(name : string, timeFormat : string, queueSize : int) : *AsyncLogger
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : string) : Option
@@ -268,7 +291,9 @@ package pkg {
             + Emergency(message : string, parameters : ...any)
         }
 
+        baseAsyncLogger *-- baseLogger
         Logger *-- baseLoggerInterface
+        AsyncLogger *-- Logger
         "<<module>>" ..> Logger : uses
         "<<module>>" ..> Option : uses
         "<<module>>" ..> Configuration : uses

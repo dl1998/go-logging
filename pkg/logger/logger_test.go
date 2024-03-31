@@ -2,349 +2,12 @@
 package logger
 
 import (
-	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
-	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
-	"github.com/dl1998/go-logging/pkg/logger/logrecord"
-	"io"
 	"testing"
 	"time"
 )
-
-var (
-	loggerTemplate = "%(level):%(name):%(message)"
-	loggerName     = "test"
-	message        = "Test Message: %s."
-	parameters     = []any{
-		"test",
-	}
-	timeFormat = time.RFC3339
-)
-
-// MockLogger is used to mock baseLogger.
-type MockLogger struct {
-	handlers   []handler.Interface
-	CalledName string
-	Called     bool
-	Parameters []any
-	Return     any
-}
-
-// Log mocks Log from baseLogger.
-func (mock *MockLogger) Log(level level.Level, message string, parameters ...any) {
-	mock.CalledName = "Log"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), level, message)
-	mock.Parameters = append(mock.Parameters, parameters...)
-	mock.Return = nil
-}
-
-// Name mocks Name from baseLogger.
-func (mock *MockLogger) Name() string {
-	mock.CalledName = "SetName"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	returnValue := "test"
-	mock.Return = returnValue
-	return returnValue
-}
-
-// SetName mocks SetName from baseLogger.
-func (mock *MockLogger) SetName(name string) {
-	mock.CalledName = "SetName"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), name)
-	mock.Return = nil
-}
-
-// Handlers mocks Handlers from baseLogger.
-func (mock *MockLogger) Handlers() []handler.Interface {
-	mock.CalledName = "Handlers"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	returnValue := mock.handlers
-	if mock.handlers == nil {
-		returnValue = make([]handler.Interface, 0)
-	}
-	mock.Return = returnValue
-	return returnValue
-}
-
-// AddHandler mocks AddHandler from baseLogger.
-func (mock *MockLogger) AddHandler(handlerInterface handler.Interface) {
-	mock.CalledName = "AddHandler"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), handlerInterface)
-	mock.Return = nil
-}
-
-// RemoveHandler mocks RemoveHandler from baseLogger.
-func (mock *MockLogger) RemoveHandler(handlerInterface handler.Interface) {
-	mock.CalledName = "RemoveHandler"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), handlerInterface)
-	mock.Return = nil
-}
-
-// MockHandler is used to mock Handler.
-type MockHandler struct {
-	writer     io.Writer
-	CalledName string
-	Called     bool
-	Parameters []any
-	Return     any
-}
-
-// Writer mocks Writer from Handler.
-func (mock *MockHandler) Writer() io.Writer {
-	mock.CalledName = "Writer"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	mock.Return = mock.writer
-	return mock.writer
-}
-
-// FromLevel mocks FromLevel from Handler.
-func (mock *MockHandler) FromLevel() level.Level {
-	mock.CalledName = "FromLevel"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	returnValue := level.Debug
-	mock.Return = returnValue
-	return returnValue
-}
-
-// SetFromLevel mocks SetFromLevel from Handler.
-func (mock *MockHandler) SetFromLevel(level level.Level) {
-	mock.CalledName = "SetFromLevel"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), level)
-	mock.Return = nil
-}
-
-// ToLevel mocks ToLevel from Handler.
-func (mock *MockHandler) ToLevel() level.Level {
-	mock.CalledName = "ToLevel"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	returnValue := level.Debug
-	mock.Return = returnValue
-	return returnValue
-}
-
-// SetToLevel mocks SetToLevel from Handler.
-func (mock *MockHandler) SetToLevel(level level.Level) {
-	mock.CalledName = "SetToLevel"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), level)
-	mock.Return = nil
-}
-
-// Formatter mocks Formatter from Handler.
-func (mock *MockHandler) Formatter() formatter.Interface {
-	mock.CalledName = "Formatter"
-	mock.Called = true
-	mock.Parameters = make([]any, 0)
-	returnValue := formatter.New(loggerTemplate)
-	mock.Return = returnValue
-	return returnValue
-}
-
-// Write mocks Write from Handler.
-func (mock *MockHandler) Write(record logrecord.Interface) {
-	mock.CalledName = "Write"
-	mock.Called = true
-	mock.Parameters = append(make([]any, 0), record)
-	mock.Return = nil
-}
-
-// TestBaseLogger_Log tests that baseLogger.Log method works correctly.
-func TestBaseLogger_Log(t *testing.T) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			newHandler,
-		},
-	}
-
-	logLevel := level.Debug
-
-	newBaseLogger.Log(logLevel, message, parameters...)
-
-	handlerRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
-
-	testutils.AssertEquals(t, loggerName, handlerRecord.Name())
-	testutils.AssertEquals(t, logLevel, handlerRecord.Level())
-	testutils.AssertEquals(t, fmt.Sprintf(message, parameters...), handlerRecord.Message())
-}
-
-// BenchmarkBaseLogger_Log perform benchmarking of the baseLogger.Log().
-func BenchmarkBaseLogger_Log(b *testing.B) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	logLevel := level.Debug
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.Log(logLevel, message, parameters...)
-	}
-}
-
-// TestBaseLogger_Name tests that baseLogger.Name returns name of the logger.
-func TestBaseLogger_Name(t *testing.T) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	testutils.AssertEquals(t, loggerName, newBaseLogger.Name())
-}
-
-// BenchmarkBaseLogger_Name perform benchmarking of the baseLogger.Name().
-func BenchmarkBaseLogger_Name(b *testing.B) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.Name()
-	}
-}
-
-// TestBaseLogger_SetName tests that baseLogger.SetName set a new name for the
-// logger.
-func TestBaseLogger_SetName(t *testing.T) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	newName := "new-name"
-
-	newBaseLogger.SetName(newName)
-
-	testutils.AssertEquals(t, newName, newBaseLogger.name)
-}
-
-// BenchmarkBaseLogger_SetName perform benchmarking of the baseLogger.SetName().
-func BenchmarkBaseLogger_SetName(b *testing.B) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	newName := "new-name"
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.SetName(newName)
-	}
-}
-
-// TestBaseLogger_Handlers tests that baseLogger.Handlers returns a list of
-// handlers for the logger.
-func TestBaseLogger_Handlers(t *testing.T) {
-	handlers := []handler.Interface{
-		&MockHandler{},
-	}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: handlers,
-	}
-
-	testutils.AssertEquals(t, handlers, newBaseLogger.Handlers())
-}
-
-// BenchmarkBaseLogger_Handlers perform benchmarking of the baseLogger.Handlers().
-func BenchmarkBaseLogger_Handlers(b *testing.B) {
-	handlers := []handler.Interface{
-		&MockHandler{},
-	}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: handlers,
-	}
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.Handlers()
-	}
-}
-
-// TestBaseLogger_AddHandler tests that baseLogger.AddHandler adds a new Handler
-// on the list of handlers.
-func TestBaseLogger_AddHandler(t *testing.T) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: make([]handler.Interface, 0),
-	}
-
-	newBaseLogger.AddHandler(newHandler)
-
-	testutils.AssertEquals(t, []handler.Interface{newHandler}, newBaseLogger.handlers)
-}
-
-// BenchmarkBaseLogger_AddHandler perform benchmarking of the baseLogger.AddHandler().
-func BenchmarkBaseLogger_AddHandler(b *testing.B) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: make([]handler.Interface, 0),
-	}
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.AddHandler(newHandler)
-	}
-}
-
-// TestBaseLogger_RemoveHandler tests that baseLogger.RemoveHandler removes a
-// Handler from the list of handlers.
-func TestBaseLogger_RemoveHandler(t *testing.T) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: []handler.Interface{newHandler},
-	}
-
-	newBaseLogger.RemoveHandler(newHandler)
-
-	testutils.AssertEquals(t, make([]handler.Interface, 0), newBaseLogger.handlers)
-}
-
-// BenchmarkBaseLogger_RemoveHandler perform benchmarking of the baseLogger.RemoveHandler().
-func BenchmarkBaseLogger_RemoveHandler(b *testing.B) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name:     loggerName,
-		handlers: []handler.Interface{newHandler},
-	}
-
-	for index := 0; index < b.N; index++ {
-		newBaseLogger.RemoveHandler(newHandler)
-	}
-}
 
 // TestNew tests that New creates a new logger.
 func TestNew(t *testing.T) {
@@ -364,7 +27,7 @@ func BenchmarkNew(b *testing.B) {
 	}
 }
 
-// TestLogger_Name tests that Logger.Name returns name of the logger.
+// TestLogger_Name tests that Logger.Name returns loggerName of the logger.
 func TestLogger_Name(t *testing.T) {
 	mockLogger := &MockLogger{}
 
@@ -747,7 +410,7 @@ func TestWithFromLevel(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.fromLevel, level.Trace)
+	testutils.AssertEquals(t, level.Trace, configuration.fromLevel)
 }
 
 // BenchmarkWithFromLevel perform benchmarking of the WithFromLevel().
@@ -769,7 +432,7 @@ func TestWithToLevel(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.toLevel, level.Trace)
+	testutils.AssertEquals(t, level.Trace, configuration.toLevel)
 }
 
 // BenchmarkWithToLevel perform benchmarking of the WithToLevel().
@@ -788,22 +451,18 @@ func BenchmarkWithToLevel(b *testing.B) {
 func TestWithTemplate(t *testing.T) {
 	configuration := NewConfiguration()
 
-	template := "%(message):%(name):%(level)"
-
-	option := WithTemplate(template)
+	option := WithTemplate(loggerTemplate)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.template, template)
+	testutils.AssertEquals(t, loggerTemplate, configuration.template)
 }
 
 // BenchmarkWithTemplate perform benchmarking of the WithTemplate().
 func BenchmarkWithTemplate(b *testing.B) {
 	configuration := NewConfiguration()
 
-	template := "%(message):%(name):%(level)"
-
-	option := WithTemplate(template)
+	option := WithTemplate(loggerTemplate)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -820,7 +479,7 @@ func TestWithFile(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.file, file)
+	testutils.AssertEquals(t, file, configuration.file)
 }
 
 // BenchmarkWithFile perform benchmarking of the WithFile().
@@ -836,7 +495,7 @@ func BenchmarkWithFile(b *testing.B) {
 	}
 }
 
-// TestWithName tests that WithName sets the name in the Configuration.
+// TestWithName tests that WithName sets the loggerName in the Configuration.
 func TestWithName(t *testing.T) {
 	configuration := NewConfiguration()
 
@@ -846,7 +505,7 @@ func TestWithName(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.name, name)
+	testutils.AssertEquals(t, name, configuration.name)
 }
 
 // BenchmarkWithName perform benchmarking of the WithName().
@@ -873,7 +532,7 @@ func TestWithTimeFormat(t *testing.T) {
 
 	option(configuration)
 
-	testutils.AssertEquals(t, configuration.timeFormat, timeFormat)
+	testutils.AssertEquals(t, timeFormat, configuration.timeFormat)
 }
 
 // BenchmarkWithTimeFormat perform benchmarking of the WithTimeFormat().
@@ -904,7 +563,7 @@ func TestNewConfiguration(t *testing.T) {
 			options:            []Option{},
 			expectedFromLevel:  level.Warning,
 			expectedToLevel:    level.Null,
-			expectedTemplate:   "%(level):%(name):%(message)",
+			expectedTemplate:   loggerTemplate,
 			expectedFile:       "",
 			expectedName:       "root",
 			expectedTimeFormat: time.RFC3339,
@@ -960,8 +619,8 @@ func TestConfigure(t *testing.T) {
 
 	Configure(configuration)
 
-	testutils.AssertEquals(t, "test", rootLogger.baseLogger.Name())
-	testutils.AssertEquals(t, 2, len(rootLogger.baseLogger.Handlers()))
+	testutils.AssertEquals(t, "test", rootLogger.Name())
+	testutils.AssertEquals(t, 2, len(rootLogger.Handlers()))
 }
 
 // TestConfigure_IncorrectLevels tests that Configure returns an error when
@@ -996,7 +655,7 @@ func BenchmarkConfigure(b *testing.B) {
 	}
 }
 
-// TestName tests that Name returns name of the default logger.
+// TestName tests that Name returns loggerName of the default logger.
 func TestName(t *testing.T) {
 	Configure(NewConfiguration())
 
@@ -1016,7 +675,7 @@ func BenchmarkName(b *testing.B) {
 func TestTemplate(t *testing.T) {
 	Configure(NewConfiguration())
 
-	testutils.AssertEquals(t, "%(level):%(name):%(message)", Template())
+	testutils.AssertEquals(t, loggerTemplate, Template())
 }
 
 // BenchmarkTemplate perform benchmarking of the Template().

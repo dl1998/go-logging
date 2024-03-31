@@ -24,7 +24,7 @@ func main() {
 
 	applicationLogger := logger.New("file-logger", time.RFC3339)
 
-	applicationFormatter := formatter.New("%(isotime) [%(level)] %(message)")
+	applicationFormatter := formatter.New("%(datetime) [%(level)] %(message)")
 	fileHandler := handler.NewFileHandler(level.Warning, level.Null, applicationFormatter, fmt.Sprintf("%s/file.log", directory))
 	applicationLogger.AddHandler(fileHandler)
 
