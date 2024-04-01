@@ -230,23 +230,24 @@ package pkg {
         struct baseAsyncLogger implements baseLoggerInterface {
             ~ *baseLogger
             ~ messageQueue : chan logrecord.Interface
+            ~ isChannelOpen : bool
             ~ waitGroup sync.WaitGroup
             ~ startListeningMessages()
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
             + Log(level : level.Level, message : string, parameters : ...any)
         }
         interface AsyncLoggerInterface extends Interface {
             + Interface
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
         }
         struct AsyncLogger implements AsyncLoggerInterface {
             + *Logger
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
         }
         struct Configuration {
@@ -458,23 +459,24 @@ package pkg {
         struct baseAsyncLogger implements baseLoggerInterface {
             ~ *baseLogger
             ~ messageQueue : chan logrecord.Interface
+            ~ isChannelOpen : bool
             ~ waitGroup sync.WaitGroup
             ~ startListeningMessages()
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
             + Log(level : level.Level, parameters : ...any)
         }
         interface AsyncLoggerInterface extends Interface {
             + Interface
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
         }
         struct AsyncLogger implements AsyncLoggerInterface {
             + *Logger
             + WaitToFinishLogging()
-            + Open(queueSize : int)
+            + Open(queueSize : int) : error
             + Close()
         }
         struct Configuration {

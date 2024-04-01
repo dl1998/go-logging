@@ -13,21 +13,29 @@ var (
 	messageQueueSize = 1
 )
 
+// createBaseAsyncLogger creates a new baseAsyncLogger with the provided
+// handlers, message queue size and channel open flag.
+func createBaseAsyncLogger(handlers []handler.Interface, messageQueueSize int, isChannelOpen bool) *baseAsyncLogger {
+	newBaseAsyncLogger := &baseAsyncLogger{
+		baseLogger: &baseLogger{
+			name:     loggerName,
+			handlers: handlers,
+		},
+		messageQueue:  make(chan logrecord.Interface, messageQueueSize),
+		isChannelOpen: isChannelOpen,
+		waitGroup:     sync.WaitGroup{},
+	}
+	return newBaseAsyncLogger
+}
+
 // TestBaseAsyncLogger_startListeningMessages tests that
 // baseAsyncLogger.startListeningMessages method processes logs from the message
 // queue.
 func TestBaseAsyncLogger_startListeningMessages(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
-	record := logrecord.New(loggerName, 0, timeFormat, parametersWithMap, 3)
+	record := logrecord.New(loggerName, logLevel, timeFormat, parametersWithMap, skipCallers)
 	newBaseAsyncLogger.messageQueue <- record
 
 	go newBaseAsyncLogger.startListeningMessages()
@@ -42,14 +50,7 @@ func TestBaseAsyncLogger_startListeningMessages(t *testing.T) {
 // messages.
 func TestBaseAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	waitChannel := make(chan bool)
 
@@ -68,18 +69,28 @@ func TestBaseAsyncLogger_WaitToFinishLogging(t *testing.T) {
 // queue and start listening messages.
 func TestBaseAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
-	newBaseAsyncLogger.Open(messageQueueSize)
+	newBaseAsyncLogger.Close()
+
+	err := newBaseAsyncLogger.Open(messageQueueSize)
 
 	testutils.AssertNotNil(t, newBaseAsyncLogger.messageQueue)
+	testutils.AssertNil(t, err)
+	testutils.AssertEquals(t, true, newBaseAsyncLogger.isChannelOpen)
+}
+
+// TestBaseAsyncLogger_Open_Error tests that baseAsyncLogger.Open returns an
+// error when trying to open a new channel with current channel being open.
+func TestBaseAsyncLogger_Open_Error(t *testing.T) {
+	mockHandler := &MockHandler{}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
+
+	err := newBaseAsyncLogger.Open(messageQueueSize)
+
+	testutils.AssertNotNil(t, newBaseAsyncLogger.messageQueue)
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, true, newBaseAsyncLogger.isChannelOpen)
 }
 
 // isChannelClosed checks if the provided channel is closed.
@@ -96,32 +107,19 @@ func isChannelClosed(ch <-chan logrecord.Interface) bool {
 // queue channel.
 func TestBaseAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	newBaseAsyncLogger.Close()
 
 	testutils.AssertEquals(t, true, isChannelClosed(newBaseAsyncLogger.messageQueue))
+	testutils.AssertEquals(t, false, newBaseAsyncLogger.isChannelOpen)
 }
 
 // TestBaseAsyncLogger_Log tests that baseAsyncLogger.Log sends a new record on
 // the message queue.
 func TestBaseAsyncLogger_Log(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	newBaseAsyncLogger.Log(level.Trace, parametersWithMap)
 
@@ -135,14 +133,7 @@ func TestBaseAsyncLogger_Log(t *testing.T) {
 // baseAsyncLogger.
 func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, b.N),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, b.N, true)
 
 	b.ResetTimer()
 
@@ -153,11 +144,11 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 
 // TestNewAsyncLogger tests that NewAsyncLogger creates a new AsyncLogger.
 func TestNewAsyncLogger(t *testing.T) {
-	newAsyncStructuredLogger := NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
+	newAsyncLogger := NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
 
-	testutils.AssertNotNil(t, newAsyncStructuredLogger)
-	testutils.AssertEquals(t, loggerName, newAsyncStructuredLogger.Name())
-	testutils.AssertEquals(t, messageQueueSize, cap(newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).messageQueue))
+	testutils.AssertNotNil(t, newAsyncLogger)
+	testutils.AssertEquals(t, loggerName, newAsyncLogger.Name())
+	testutils.AssertEquals(t, messageQueueSize, cap(newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue))
 }
 
 // BenchmarkNewAsyncLogger benchmarks NewAsyncLogger.
@@ -171,16 +162,9 @@ func BenchmarkNewAsyncLogger(b *testing.B) {
 // waits until async logger finish logging messages.
 func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncLogger{
+	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
@@ -188,10 +172,10 @@ func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 
 	go func() {
 		waitChannel <- true
-		newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).waitGroup.Add(1)
+		newAsyncLogger.baseLogger.(*baseAsyncLogger).waitGroup.Add(1)
 	}()
 
-	newAsyncStructuredLogger.WaitToFinishLogging()
+	newAsyncLogger.WaitToFinishLogging()
 	waited := <-waitChannel
 
 	testutils.AssertEquals(t, true, waited)
@@ -201,42 +185,50 @@ func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 // and start listening messages.
 func TestAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncLogger{
+	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
-	newAsyncStructuredLogger.Open(messageQueueSize)
+	newAsyncLogger.Close()
 
-	testutils.AssertNotNil(t, newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).messageQueue)
+	err := newAsyncLogger.Open(messageQueueSize)
+
+	testutils.AssertNotNil(t, newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue)
+	testutils.AssertNil(t, err)
+	testutils.AssertEquals(t, true, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
+}
+
+// TestAsyncLogger_Open_Error tests that AsyncLogger.Open returns an error when
+// trying to open a new channel with current channel being open.
+func TestAsyncLogger_Open_Error(t *testing.T) {
+	mockHandler := &MockHandler{}
+	newAsyncLogger := &AsyncLogger{
+		Logger: &Logger{
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
+		},
+	}
+
+	err := newAsyncLogger.Open(messageQueueSize)
+
+	testutils.AssertNotNil(t, newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue)
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, true, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
 }
 
 // TestAsyncLogger_Close tests that AsyncLogger.Close closes message queue
 // channel.
 func TestAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncLogger{
+	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
-	newAsyncStructuredLogger.Close()
+	newAsyncLogger.Close()
 
-	testutils.AssertEquals(t, true, isChannelClosed(newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).messageQueue))
+	testutils.AssertEquals(t, true, isChannelClosed(newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue))
+	testutils.AssertEquals(t, false, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
 }

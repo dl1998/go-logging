@@ -1,6 +1,7 @@
 package structuredlogger
 
 import (
+	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
@@ -13,6 +14,8 @@ type baseAsyncLogger struct {
 	*baseLogger
 	// messageQueue is a channel for the log messages.
 	messageQueue chan logrecord.Interface
+	// isChannelOpen is a flag that indicates if the messageQueue is open.
+	isChannelOpen bool
 	// waitGroup is a wait group for the async structured logger messages.
 	waitGroup sync.WaitGroup
 }
@@ -34,14 +37,21 @@ func (logger *baseAsyncLogger) WaitToFinishLogging() {
 
 // Open opens the messageQueue with the provided queueSize and starts listening
 // for messages.
-func (logger *baseAsyncLogger) Open(queueSize int) {
+func (logger *baseAsyncLogger) Open(queueSize int) error {
+	if logger.isChannelOpen {
+		return fmt.Errorf("cannot open a new message queue, current queue is already open")
+	}
 	logger.messageQueue = make(chan logrecord.Interface, queueSize)
+	logger.isChannelOpen = true
+	logger.waitGroup = sync.WaitGroup{}
 	go logger.startListeningMessages()
+	return nil
 }
 
 // Close closes the messageQueue.
 func (logger *baseAsyncLogger) Close() {
 	close(logger.messageQueue)
+	logger.isChannelOpen = false
 }
 
 // Log logs interpolated message with the provided level.Level.
@@ -74,8 +84,9 @@ func NewAsyncLogger(name string, timeFormat string, queueSize int) *AsyncLogger 
 			timeFormat: timeFormat,
 			handlers:   make([]handler.Interface, 0),
 		},
-		messageQueue: make(chan logrecord.Interface, queueSize),
-		waitGroup:    sync.WaitGroup{},
+		messageQueue:  make(chan logrecord.Interface, queueSize),
+		isChannelOpen: true,
+		waitGroup:     sync.WaitGroup{},
 	}
 	go newBaseLogger.startListeningMessages()
 	return &AsyncLogger{
@@ -92,8 +103,8 @@ func (logger *AsyncLogger) WaitToFinishLogging() {
 
 // Open opens the messageQueue with the provided queueSize and starts listening
 // for messages.
-func (logger *AsyncLogger) Open(queueSize int) {
-	logger.baseLogger.(*baseAsyncLogger).Open(queueSize)
+func (logger *AsyncLogger) Open(queueSize int) error {
+	return logger.baseLogger.(*baseAsyncLogger).Open(queueSize)
 }
 
 // Close closes the messageQueue.

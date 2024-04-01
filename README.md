@@ -44,38 +44,38 @@ Default logger could be used like in the following example:
 
 - Standard logger
 
-```go
-logger.Warning("Message for logging: %s.", "my message")
-```
+  ```go
+  logger.Warning("Message for logging: %s.", "my message")
+  ```
 
 - Structured logger
 
-```go
-structuredlogger.Warning("message", "My message.")
-```
-
-or
-
-```go
-structuredlogger.Warning(map[string]string{
-    "message": "My message.",
-})
-```
+  ```go
+  structuredlogger.Warning("message", "My message.")
+  ```
+  
+  or
+  
+  ```go
+  structuredlogger.Warning(map[string]string{
+      "message": "My message.",
+  })
+  ```
 
 By default, root logger prints on console only, and starting from Warning level. It could be changed by setting logging
 level:
 
 - Standard logger
 
-```go
-logger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
-```
+  ```go
+  logger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
+  ```
 
 - Structured logger
 
-```go
-structuredlogger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
-```
+  ```go
+  structuredlogger.Configure(logger.NewConfiguration(logger.WithFromLevel(level.All)))
+  ```
 
 After changing log level to "All" it will print messages for any level.
 
@@ -89,29 +89,29 @@ All options available for the configuration are:
 
 - For Standard Logger
 
-| Method         |            Default            | Description                                                                        |
-|----------------|:-----------------------------:|------------------------------------------------------------------------------------|
-| WithFromLevel  |         level.Warning         | Set logging level from which logger should log messages.                           |
-| WithToLevel    |          level.Null           | Set logging level till which logger should log messages.                           |
-| WithTemplate   | "%(level):%(name):%(message)" | Set template for logging message.                                                  |
-| WithFile       |              ""               | Set file where to log messages, if not set, then logging to file will be disabled. |
-| WithName       |            "root"             | Set logger name.                                                                   |
-| WithTimeFormat |         time.RFC3339          | Set time format for logging message.                                               |
+  | Method         |            Default            | Description                                                                        |
+  |----------------|:-----------------------------:|------------------------------------------------------------------------------------|
+  | WithFromLevel  |         level.Warning         | Set logging level from which logger should log messages.                           |
+  | WithToLevel    |          level.Null           | Set logging level till which logger should log messages.                           |
+  | WithTemplate   | "%(level):%(name):%(message)" | Set template for logging message.                                                  |
+  | WithFile       |              ""               | Set file where to log messages, if not set, then logging to file will be disabled. |
+  | WithName       |            "root"             | Set logger name.                                                                   |
+  | WithTimeFormat |         time.RFC3339          | Set time format for logging message.                                               |
 
 - For Structured Logger
 
-| Method                |                                                       Default                                                       | Description                                                                                                                           |
-|-----------------------|:-------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
-| WithFromLevel         |                                                    level.Warning                                                    | Set logging level from which logger should log messages.                                                                              |
-| WithToLevel           |                                                     level.Null                                                      | Set logging level till which logger should log messages.                                                                              |
-| WithTemplate          | map[string]string {<br/>"timestamp": "%(timestamp)",<br/>"level":     "%(level)",<br/>"name":      "%(name)",<br/>} | Set template for logging structure.                                                                                                   |
-| WithFile              |                                                         ""                                                          | Set file where to log messages, if not set, then logging to file will be disabled.                                                    |
-| WithFormat            |                                                       "json"                                                        | Set format for structured logging.<br/><br/>Could be one of the following<br/><ul><li>json</li><li>key-value</li></ul>                |
-| WithPretty            |                                                        false                                                        | Set if json message should be pretty printed.<br/>*Option works only with "json" format.*                                             |
-| WithKeyValueDelimiter |                                                         "="                                                         | Set key-value delimiter (eg. "key=value", where '=' is the delimiter).<br/>*Option works only with "key-value" format.*               |
-| WithPairSeparator     |                                                         " "                                                         | Set key-value separator (eg. "key1=value1,key2=value2", where ',' is the separator).<br/>*Option works only with "key-value" format.* |
-| WithName              |                                                       "root"                                                        | Set logger name.                                                                                                                      |
-| WithTimeFormat        |                                                    time.RFC3339                                                     | Set time format for logging message.                                                                                                  |
+  | Method                |                                                       Default                                                       | Description                                                                                                                           |
+  |-----------------------|:-------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
+  | WithFromLevel         |                                                    level.Warning                                                    | Set logging level from which logger should log messages.                                                                              |
+  | WithToLevel           |                                                     level.Null                                                      | Set logging level till which logger should log messages.                                                                              |
+  | WithTemplate          | map[string]string {<br/>"timestamp": "%(timestamp)",<br/>"level":     "%(level)",<br/>"name":      "%(name)",<br/>} | Set template for logging structure.                                                                                                   |
+  | WithFile              |                                                         ""                                                          | Set file where to log messages, if not set, then logging to file will be disabled.                                                    |
+  | WithFormat            |                                                       "json"                                                        | Set format for structured logging.<br/><br/>Could be one of the following<br/><ul><li>json</li><li>key-value</li></ul>                |
+  | WithPretty            |                                                        false                                                        | Set if json message should be pretty printed.<br/>*Option works only with "json" format.*                                             |
+  | WithKeyValueDelimiter |                                                         "="                                                         | Set key-value delimiter (eg. "key=value", where '=' is the delimiter).<br/>*Option works only with "key-value" format.*               |
+  | WithPairSeparator     |                                                         " "                                                         | Set key-value separator (eg. "key1=value1,key2=value2", where ',' is the separator).<br/>*Option works only with "key-value" format.* |
+  | WithName              |                                                       "root"                                                        | Set logger name.                                                                                                                      |
+  | WithTimeFormat        |                                                    time.RFC3339                                                     | Set time format for logging message.                                                                                                  |
 
 ### Custom Logger
 
@@ -119,27 +119,27 @@ Alternatively you could create application logger. To do this you would need to 
 
 - Standard logger
 
-```go
-applicationLogger := logger.New("application-logger", time.RFC3339)
-```
+  ```go
+  applicationLogger := logger.New("application-logger", time.RFC3339)
+  ```
 
 - Standard async logger
 
-```go
-applicationLogger := logger.NewAsyncLogger("application-logger", time.RFC3339, 100)
-```
+  ```go
+  applicationLogger := logger.NewAsyncLogger("application-logger", time.RFC3339, 100)
+  ```
 
 - Structured logger
 
-```go
-applicationLogger := structuredlogger.New("application-logger", time.RFC3339)
-```
+  ```go
+  applicationLogger := structuredlogger.New("application-logger", time.RFC3339)
+  ```
 
 - Structured async logger
 
-```go
-applicationLogger := structuredlogger.NewAsyncLogger("application-logger", time.RFC3339, 100)
-```
+  ```go
+  applicationLogger := structuredlogger.NewAsyncLogger("application-logger", time.RFC3339, 100)
+  ```
 
 After this you need to set up it, for this create a new formatter that says how to log the message by providing a
 template.
@@ -161,28 +161,28 @@ Available template options:
 
 - Standard logger
 
-```go
-applicationFormatter := formatter.New("%(datetime) [%(level)] %(message)")
-```
+  ```go
+  applicationFormatter := formatter.New("%(datetime) [%(level)] %(message)")
+  ```
 
 - Structured logger
     - JSON format
 
-    ```go
-    applicationFormatter := formatter.NewJSON(map[string]string{
-        "time":    "%(timestamp)",
-        "level":   "%(level)",
-    }, false)
-    ```
+      ```go
+      applicationFormatter := formatter.NewJSON(map[string]string{
+          "time":    "%(timestamp)",
+          "level":   "%(level)",
+      }, false)
+      ```
 
     - Key-Value format
 
-    ```go
-    applicationFormatter := formatter.NewKeyValue(map[string]string{
-        "time":    "%(timestamp)",
-        "level":   "%(level)",
-    }, "=", " ")
-    ```
+      ```go
+      applicationFormatter := formatter.NewKeyValue(map[string]string{
+          "time":    "%(timestamp)",
+          "level":   "%(level)",
+      }, "=", " ")
+      ```
 
 After creation of the formatter, you need to create a new handler that tells where to write log messages.
 
@@ -193,23 +193,23 @@ There are three predefined types of handler (for standard and structured logger 
 - Console Handler - it takes log level starting from which it would log messages, log level till which it would log
   messages, and formatter that tells how to log message. It logs messages to standard output.
 
-```go
-newConsoleHandler := handler.NewConsoleHandler(level.Debug, level.Null, applicationFormatter)
-```
+  ```go
+  newConsoleHandler := handler.NewConsoleHandler(level.Debug, level.Null, applicationFormatter)
+  ```
 
 - Console Error Handler - it takes log level starting from which it would log messages, log level till which it would
   log messages, and formatter that tells how to log message. It logs messages to error output.
 
-```go
-newConsoleErrorHandler := handler.NewConsoleErrorHandler(level.Debug, level.Null, applicationFormatter)
-```
+  ```go
+  newConsoleErrorHandler := handler.NewConsoleErrorHandler(level.Debug, level.Null, applicationFormatter)
+  ```
 
 - File Handler - it takes log level starting from which it would log messages, log level till which it would
   log messages, formatter that tells how to log message, and path to the file where to log those data.
 
-```go
-newFileHandler := handler.NewFileHandler(level.Debug, level.Null, applicationFormatter, "system.log")
-```
+  ```go
+  newFileHandler := handler.NewFileHandler(level.Debug, level.Null, applicationFormatter, "system.log")
+  ```
 
 You could create your custom handler:
 
@@ -236,27 +236,27 @@ arguments.
 
 - Standard logger
 
-```go
-applicationLogger.Info("My message: %s.", "logged using application logger")
-```
+  ```go
+  applicationLogger.Info("My message: %s.", "logged using application logger")
+  ```
 
 - Standard async logger
 
-```go
-applicationLogger.Info("My message: %s.", "logged using application async logger")
-
-// Wait for all messages to be logged before exiting the program.
-applicationLogger.WaitToFinishLogging()
-```
+  ```go
+  applicationLogger.Info("My message: %s.", "logged using application async logger")
+  
+  // Wait for all messages to be logged before exiting the program.
+  applicationLogger.WaitToFinishLogging()
+  ```
 
 - Structured logger
-    - Varargs
+  - Varargs
 
     ```go
     applicationLogger.Info("message", "Logged using structured logger with varargs.")
     ```
 
-    - Map
+  - Map
 
     ```go
     applicationLogger.Info(map[string]string{
@@ -310,7 +310,9 @@ applicationLogger.WaitToFinishLogging()
 applicationLogger.Close()
 
 // Open the logger with a new message queue size.
-applicationLogger.Open(100)
+if err := applicationLogger.Open(100); err != nil {
+	panic(err)
+}
 ```
 
 *Note: if you assign a new message queue size that is smaller than the number of messages sent to the queue, the logger
