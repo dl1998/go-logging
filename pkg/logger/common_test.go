@@ -15,11 +15,13 @@ import (
 var (
 	loggerTemplate = "%(level):%(name):%(message)"
 	loggerName     = "test"
+	logLevel       = level.Debug
 	message        = "Test Message: %s."
 	parameters     = []any{
 		"test",
 	}
-	timeFormat = time.RFC3339
+	timeFormat  = time.RFC3339
+	skipCallers = 3
 )
 
 // MockLogger is used to mock baseLogger.
@@ -110,7 +112,7 @@ func (mock *MockHandler) FromLevel() level.Level {
 	mock.CalledName = "FromLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := level.Debug
+	returnValue := logLevel
 	mock.Return = returnValue
 	return returnValue
 }
@@ -128,7 +130,7 @@ func (mock *MockHandler) ToLevel() level.Level {
 	mock.CalledName = "ToLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := level.Debug
+	returnValue := logLevel
 	mock.Return = returnValue
 	return returnValue
 }
@@ -170,8 +172,6 @@ func TestBaseLogger_Log(t *testing.T) {
 		},
 	}
 
-	logLevel := level.Debug
-
 	newBaseLogger.Log(logLevel, message, parameters...)
 
 	handlerRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
@@ -189,8 +189,6 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 			&MockHandler{},
 		},
 	}
-
-	logLevel := level.Debug
 
 	for index := 0; index < b.N; index++ {
 		newBaseLogger.Log(logLevel, message, parameters...)
