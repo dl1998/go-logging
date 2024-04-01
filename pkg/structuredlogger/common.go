@@ -23,8 +23,8 @@ type baseLogger struct {
 	handlers   []handler.Interface
 }
 
-// Log logs interpolated message with the provided level.Level.
-func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
+// convertParametersToMap converts parameters to map[string]interface{}.
+func convertParametersToMap(parameters ...any) map[string]interface{} {
 	var parametersMap = make(map[string]interface{})
 	parametersCount := len(parameters)
 
@@ -38,6 +38,13 @@ func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
 			parametersMap[parameters[index].(string)] = parameters[index+1]
 		}
 	}
+
+	return parametersMap
+}
+
+// Log logs interpolated message with the provided level.Level.
+func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
+	var parametersMap = convertParametersToMap(parameters...)
 
 	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 3)
 

@@ -165,19 +165,8 @@ func (mock *MockHandler) Write(record logrecord.Interface) {
 	mock.Return = nil
 }
 
-// TestBaseLogger_Log tests that baseLogger.Log method works correctly.
-func TestBaseLogger_Log(t *testing.T) {
-	newHandler := &MockHandler{}
-
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			newHandler,
-		},
-	}
-
-	logLevel := level.Debug
-
+// TestConvertParametersToMap tests that convertParametersToMap function works correctly.
+func TestConvertParametersToMap(t *testing.T) {
 	tests := map[string]struct {
 		parameters         []any
 		expectedParameters map[string]interface{}
@@ -198,28 +187,15 @@ func TestBaseLogger_Log(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			newBaseLogger.Log(logLevel, test.parameters...)
+			parametersMap := convertParametersToMap(test.parameters...)
 
-			logRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
-
-			testutils.AssertEquals(t, loggerName, logRecord.Name())
-			testutils.AssertEquals(t, logLevel, logRecord.Level())
-			testutils.AssertEquals(t, test.expectedParameters, logRecord.Parameters())
+			testutils.AssertEquals(t, test.expectedParameters, parametersMap)
 		})
 	}
 }
 
-// BenchmarkBaseLogger_Log perform benchmarking of the baseLogger.Log().
-func BenchmarkBaseLogger_Log(b *testing.B) {
-	newBaseLogger := &baseLogger{
-		name: loggerName,
-		handlers: []handler.Interface{
-			&MockHandler{},
-		},
-	}
-
-	logLevel := level.Debug
-
+// BenchmarkConvertParametersToMap perform benchmarking of the convertParametersToMap().
+func BenchmarkConvertParametersToMap(b *testing.B) {
 	benchmarks := map[string]struct {
 		parameters []any
 	}{
@@ -234,9 +210,49 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 	for name, benchmark := range benchmarks {
 		b.Run(name, func(b *testing.B) {
 			for index := 0; index < b.N; index++ {
-				newBaseLogger.Log(logLevel, benchmark.parameters...)
+				convertParametersToMap(benchmark.parameters...)
 			}
 		})
+	}
+}
+
+// TestBaseLogger_Log tests that baseLogger.Log method works correctly.
+func TestBaseLogger_Log(t *testing.T) {
+	newHandler := &MockHandler{}
+
+	newBaseLogger := &baseLogger{
+		name: loggerName,
+		handlers: []handler.Interface{
+			newHandler,
+		},
+	}
+
+	logLevel := level.Debug
+
+	newBaseLogger.Log(logLevel, parameters...)
+
+	logRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
+
+	testutils.AssertEquals(t, loggerName, logRecord.Name())
+	testutils.AssertEquals(t, logLevel, logRecord.Level())
+	testutils.AssertEquals(t, parametersWithMap, logRecord.Parameters())
+}
+
+// BenchmarkBaseLogger_Log perform benchmarking of the baseLogger.Log().
+func BenchmarkBaseLogger_Log(b *testing.B) {
+	newHandler := &MockHandler{}
+
+	newBaseLogger := &baseLogger{
+		name: loggerName,
+		handlers: []handler.Interface{
+			newHandler,
+		},
+	}
+
+	logLevel := level.Debug
+
+	for index := 0; index < b.N; index++ {
+		newBaseLogger.Log(logLevel, parameters...)
 	}
 }
 
