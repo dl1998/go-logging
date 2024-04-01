@@ -108,7 +108,7 @@ All options available for the configuration are:
 | WithFile              |                                                         ""                                                          | Set file where to log messages, if not set, then logging to file will be disabled.                                                    |
 | WithFormat            |                                                       "json"                                                        | Set format for structured logging.<br/><br/>Could be one of the following<br/><ul><li>json</li><li>key-value</li></ul>                |
 | WithPretty            |                                                        false                                                        | Set if json message should be pretty printed.<br/>*Option works only with "json" format.*                                             |
-| WithKeyValueDelimiter |                                                         ":"                                                         | Set key-value delimiter (eg. "key=value", where '=' is the delimiter).<br/>*Option works only with "key-value" format.*               |
+| WithKeyValueDelimiter |                                                         "="                                                         | Set key-value delimiter (eg. "key=value", where '=' is the delimiter).<br/>*Option works only with "key-value" format.*               |
 | WithPairSeparator     |                                                         " "                                                         | Set key-value separator (eg. "key1=value1,key2=value2", where ',' is the separator).<br/>*Option works only with "key-value" format.* |
 | WithName              |                                                       "root"                                                        | Set logger name.                                                                                                                      |
 | WithTimeFormat        |                                                    time.RFC3339                                                     | Set time format for logging message.                                                                                                  |
@@ -123,10 +123,22 @@ Alternatively you could create application logger. To do this you would need to 
 applicationLogger := logger.New("application-logger", time.RFC3339)
 ```
 
+- Standard async logger
+
+```go
+applicationLogger := logger.NewAsyncLogger("application-logger", time.RFC3339, 100)
+```
+
 - Structured logger
 
 ```go
-applicationStructuredLogger := structuredlogger.New("application-logger", time.RFC3339)
+applicationLogger := structuredlogger.New("application-logger", time.RFC3339)
+```
+
+- Structured async logger
+
+```go
+applicationLogger := structuredlogger.NewAsyncLogger("application-logger", time.RFC3339, 100)
 ```
 
 After this you need to set up it, for this create a new formatter that says how to log the message by providing a
@@ -211,8 +223,11 @@ It takes two additional arguments writer for standard messages and for error mes
 After handler has been created it shall be registered.
 
 ```go
+// Register console stdout handler.
 applicationLogger.AddHandler(newConsoleHandler)
+// Register console stderr handler.
 applicationLogger.AddHandler(newConsoleErrorHandler)
+// Register file handler.
 applicationLogger.AddHandler(newFileHandler)
 ```
 
@@ -223,6 +238,15 @@ arguments.
 
 ```go
 applicationLogger.Info("My message: %s.", "logged using application logger")
+```
+
+- Standard async logger
+
+```go
+applicationLogger.Info("My message: %s.", "logged using application async logger")
+
+// Wait for all messages to be logged before exiting the program.
+applicationLogger.WaitToFinishLogging()
 ```
 
 - Structured logger
@@ -239,6 +263,59 @@ applicationLogger.Info("My message: %s.", "logged using application logger")
         "message": "Logged using structured logger with map.",
     })
     ```
+
+- Structured async logger
+  - Varargs
+
+    ```go
+    applicationLogger.Info("message", "Logged using structured logger with varargs.")
+    
+    // Wait for all messages to be logged before exiting the program.
+	applicationLogger.WaitToFinishLogging()
+    ```
+
+  - Map
+
+    ```go
+    applicationLogger.Info(map[string]string{
+        "message": "Logged using structured logger with map.",
+    })
+    
+    // Wait for all messages to be logged before exiting the program.
+	applicationLogger.WaitToFinishLogging()
+    ```
+
+#### Async Loggers - Additional Information
+
+Async loggers are used to log messages asynchronously. It is useful when you want to log messages without blocking the
+main thread. However, you need to wait for all messages to be logged before exiting the program. You can do this by
+calling the `WaitToFinishLogging` method, it will block the main thread until all messages are logged. Alternatively,
+you can close the logger by calling the `Close` method, it will close the message queue without waiting for all messages
+to be logged. This is useful when you want to exit the program without waiting for all messages to be logged. After
+calling the `Close` method, you can open the logger again by calling the `Open` method, it accepts the new message queue
+size as an argument. `Open` method will open the logger with the new message queue size and start listening for the
+messages.
+
+Example that waits for all messages to be logged, then close the logger and open it again with a new message queue size:
+
+```go
+for index := 0; index < 1000; index++ {
+    applicationLogger.Info("Counter: %d.", index)
+}
+
+// Wait for all messages to be logged before exiting the program.
+applicationLogger.WaitToFinishLogging()
+
+// Close the logger.
+applicationLogger.Close()
+
+// Open the logger with a new message queue size.
+applicationLogger.Open(100)
+```
+
+*Note: if you assign a new message queue size that is smaller than the number of messages sent to the queue, the logger
+will add messages to the queue until it is not full, then it will wait (blocking the process) until the message from the
+queue will be processed and free up the space in the message queue.*
 
 ## Class Diagram
 
