@@ -406,18 +406,18 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 func TestWithFromLevel(t *testing.T) {
 	configuration := NewConfiguration()
 
-	option := WithFromLevel(level.Trace)
+	option := WithFromLevel(logLevel)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, level.Trace, configuration.fromLevel)
+	testutils.AssertEquals(t, logLevel, configuration.fromLevel)
 }
 
 // BenchmarkWithFromLevel perform benchmarking of the WithFromLevel().
 func BenchmarkWithFromLevel(b *testing.B) {
 	configuration := NewConfiguration()
 
-	option := WithFromLevel(level.Trace)
+	option := WithFromLevel(logLevel)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -428,18 +428,18 @@ func BenchmarkWithFromLevel(b *testing.B) {
 func TestWithToLevel(t *testing.T) {
 	configuration := NewConfiguration()
 
-	option := WithToLevel(level.Trace)
+	option := WithToLevel(logLevel)
 
 	option(configuration)
 
-	testutils.AssertEquals(t, level.Trace, configuration.toLevel)
+	testutils.AssertEquals(t, logLevel, configuration.toLevel)
 }
 
 // BenchmarkWithToLevel perform benchmarking of the WithToLevel().
 func BenchmarkWithToLevel(b *testing.B) {
 	configuration := NewConfiguration()
 
-	option := WithToLevel(level.Trace)
+	option := WithToLevel(logLevel)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)

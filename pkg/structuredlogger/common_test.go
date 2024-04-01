@@ -1,28 +1,32 @@
-package logger
+package structuredlogger
 
 import (
-	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
-	"github.com/dl1998/go-logging/pkg/logger/formatter"
-	"github.com/dl1998/go-logging/pkg/logger/handler"
-	"github.com/dl1998/go-logging/pkg/logger/logrecord"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"github.com/dl1998/go-logging/pkg/structuredlogger/logrecord"
 	"io"
 	"testing"
 	"time"
 )
 
 var (
-	loggerTemplate = "%(level):%(name):%(message)"
-	loggerName     = "test"
-	logLevel       = level.Debug
-	message        = "Test Message: %s."
-	parameters     = []any{
-		"test",
+	loggerName = "test"
+	timeFormat = time.RFC3339
+	parameters = []any{
+		"message", "test",
 	}
-	timeFormat  = time.RFC3339
-	skipCallers = 3
+	parametersWithMap = map[string]interface{}{
+		"message": "test",
+	}
+	pretty = false
 )
+
+var loggerTemplate = map[string]string{
+	"level": "%(level)",
+	"name":  "%(name)",
+}
 
 // MockLogger is used to mock baseLogger.
 type MockLogger struct {
@@ -34,10 +38,10 @@ type MockLogger struct {
 }
 
 // Log mocks Log from baseLogger.
-func (mock *MockLogger) Log(level level.Level, message string, parameters ...any) {
+func (mock *MockLogger) Log(level level.Level, parameters ...any) {
 	mock.CalledName = "Log"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), level, message)
+	mock.Parameters = append(make([]any, 0), level)
 	mock.Parameters = append(mock.Parameters, parameters...)
 	mock.Return = nil
 }
@@ -112,7 +116,7 @@ func (mock *MockHandler) FromLevel() level.Level {
 	mock.CalledName = "FromLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := logLevel
+	returnValue := level.Debug
 	mock.Return = returnValue
 	return returnValue
 }
@@ -130,7 +134,7 @@ func (mock *MockHandler) ToLevel() level.Level {
 	mock.CalledName = "ToLevel"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := logLevel
+	returnValue := level.Debug
 	mock.Return = returnValue
 	return returnValue
 }
@@ -148,7 +152,7 @@ func (mock *MockHandler) Formatter() formatter.Interface {
 	mock.CalledName = "Formatter"
 	mock.Called = true
 	mock.Parameters = make([]any, 0)
-	returnValue := formatter.New(loggerTemplate)
+	returnValue := formatter.NewJSON(loggerTemplate, pretty)
 	mock.Return = returnValue
 	return returnValue
 }
@@ -159,6 +163,57 @@ func (mock *MockHandler) Write(record logrecord.Interface) {
 	mock.Called = true
 	mock.Parameters = append(make([]any, 0), record)
 	mock.Return = nil
+}
+
+// TestConvertParametersToMap tests that convertParametersToMap function works correctly.
+func TestConvertParametersToMap(t *testing.T) {
+	tests := map[string]struct {
+		parameters         []any
+		expectedParameters map[string]interface{}
+	}{
+		"Varargs": {
+			parameters:         parameters,
+			expectedParameters: parametersWithMap,
+		},
+		"Varargs with odd number of parameters": {
+			parameters:         []any{"message", "test", "message2"},
+			expectedParameters: parametersWithMap,
+		},
+		"Map": {
+			parameters:         []any{parametersWithMap},
+			expectedParameters: parametersWithMap,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			parametersMap := convertParametersToMap(test.parameters...)
+
+			testutils.AssertEquals(t, test.expectedParameters, parametersMap)
+		})
+	}
+}
+
+// BenchmarkConvertParametersToMap perform benchmarking of the convertParametersToMap().
+func BenchmarkConvertParametersToMap(b *testing.B) {
+	benchmarks := map[string]struct {
+		parameters []any
+	}{
+		"Varargs": {
+			parameters: parameters,
+		},
+		"Map": {
+			parameters: []any{parametersWithMap},
+		},
+	}
+
+	for name, benchmark := range benchmarks {
+		b.Run(name, func(b *testing.B) {
+			for index := 0; index < b.N; index++ {
+				convertParametersToMap(benchmark.parameters...)
+			}
+		})
+	}
 }
 
 // TestBaseLogger_Log tests that baseLogger.Log method works correctly.
@@ -172,30 +227,36 @@ func TestBaseLogger_Log(t *testing.T) {
 		},
 	}
 
-	newBaseLogger.Log(logLevel, message, parameters...)
+	logLevel := level.Debug
 
-	handlerRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
+	newBaseLogger.Log(logLevel, parameters...)
 
-	testutils.AssertEquals(t, loggerName, handlerRecord.Name())
-	testutils.AssertEquals(t, logLevel, handlerRecord.Level())
-	testutils.AssertEquals(t, fmt.Sprintf(message, parameters...), handlerRecord.Message())
+	logRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
+
+	testutils.AssertEquals(t, loggerName, logRecord.Name())
+	testutils.AssertEquals(t, logLevel, logRecord.Level())
+	testutils.AssertEquals(t, parametersWithMap, logRecord.Parameters())
 }
 
 // BenchmarkBaseLogger_Log perform benchmarking of the baseLogger.Log().
 func BenchmarkBaseLogger_Log(b *testing.B) {
+	newHandler := &MockHandler{}
+
 	newBaseLogger := &baseLogger{
 		name: loggerName,
 		handlers: []handler.Interface{
-			&MockHandler{},
+			newHandler,
 		},
 	}
 
+	logLevel := level.Debug
+
 	for index := 0; index < b.N; index++ {
-		newBaseLogger.Log(logLevel, message, parameters...)
+		newBaseLogger.Log(logLevel, parameters...)
 	}
 }
 
-// TestBaseLogger_Name tests that baseLogger.Name returns loggerName of the logger.
+// TestBaseLogger_Name tests that baseLogger.Name returns name of the logger.
 func TestBaseLogger_Name(t *testing.T) {
 	newBaseLogger := &baseLogger{
 		name: loggerName,
@@ -221,7 +282,7 @@ func BenchmarkBaseLogger_Name(b *testing.B) {
 	}
 }
 
-// TestBaseLogger_SetName tests that baseLogger.SetName set a new loggerName for the
+// TestBaseLogger_SetName tests that baseLogger.SetName set a new name for the
 // logger.
 func TestBaseLogger_SetName(t *testing.T) {
 	newBaseLogger := &baseLogger{
@@ -231,7 +292,7 @@ func TestBaseLogger_SetName(t *testing.T) {
 		},
 	}
 
-	newName := "new-loggerName"
+	newName := "new-name"
 
 	newBaseLogger.SetName(newName)
 
@@ -247,7 +308,7 @@ func BenchmarkBaseLogger_SetName(b *testing.B) {
 		},
 	}
 
-	newName := "new-loggerName"
+	newName := "new-name"
 
 	for index := 0; index < b.N; index++ {
 		newBaseLogger.SetName(newName)
