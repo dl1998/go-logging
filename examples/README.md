@@ -9,6 +9,13 @@ Demonstrates how to create a new custom logger for the application.
 It creates an async logger with provided queue size that writes messages on the console asynchronously. It also provides
 an example how to wait for all messages to be written.
 
+## customasyncstructuredlogger
+
+Demonstrates how to create a new custom structured logger for the application.
+
+It creates an async structured logger with provided queue size that writes messages on the console asynchronously. It
+also provides an example how to wait for all messages to be written.
+
 ## customlogger
 
 Demonstrates how to create a new custom logger for the application.
