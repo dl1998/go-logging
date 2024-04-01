@@ -151,29 +151,27 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	}
 }
 
-// TestNewAsyncStructuredLogger tests that NewAsyncStructuredLogger creates a new
-// AsyncStructuredLogger.
-func TestNewAsyncStructuredLogger(t *testing.T) {
-	newAsyncStructuredLogger := NewAsyncStructuredLogger(loggerName, timeFormat, messageQueueSize)
+// TestNewAsyncLogger tests that NewAsyncLogger creates a new AsyncLogger.
+func TestNewAsyncLogger(t *testing.T) {
+	newAsyncStructuredLogger := NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
 
 	testutils.AssertNotNil(t, newAsyncStructuredLogger)
 	testutils.AssertEquals(t, loggerName, newAsyncStructuredLogger.Name())
 	testutils.AssertEquals(t, messageQueueSize, cap(newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).messageQueue))
 }
 
-// BenchmarkNewAsyncStructuredLogger benchmarks NewAsyncStructuredLogger.
-func BenchmarkNewAsyncStructuredLogger(b *testing.B) {
+// BenchmarkNewAsyncLogger benchmarks NewAsyncLogger.
+func BenchmarkNewAsyncLogger(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		NewAsyncStructuredLogger(loggerName, timeFormat, messageQueueSize)
+		NewAsyncLogger(loggerName, timeFormat, messageQueueSize)
 	}
 }
 
-// TestAsyncStructuredLogger_WaitToFinishLogging tests that
-// AsyncStructuredLogger.WaitToFinishLogging waits until async logger finish
-// logging messages.
-func TestAsyncStructuredLogger_WaitToFinishLogging(t *testing.T) {
+// TestAsyncLogger_WaitToFinishLogging tests that AsyncLogger.WaitToFinishLogging
+// waits until async logger finish logging messages.
+func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncStructuredLogger{
+	newAsyncStructuredLogger := &AsyncLogger{
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
@@ -199,11 +197,11 @@ func TestAsyncStructuredLogger_WaitToFinishLogging(t *testing.T) {
 	testutils.AssertEquals(t, true, waited)
 }
 
-// TestAsyncStructuredLogger_Open tests that AsyncStructuredLogger.Open creates a
-// new message queue and start listening messages.
-func TestAsyncStructuredLogger_Open(t *testing.T) {
+// TestAsyncLogger_Open tests that AsyncLogger.Open creates a new message queue
+// and start listening messages.
+func TestAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncStructuredLogger{
+	newAsyncStructuredLogger := &AsyncLogger{
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{
@@ -221,11 +219,11 @@ func TestAsyncStructuredLogger_Open(t *testing.T) {
 	testutils.AssertNotNil(t, newAsyncStructuredLogger.baseLogger.(*baseAsyncLogger).messageQueue)
 }
 
-// TestAsyncStructuredLogger_Close tests that AsyncStructuredLogger.Close closes
-// message queue channel.
-func TestAsyncStructuredLogger_Close(t *testing.T) {
+// TestAsyncLogger_Close tests that AsyncLogger.Close closes message queue
+// channel.
+func TestAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newAsyncStructuredLogger := &AsyncStructuredLogger{
+	newAsyncStructuredLogger := &AsyncLogger{
 		Logger: &Logger{
 			baseLogger: &baseAsyncLogger{
 				baseLogger: &baseLogger{

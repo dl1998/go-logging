@@ -13,7 +13,7 @@ import (
 func main() {
 	asyncQueueSize := 10
 
-	applicationLogger := structuredlogger.NewAsyncStructuredLogger("example", time.DateTime, asyncQueueSize)
+	applicationLogger := structuredlogger.NewAsyncLogger("example", time.DateTime, asyncQueueSize)
 
 	applicationFormatter := formatter.NewJSON(map[string]string{
 		"time":  "%(datetime)",

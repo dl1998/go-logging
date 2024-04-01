@@ -52,23 +52,22 @@ func (logger *baseAsyncLogger) Log(logLevel level.Level, parameters ...any) {
 	logger.messageQueue <- logRecord
 }
 
-// AsyncStructuredLoggerInterface defines async structured logger interface.
-type AsyncStructuredLoggerInterface interface {
+// AsyncLoggerInterface defines async structured logger interface.
+type AsyncLoggerInterface interface {
 	Interface
 	WaitToFinishLogging()
 	Open(queueSize int)
 	Close()
 }
 
-// AsyncStructuredLogger is a structured logger that logs messages
-// asynchronously.
-type AsyncStructuredLogger struct {
+// AsyncLogger is a structured logger that logs messages asynchronously.
+type AsyncLogger struct {
 	// Logger is a standard structured logger.
 	*Logger
 }
 
-// NewAsyncStructuredLogger creates a new async structured logger.
-func NewAsyncStructuredLogger(name string, timeFormat string, queueSize int) *AsyncStructuredLogger {
+// NewAsyncLogger creates a new async structured logger.
+func NewAsyncLogger(name string, timeFormat string, queueSize int) *AsyncLogger {
 	newBaseLogger := &baseAsyncLogger{
 		baseLogger: &baseLogger{
 			name:       name,
@@ -79,7 +78,7 @@ func NewAsyncStructuredLogger(name string, timeFormat string, queueSize int) *As
 		waitGroup:    sync.WaitGroup{},
 	}
 	go newBaseLogger.startListeningMessages()
-	return &AsyncStructuredLogger{
+	return &AsyncLogger{
 		Logger: &Logger{
 			baseLogger: newBaseLogger,
 		},
@@ -87,17 +86,17 @@ func NewAsyncStructuredLogger(name string, timeFormat string, queueSize int) *As
 }
 
 // WaitToFinishLogging waits for all messages to be logged.
-func (logger *AsyncStructuredLogger) WaitToFinishLogging() {
+func (logger *AsyncLogger) WaitToFinishLogging() {
 	logger.baseLogger.(*baseAsyncLogger).WaitToFinishLogging()
 }
 
 // Open opens the messageQueue with the provided queueSize and starts listening
 // for messages.
-func (logger *AsyncStructuredLogger) Open(queueSize int) {
+func (logger *AsyncLogger) Open(queueSize int) {
 	logger.baseLogger.(*baseAsyncLogger).Open(queueSize)
 }
 
 // Close closes the messageQueue.
-func (logger *AsyncStructuredLogger) Close() {
+func (logger *AsyncLogger) Close() {
 	logger.baseLogger.(*baseAsyncLogger).Close()
 }
