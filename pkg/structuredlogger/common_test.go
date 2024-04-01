@@ -12,9 +12,11 @@ import (
 )
 
 var (
-	loggerName = "test"
-	timeFormat = time.RFC3339
-	parameters = []any{
+	loggerName  = "test"
+	logLevel    = level.Debug
+	timeFormat  = time.RFC3339
+	skipCallers = 3
+	parameters  = []any{
 		"message", "test",
 	}
 	parametersWithMap = map[string]interface{}{

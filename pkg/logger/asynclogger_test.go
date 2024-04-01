@@ -13,19 +13,27 @@ var (
 	messageQueueSize = 1
 )
 
+// createBaseAsyncLogger creates a new baseAsyncLogger with the provided
+// handlers, message queue size and channel open flag.
+func createBaseAsyncLogger(handlers []handler.Interface, messageQueueSize int, isChannelOpen bool) *baseAsyncLogger {
+	newBaseAsyncLogger := &baseAsyncLogger{
+		baseLogger: &baseLogger{
+			name:     loggerName,
+			handlers: handlers,
+		},
+		messageQueue:  make(chan logrecord.Interface, messageQueueSize),
+		isChannelOpen: isChannelOpen,
+		waitGroup:     sync.WaitGroup{},
+	}
+	return newBaseAsyncLogger
+}
+
 // TestBaseAsyncLogger_startListeningMessages tests that
 // baseAsyncLogger.startListeningMessages method processes logs from the message
 // queue.
 func TestBaseAsyncLogger_startListeningMessages(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	record := logrecord.New(loggerName, logLevel, timeFormat, message, parameters, skipCallers)
 	newBaseAsyncLogger.messageQueue <- record
@@ -42,14 +50,7 @@ func TestBaseAsyncLogger_startListeningMessages(t *testing.T) {
 // messages.
 func TestBaseAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	waitChannel := make(chan bool)
 
@@ -68,18 +69,28 @@ func TestBaseAsyncLogger_WaitToFinishLogging(t *testing.T) {
 // queue and start listening messages.
 func TestBaseAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
-	newBaseAsyncLogger.Open(messageQueueSize)
+	newBaseAsyncLogger.Close()
+
+	err := newBaseAsyncLogger.Open(messageQueueSize)
 
 	testutils.AssertNotNil(t, newBaseAsyncLogger.messageQueue)
+	testutils.AssertNil(t, err)
+	testutils.AssertEquals(t, true, newBaseAsyncLogger.isChannelOpen)
+}
+
+// TestBaseAsyncLogger_Open_Error tests that baseAsyncLogger.Open returns an
+// error when trying to open a new channel with current channel being open.
+func TestBaseAsyncLogger_Open_Error(t *testing.T) {
+	mockHandler := &MockHandler{}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
+
+	err := newBaseAsyncLogger.Open(messageQueueSize)
+
+	testutils.AssertNotNil(t, newBaseAsyncLogger.messageQueue)
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, true, newBaseAsyncLogger.isChannelOpen)
 }
 
 // isChannelClosed checks if the provided channel is closed.
@@ -96,32 +107,19 @@ func isChannelClosed(ch <-chan logrecord.Interface) bool {
 // queue channel.
 func TestBaseAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	newBaseAsyncLogger.Close()
 
 	testutils.AssertEquals(t, true, isChannelClosed(newBaseAsyncLogger.messageQueue))
+	testutils.AssertEquals(t, false, newBaseAsyncLogger.isChannelOpen)
 }
 
 // TestBaseAsyncLogger_Log tests that baseAsyncLogger.Log sends a new record on
 // the message queue.
 func TestBaseAsyncLogger_Log(t *testing.T) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, messageQueueSize),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
 	newBaseAsyncLogger.Log(logLevel, message, parameters...)
 	record := <-newBaseAsyncLogger.messageQueue
@@ -134,14 +132,7 @@ func TestBaseAsyncLogger_Log(t *testing.T) {
 // baseAsyncLogger.
 func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	mockHandler := &MockHandler{}
-	newBaseAsyncLogger := &baseAsyncLogger{
-		baseLogger: &baseLogger{
-			name:     loggerName,
-			handlers: []handler.Interface{mockHandler},
-		},
-		messageQueue: make(chan logrecord.Interface, b.N),
-		waitGroup:    sync.WaitGroup{},
-	}
+	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, b.N, true)
 
 	b.ResetTimer()
 
@@ -173,14 +164,7 @@ func TestAsyncLogger_WaitToFinishLogging(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
@@ -202,20 +186,34 @@ func TestAsyncLogger_Open(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
-	newAsyncLogger.Open(messageQueueSize)
+	newAsyncLogger.Close()
+
+	err := newAsyncLogger.Open(messageQueueSize)
 
 	testutils.AssertNotNil(t, newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue)
+	testutils.AssertNil(t, err)
+	testutils.AssertEquals(t, true, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
+}
+
+// TestAsyncLogger_Open_Error tests that AsyncLogger.Open returns an error when
+// trying to open a new channel with current channel being open.
+func TestAsyncLogger_Open_Error(t *testing.T) {
+	mockHandler := &MockHandler{}
+	newAsyncLogger := &AsyncLogger{
+		Logger: &Logger{
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
+		},
+	}
+
+	err := newAsyncLogger.Open(messageQueueSize)
+
+	testutils.AssertNotNil(t, newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue)
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, true, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
 }
 
 // TestAsyncLogger_Close tests that AsyncLogger.Close closes message queue
@@ -224,18 +222,12 @@ func TestAsyncLogger_Close(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newAsyncLogger := &AsyncLogger{
 		Logger: &Logger{
-			baseLogger: &baseAsyncLogger{
-				baseLogger: &baseLogger{
-					name:     loggerName,
-					handlers: []handler.Interface{mockHandler},
-				},
-				messageQueue: make(chan logrecord.Interface, messageQueueSize),
-				waitGroup:    sync.WaitGroup{},
-			},
+			baseLogger: createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true),
 		},
 	}
 
 	newAsyncLogger.Close()
 
 	testutils.AssertEquals(t, true, isChannelClosed(newAsyncLogger.baseLogger.(*baseAsyncLogger).messageQueue))
+	testutils.AssertEquals(t, false, newAsyncLogger.baseLogger.(*baseAsyncLogger).isChannelOpen)
 }

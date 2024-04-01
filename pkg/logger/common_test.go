@@ -16,12 +16,12 @@ var (
 	loggerTemplate = "%(level):%(name):%(message)"
 	loggerName     = "test"
 	logLevel       = level.Debug
+	timeFormat     = time.RFC3339
+	skipCallers    = 3
 	message        = "Test Message: %s."
 	parameters     = []any{
 		"test",
 	}
-	timeFormat  = time.RFC3339
-	skipCallers = 3
 )
 
 // MockLogger is used to mock baseLogger.
