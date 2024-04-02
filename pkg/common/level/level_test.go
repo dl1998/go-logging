@@ -6,6 +6,40 @@ import (
 	"testing"
 )
 
+// TestParseLevel tests that ParseLevel correctly converts string to level.
+func TestParseLevel(t *testing.T) {
+	parameters := []struct {
+		input    string
+		expected Level
+	}{
+		{"all", All},
+		{"trace", Trace},
+		{"debug", Debug},
+		{"verbose", Verbose},
+		{"info", Info},
+		{"notice", Notice},
+		{"warning", Warning},
+		{"severe", Severe},
+		{"error", Error},
+		{"alert", Alert},
+		{"critical", Critical},
+		{"emergency", Emergency},
+		{"null", Null},
+	}
+
+	for index := range parameters {
+		actual := ParseLevel(parameters[index].input)
+		testutils.AssertEquals(t, parameters[index].expected, actual)
+	}
+}
+
+// BenchmarkParseLevel performs benchmarking of the ParseLevel().
+func BenchmarkParseLevel(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		ParseLevel("debug")
+	}
+}
+
 // TestLogLevel_String tests that Level correctly converts value to string.
 func TestLogLevel_String(t *testing.T) {
 	parameters := []struct {
