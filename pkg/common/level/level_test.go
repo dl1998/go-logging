@@ -25,6 +25,7 @@ func TestParseLevel(t *testing.T) {
 		{"critical", Critical},
 		{"emergency", Emergency},
 		{"null", Null},
+		{"", Null},
 	}
 
 	for index := range parameters {
