@@ -1,34 +1,90 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/configuration/parser"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"io"
 	"os"
+	"path"
 	"testing"
+	"time"
 )
 
 var (
 	name     = "test"
-	template = map[string]interface{}{
-		"level": "%(level)",
-		"name":  "%(name)",
+	template = map[string]string{
+		"level":     "%(level)",
+		"name":      "%(name)",
+		"timestamp": "%(datetime)",
 	}
-	fromLevel         = level.Info
-	toLevel           = level.Error
-	testConfiguration = &parser.Configuration{
-		Loggers: []parser.LoggerConfiguration{
-			{
-				Name: name,
-				Handlers: []parser.HandlerConfiguration{
-					createHandlerConfiguration("stdout", ""),
+	fromLevel  = level.Info
+	toLevel    = level.Error
+	testParser = &Parser{
+		configuration: &parser.Configuration{
+			Loggers: []parser.LoggerConfiguration{
+				{
+					Name: name,
+					Handlers: []parser.HandlerConfiguration{
+						createHandlerConfiguration("stdout", ""),
+					},
+				},
+			},
+		},
+	}
+	testDataParser = &Parser{
+		configuration: &parser.Configuration{
+			Loggers: []parser.LoggerConfiguration{
+				{
+					Name:             "test-logger",
+					TimeFormat:       time.DateTime,
+					MessageQueueSize: 100,
+					Handlers: []parser.HandlerConfiguration{
+						{
+							Type:      "stdout",
+							FromLevel: level.All.String(),
+							ToLevel:   level.Severe.String(),
+							Formatter: parser.FormatterConfiguration{
+								Type:        "json",
+								PrettyPrint: false,
+								Template: parser.TemplateConfiguration{
+									StringValue: "%(datetime) - %(level) - %(message)",
+									MapValue: parser.KeyValue{
+										"timestamp": "%(datetime)",
+										"level":     "%(level)",
+										"name":      "%(name)",
+									},
+								},
+							},
+						},
+						{
+							Type:      "stderr",
+							FromLevel: level.Error.String(),
+							ToLevel:   level.Null.String(),
+							Formatter: parser.FormatterConfiguration{
+								Type:              "key-value",
+								PairSeparator:     " ",
+								KeyValueDelimiter: ":",
+								Template: parser.TemplateConfiguration{
+									StringValue: "%(datetime) - %(level) - %(message)",
+									MapValue: parser.KeyValue{
+										"timestamp": "%(datetime)",
+										"level":     "%(level)",
+										"name":      "%(name)",
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
 	}
 )
 
+// createHandlerConfiguration creates a new instance of the
+// parser.HandlerConfiguration.
 func createHandlerConfiguration(handlerType string, file string) parser.HandlerConfiguration {
 	return parser.HandlerConfiguration{
 		Type:      handlerType,
@@ -36,62 +92,169 @@ func createHandlerConfiguration(handlerType string, file string) parser.HandlerC
 		ToLevel:   toLevel.String(),
 		File:      file,
 		Formatter: parser.FormatterConfiguration{
-			Type:        "json",
-			Template:    template,
+			Type: "json",
+			Template: parser.TemplateConfiguration{
+				MapValue: template,
+			},
 			PrettyPrint: false,
 		},
 	}
 }
 
-// TestParseFormatter_JSON tests that parseFormatter returns formatter.Interface.
-func TestParseFormatter_JSON(t *testing.T) {
-	formatterConfiguration := parser.FormatterConfiguration{
-		Type:        "json",
-		PrettyPrint: false,
-		Template:    template,
-	}
-	formatter := parseFormatter(formatterConfiguration)
+// TestNewParser tests that NewParser returns a new instance of the Parser.
+func TestNewParser(t *testing.T) {
+	expected := parser.Configuration{}
 
-	testutils.AssertNotNil(t, formatter)
-	testutils.AssertEquals(t, convertMap(template), formatter.Template())
+	newParser := NewParser(expected)
+
+	testutils.AssertNotNil(t, newParser)
+	testutils.AssertEquals(t, &expected, newParser.configuration)
 }
 
-// TestParseFormatter_KeyValue tests that parseFormatter returns formatter.Interface.
-func TestParseFormatter_KeyValue(t *testing.T) {
-	formatterConfiguration := parser.FormatterConfiguration{
-		Type:              "key-value",
-		KeyValueDelimiter: "=",
-		PairSeparator:     ",",
-		Template:          template,
+// BenchmarkNewParser benchmarks the NewParser function.
+func BenchmarkNewParser(b *testing.B) {
+	configuration := parser.Configuration{}
+	for index := 0; index < b.N; index++ {
+		_ = NewParser(configuration)
 	}
-	formatter := parseFormatter(formatterConfiguration)
-
-	testutils.AssertNotNil(t, formatter)
-	testutils.AssertEquals(t, convertMap(template), formatter.Template())
 }
 
-// TestParseFormatter_Default tests that parseFormatter panics if unknown
-// formatter type was provided.
-func TestParseFormatter_Default(t *testing.T) {
+// TestParseFile tests that parseFile parses the file with the given parser
+// function and returns the Parser.
+func TestParseFile(t *testing.T) {
+	configuration := parser.Configuration{}
+
+	newParser, err := parseFile(
+		"example.json",
+		func(string) (*parser.Configuration, error) {
+			return &configuration, nil
+		},
+	)
+
+	testutils.AssertNil(t, err)
+	testutils.AssertNotNil(t, newParser)
+	testutils.AssertEquals(t, &configuration, newParser.configuration)
+}
+
+// TestParseFile_Error tests that parseFile returns an error if the parser
+// function fails.
+func TestParseFile_Error(t *testing.T) {
+	newParser, err := parseFile(
+		"example.json",
+		func(string) (*parser.Configuration, error) {
+			return nil, fmt.Errorf("error")
+		},
+	)
+
+	testutils.AssertNotNil(t, err)
+	testutils.AssertNil(t, newParser)
+}
+
+// BenchmarkParseFile benchmarks the parseFile function.
+func BenchmarkParseFile(b *testing.B) {
+	configuration := parser.Configuration{}
+	for index := 0; index < b.N; index++ {
+		_, _ = parseFile("example.json", func(string) (*parser.Configuration, error) {
+			return &configuration, nil
+		})
+	}
+}
+
+// TestParseJSON tests that ParseJSON parses JSON file and return an instance of
+// the Parser.
+func TestParseJSON(t *testing.T) {
+	testJSON := path.Join(testutils.TEST_DATA_PATH, "example.json")
+
+	newParser, err := ParseJSON(testJSON)
+
+	testutils.AssertNil(t, err)
+	testutils.AssertNotNil(t, newParser)
+	testutils.AssertEquals(t, testDataParser.configuration, newParser.configuration)
+}
+
+// BenchmarkParseJSON benchmarks the ParseJSON function.
+func BenchmarkParseJSON(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		_, _ = ParseJSON(path.Join(testutils.TEST_DATA_PATH, "example.json"))
+	}
+}
+
+// TestParseYAML tests that ParseYAML parses YAML file and return an instance of
+// the Parser.
+func TestParseYAML(t *testing.T) {
+	testYAML := path.Join(testutils.TEST_DATA_PATH, "example.yaml")
+	newParser, err := ParseYAML(testYAML)
+
+	testutils.AssertNil(t, err)
+	testutils.AssertNotNil(t, newParser)
+	testutils.AssertEquals(t, testDataParser.configuration, newParser.configuration)
+}
+
+// BenchmarkParseYAML benchmarks the ParseYAML function.
+func BenchmarkParseYAML(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		_, _ = ParseYAML(path.Join(testutils.TEST_DATA_PATH, "example.yaml"))
+	}
+}
+
+// TestParseXML tests that ParseXML parses XML file and return an instance of the
+// Parser.
+func TestParseXML(t *testing.T) {
+	testXML := path.Join(testutils.TEST_DATA_PATH, "example.xml")
+	newParser, err := ParseXML(testXML)
+
+	testutils.AssertNil(t, err)
+	testutils.AssertNotNil(t, newParser)
+	testutils.AssertEquals(t, testDataParser.configuration, newParser.configuration)
+}
+
+// BenchmarkParseXML benchmarks the ParseXML function.
+func BenchmarkParseXML(b *testing.B) {
+	for index := 0; index < b.N; index++ {
+		_, _ = ParseXML(path.Join(testutils.TEST_DATA_PATH, "example.xml"))
+	}
+}
+
+// TestParser_ParseFormatter_JSON tests that Parser.parseFormatter returns
+// formatter.Interface.
+func TestParser_ParseFormatter_JSON(t *testing.T) {
+	formatter := testDataParser.parseFormatter(testDataParser.configuration.Loggers[0].Handlers[0].Formatter)
+
+	testutils.AssertNotNil(t, formatter)
+	testutils.AssertEquals(t, template, formatter.Template())
+}
+
+// TestParser_ParseFormatter_KeyValue tests that Parser.parseFormatter returns
+// formatter.Interface.
+func TestParser_ParseFormatter_KeyValue(t *testing.T) {
+	formatter := testDataParser.parseFormatter(testDataParser.configuration.Loggers[0].Handlers[1].Formatter)
+
+	testutils.AssertNotNil(t, formatter)
+	testutils.AssertEquals(t, template, formatter.Template())
+}
+
+// TestParser_ParseFormatter_Default tests that Parser.parseFormatter panics if
+// unknown formatter type was provided.
+func TestParser_ParseFormatter_Default(t *testing.T) {
 	defer func() {
 		if recovery := recover(); recovery != nil {
 			testutils.AssertNotNil(t, recovery)
 		}
 	}()
 
-	parseFormatter(parser.FormatterConfiguration{})
+	testParser.parseFormatter(parser.FormatterConfiguration{})
 }
 
-// BenchmarkParseFormatter benchmarks the parseFormatter function.
-func BenchmarkParseFormatter(b *testing.B) {
-	formatter := testConfiguration.Loggers[0].Handlers[0].Formatter
+// BenchmarkParser_ParseFormatter benchmarks the Parser.parseFormatter function.
+func BenchmarkParser_ParseFormatter(b *testing.B) {
+	formatter := testParser.configuration.Loggers[0].Handlers[0].Formatter
 	for index := 0; index < b.N; index++ {
-		parseFormatter(formatter)
+		testParser.parseFormatter(formatter)
 	}
 }
 
-// TestParseHandler tests that parseHandler returns handler.Interface.
-func TestParseHandler(t *testing.T) {
+// TestParser_ParseHandler tests that Parser.parseHandler returns handler.Interface.
+func TestParser_ParseHandler(t *testing.T) {
 	tests := map[string]struct {
 		handlerType    string
 		expectedWriter io.Writer
@@ -108,7 +271,7 @@ func TestParseHandler(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			handler := parseHandler(createHandlerConfiguration(test.handlerType, ""))
+			handler := testParser.parseHandler(createHandlerConfiguration(test.handlerType, ""))
 
 			testutils.AssertNotNil(t, handler)
 			testutils.AssertNotNil(t, handler.Formatter())
@@ -119,10 +282,10 @@ func TestParseHandler(t *testing.T) {
 	}
 }
 
-// TestParseHandler_File tests that parseHandler returns handler.Interface with
-// file writer.
-func TestParseHandler_File(t *testing.T) {
-	handler := parseHandler(createHandlerConfiguration("file", "/dev/null"))
+// TestParser_ParseHandler_File tests that Parser.parseHandler returns
+// handler.Interface with file writer.
+func TestParser_ParseHandler_File(t *testing.T) {
+	handler := testParser.parseHandler(createHandlerConfiguration("file", "/dev/null"))
 
 	testutils.AssertNotNil(t, handler)
 	testutils.AssertNotNil(t, handler.Formatter())
@@ -131,112 +294,114 @@ func TestParseHandler_File(t *testing.T) {
 	testutils.AssertEquals(t, toLevel, handler.ToLevel())
 }
 
-// TestParseHandler_File_Error tests that parseHandler panics if empty string was
-// provided for file handler.
-func TestParseHandler_File_Error(t *testing.T) {
+// TestParser_ParseHandler_File_Error tests that Parser.parseHandler panics if
+// empty string was provided for file handler.
+func TestParser_ParseHandler_File_Error(t *testing.T) {
 	defer func() {
 		if recovery := recover(); recovery != nil {
 			testutils.AssertNotNil(t, recovery)
 		}
 	}()
 
-	parseHandler(createHandlerConfiguration("file", ""))
+	testParser.parseHandler(createHandlerConfiguration("file", ""))
 }
 
-// TestParseHandler_Default tests that parseHandler returns nil if unknown
-// handler type was provided.
-func TestParseHandler_Default(t *testing.T) {
-	handler := parseHandler(createHandlerConfiguration("", ""))
+// TestParser_ParseHandler_Default tests that Parser.parseHandler returns nil if
+// unknown handler type was provided.
+func TestParser_ParseHandler_Default(t *testing.T) {
+	handler := testParser.parseHandler(createHandlerConfiguration("", ""))
 
 	testutils.AssertNil(t, handler)
 }
 
-// BenchmarkParseHandler benchmarks the parseHandler function.
-func BenchmarkParseHandler(b *testing.B) {
-	handler := testConfiguration.Loggers[0].Handlers[0]
+// BenchmarkParser_ParseHandler benchmarks the Parser.parseHandler function.
+func BenchmarkParser_ParseHandler(b *testing.B) {
+	handler := testParser.configuration.Loggers[0].Handlers[0]
 	for index := 0; index < b.N; index++ {
-		parseHandler(handler)
+		testParser.parseHandler(handler)
 	}
 }
 
-// TestParseLogger tests that parseLogger returns logger.Logger.
-func TestParseLogger(t *testing.T) {
-	logger := parseLogger(testConfiguration.Loggers[0])
+// TestParser_ParseLogger tests that Parser.parseLogger returns logger.Logger.
+func TestParser_ParseLogger(t *testing.T) {
+	logger := testParser.parseLogger(testParser.configuration.Loggers[0])
 
 	testutils.AssertNotNil(t, logger)
 	testutils.AssertEquals(t, name, logger.Name())
-	testutils.AssertEquals(t, len(testConfiguration.Loggers), len(logger.Handlers()))
+	testutils.AssertEquals(t, len(testParser.configuration.Loggers), len(logger.Handlers()))
 }
 
-// BenchmarkParseLogger benchmarks the parseLogger function.
-func BenchmarkParseLogger(b *testing.B) {
-	logger := testConfiguration.Loggers[0]
+// BenchmarkParser_ParseLogger benchmarks the Parser.parseLogger function.
+func BenchmarkParser_ParseLogger(b *testing.B) {
+	logger := testParser.configuration.Loggers[0]
 	for index := 0; index < b.N; index++ {
-		parseLogger(logger)
+		testParser.parseLogger(logger)
 	}
 }
 
-// TestParseAsyncLogger tests that parseAsyncLogger returns logger.AsyncLogger.
-func TestParseAsyncLogger(t *testing.T) {
-	logger := parseAsyncLogger(testConfiguration.Loggers[0])
+// TestParser_ParseAsyncLogger tests that Parser.parseAsyncLogger returns
+// logger.AsyncLogger.
+func TestParser_ParseAsyncLogger(t *testing.T) {
+	logger := testParser.parseAsyncLogger(testParser.configuration.Loggers[0])
 
 	testutils.AssertNotNil(t, logger)
 	testutils.AssertEquals(t, name, logger.Name())
-	testutils.AssertEquals(t, len(testConfiguration.Loggers), len(logger.Handlers()))
+	testutils.AssertEquals(t, len(testParser.configuration.Loggers), len(logger.Handlers()))
 }
 
-// BenchmarkParseAsyncLogger benchmarks the parseAsyncLogger function.
-func BenchmarkParseAsyncLogger(b *testing.B) {
-	logger := testConfiguration.Loggers[0]
+// BenchmarkParser_ParseAsyncLogger benchmarks the Parser.parseAsyncLogger
+// function.
+func BenchmarkParser_ParseAsyncLogger(b *testing.B) {
+	logger := testParser.configuration.Loggers[0]
 	for index := 0; index < b.N; index++ {
-		parseAsyncLogger(logger)
+		testParser.parseAsyncLogger(logger)
 	}
 }
 
-// TestGetLogger tests that GetLogger returns logger.Logger by name from the
-// configuration.
-func TestGetLogger(t *testing.T) {
-	logger := GetLogger(name, *testConfiguration)
+// TestParser_GetLogger tests that Parser.GetLogger returns
+// structuredlogger.Logger by name from the configuration.
+func TestParser_GetLogger(t *testing.T) {
+	logger := testParser.GetLogger(name)
 
 	testutils.AssertNotNil(t, logger)
 	testutils.AssertEquals(t, name, logger.Name())
 }
 
-// TestGetLogger_Default tests that GetLogger returns nil if logger with the
-// name was not found.
-func TestGetLogger_Default(t *testing.T) {
-	logger := GetLogger("", *testConfiguration)
+// TestParser_GetLogger_Default tests that Parser.GetLogger returns nil if
+// structured logger with the name was not found.
+func TestParser_GetLogger_Default(t *testing.T) {
+	logger := testParser.GetLogger("")
 
 	testutils.AssertNil(t, logger)
 }
 
-// BenchmarkGetLogger benchmarks the GetLogger function.
-func BenchmarkGetLogger(b *testing.B) {
+// BenchmarkParser_GetLogger benchmarks the Parser.GetLogger function.
+func BenchmarkParser_GetLogger(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		_ = GetLogger(name, *testConfiguration)
+		_ = testParser.GetLogger(name)
 	}
 }
 
-// TestGetAsyncLogger tests that GetAsyncLogger returns logger.AsyncLogger by
-// name from the configuration.
-func TestGetAsyncLogger(t *testing.T) {
-	logger := GetAsyncLogger(name, *testConfiguration)
+// TestParser_GetAsyncLogger tests that Parser.GetAsyncLogger returns
+// structuredlogger.AsyncLogger by name from the configuration.
+func TestParser_GetAsyncLogger(t *testing.T) {
+	logger := testParser.GetAsyncLogger(name)
 
 	testutils.AssertNotNil(t, logger)
 	testutils.AssertEquals(t, name, logger.Name())
 }
 
-// TestGetAsyncLogger_Default tests that GetAsyncLogger returns nil if logger
-// with the name was not found.
-func TestGetAsyncLogger_Default(t *testing.T) {
-	logger := GetAsyncLogger("", *testConfiguration)
+// TestParser_GetAsyncLogger_Default tests that Parser.GetAsyncLogger returns nil
+// if structured logger with the name was not found.
+func TestParser_GetAsyncLogger_Default(t *testing.T) {
+	logger := testParser.GetAsyncLogger("")
 
 	testutils.AssertNil(t, logger)
 }
 
-// BenchmarkGetAsyncLogger benchmarks the GetAsyncLogger function.
-func BenchmarkGetAsyncLogger(b *testing.B) {
+// BenchmarkParser_GetAsyncLogger benchmarks the Parser.GetAsyncLogger function.
+func BenchmarkParser_GetAsyncLogger(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		_ = GetAsyncLogger(name, *testConfiguration)
+		_ = testParser.GetAsyncLogger(name)
 	}
 }

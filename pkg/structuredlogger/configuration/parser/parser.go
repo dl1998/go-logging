@@ -2,7 +2,6 @@
 package parser
 
 import (
-	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/configuration/parser"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger"
@@ -11,24 +10,52 @@ import (
 	"strings"
 )
 
-// convertMap converts map[string]interface{} to map[string]string.
-func convertMap(input interface{}) map[string]string {
-	data := input.(map[string]interface{})
-	result := make(map[string]string)
-	for key, value := range data {
-		result[key] = fmt.Sprintf("%v", value)
+// Parser is the configuration parser for the structured logger.
+type Parser struct {
+	// configuration is the parser.Configuration with the structured logger
+	// configuration.
+	configuration *parser.Configuration
+}
+
+// NewParser returns a new instance of the Parser with the given
+// parser.Configuration.
+func NewParser(configuration parser.Configuration) *Parser {
+	return &Parser{configuration: &configuration}
+}
+
+// parseFile parses the file with the given parser function and returns the
+// Parser.
+func parseFile(file string, parserFunction func(string) (*parser.Configuration, error)) (*Parser, error) {
+	configuration, err := parserFunction(file)
+	if err != nil {
+		return nil, err
 	}
-	return result
+	return NewParser(*configuration), nil
+}
+
+// ParseJSON parses the JSON file and returns the Parser.
+func ParseJSON(file string) (*Parser, error) {
+	return parseFile(file, parser.ReadFromJSON)
+}
+
+// ParseYAML parses the YAML file and returns the Parser.
+func ParseYAML(file string) (*Parser, error) {
+	return parseFile(file, parser.ReadFromYAML)
+}
+
+// ParseXML parses the XML file and returns the Parser.
+func ParseXML(file string) (*Parser, error) {
+	return parseFile(file, parser.ReadFromXML)
 }
 
 // parseFormatter parses parser.FormatterConfiguration configuration and returns
 // formatter.Interface.
-func parseFormatter(configuration parser.FormatterConfiguration) formatter.Interface {
+func (parser *Parser) parseFormatter(configuration parser.FormatterConfiguration) formatter.Interface {
 	switch configuration.Type {
 	case "json":
-		return formatter.NewJSON(convertMap(configuration.Template), configuration.PrettyPrint)
+		return formatter.NewJSON(configuration.Template.MapValue, configuration.PrettyPrint)
 	case "key-value":
-		return formatter.NewKeyValue(convertMap(configuration.Template), configuration.KeyValueDelimiter, configuration.PairSeparator)
+		return formatter.NewKeyValue(configuration.Template.MapValue, configuration.KeyValueDelimiter, configuration.PairSeparator)
 	default:
 		panic("unknown formatter type.")
 	}
@@ -36,19 +63,19 @@ func parseFormatter(configuration parser.FormatterConfiguration) formatter.Inter
 
 // parseHandler parses parser.HandlerConfiguration configuration and returns
 // handler.Interface.
-func parseHandler(configuration parser.HandlerConfiguration) handler.Interface {
+func (parser *Parser) parseHandler(configuration parser.HandlerConfiguration) handler.Interface {
 	fromLevel := level.ParseLevel(strings.ToLower(configuration.FromLevel))
 	toLevel := level.ParseLevel(strings.ToLower(configuration.ToLevel))
 	switch configuration.Type {
 	case "stdout":
-		return handler.NewConsoleHandler(fromLevel, toLevel, parseFormatter(configuration.Formatter))
+		return handler.NewConsoleHandler(fromLevel, toLevel, parser.parseFormatter(configuration.Formatter))
 	case "stderr":
-		return handler.NewConsoleErrorHandler(fromLevel, toLevel, parseFormatter(configuration.Formatter))
+		return handler.NewConsoleErrorHandler(fromLevel, toLevel, parser.parseFormatter(configuration.Formatter))
 	case "file":
 		if configuration.File == "" {
 			panic("file handler requires file option.")
 		}
-		return handler.NewFileHandler(fromLevel, toLevel, parseFormatter(configuration.Formatter), configuration.File)
+		return handler.NewFileHandler(fromLevel, toLevel, parser.parseFormatter(configuration.Formatter), configuration.File)
 	default:
 		return nil
 	}
@@ -56,29 +83,29 @@ func parseHandler(configuration parser.HandlerConfiguration) handler.Interface {
 
 // parseLogger parses parser.LoggerConfiguration configuration and returns
 // structuredlogger.Logger.
-func parseLogger(configuration parser.LoggerConfiguration) *structuredlogger.Logger {
+func (parser *Parser) parseLogger(configuration parser.LoggerConfiguration) *structuredlogger.Logger {
 	newLogger := structuredlogger.New(configuration.Name, configuration.TimeFormat)
 	for _, handlerConfiguration := range configuration.Handlers {
-		newLogger.AddHandler(parseHandler(handlerConfiguration))
+		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}
 	return newLogger
 }
 
 // parseAsyncLogger parses parser.LoggerConfiguration configuration and returns
 // structuredlogger.AsyncLogger.
-func parseAsyncLogger(configuration parser.LoggerConfiguration) *structuredlogger.AsyncLogger {
+func (parser *Parser) parseAsyncLogger(configuration parser.LoggerConfiguration) *structuredlogger.AsyncLogger {
 	newLogger := structuredlogger.NewAsyncLogger(configuration.Name, configuration.TimeFormat, configuration.MessageQueueSize)
 	for _, handlerConfiguration := range configuration.Handlers {
-		newLogger.AddHandler(parseHandler(handlerConfiguration))
+		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}
 	return newLogger
 }
 
 // GetLogger returns structuredlogger.Logger by name from the configuration.
-func GetLogger(name string, configuration parser.Configuration) *structuredlogger.Logger {
-	for _, loggerConfiguration := range configuration.Loggers {
+func (parser *Parser) GetLogger(name string) *structuredlogger.Logger {
+	for _, loggerConfiguration := range parser.configuration.Loggers {
 		if loggerConfiguration.Name == name {
-			return parseLogger(loggerConfiguration)
+			return parser.parseLogger(loggerConfiguration)
 		}
 	}
 	return nil
@@ -86,10 +113,10 @@ func GetLogger(name string, configuration parser.Configuration) *structuredlogge
 
 // GetAsyncLogger returns structuredlogger.AsyncLogger by name from the
 // configuration.
-func GetAsyncLogger(name string, configuration parser.Configuration) *structuredlogger.AsyncLogger {
-	for _, loggerConfiguration := range configuration.Loggers {
+func (parser *Parser) GetAsyncLogger(name string) *structuredlogger.AsyncLogger {
+	for _, loggerConfiguration := range parser.configuration.Loggers {
 		if loggerConfiguration.Name == name {
-			return parseAsyncLogger(loggerConfiguration)
+			return parser.parseAsyncLogger(loggerConfiguration)
 		}
 	}
 	return nil
