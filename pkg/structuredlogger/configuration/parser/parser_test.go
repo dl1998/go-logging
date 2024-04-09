@@ -163,7 +163,7 @@ func BenchmarkParseFile(b *testing.B) {
 // TestParseJSON tests that ParseJSON parses JSON file and return an instance of
 // the Parser.
 func TestParseJSON(t *testing.T) {
-	testJSON := path.Join(testutils.TEST_DATA_PATH, "example.json")
+	testJSON := path.Join(testutils.TestDataPath, "example.json")
 
 	newParser, err := ParseJSON(testJSON)
 
@@ -175,14 +175,14 @@ func TestParseJSON(t *testing.T) {
 // BenchmarkParseJSON benchmarks the ParseJSON function.
 func BenchmarkParseJSON(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		_, _ = ParseJSON(path.Join(testutils.TEST_DATA_PATH, "example.json"))
+		_, _ = ParseJSON(path.Join(testutils.TestDataPath, "example.json"))
 	}
 }
 
 // TestParseYAML tests that ParseYAML parses YAML file and return an instance of
 // the Parser.
 func TestParseYAML(t *testing.T) {
-	testYAML := path.Join(testutils.TEST_DATA_PATH, "example.yaml")
+	testYAML := path.Join(testutils.TestDataPath, "example.yaml")
 	newParser, err := ParseYAML(testYAML)
 
 	testutils.AssertNil(t, err)
@@ -193,14 +193,14 @@ func TestParseYAML(t *testing.T) {
 // BenchmarkParseYAML benchmarks the ParseYAML function.
 func BenchmarkParseYAML(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		_, _ = ParseYAML(path.Join(testutils.TEST_DATA_PATH, "example.yaml"))
+		_, _ = ParseYAML(path.Join(testutils.TestDataPath, "example.yaml"))
 	}
 }
 
 // TestParseXML tests that ParseXML parses XML file and return an instance of the
 // Parser.
 func TestParseXML(t *testing.T) {
-	testXML := path.Join(testutils.TEST_DATA_PATH, "example.xml")
+	testXML := path.Join(testutils.TestDataPath, "example.xml")
 	newParser, err := ParseXML(testXML)
 
 	testutils.AssertNil(t, err)
@@ -211,7 +211,7 @@ func TestParseXML(t *testing.T) {
 // BenchmarkParseXML benchmarks the ParseXML function.
 func BenchmarkParseXML(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		_, _ = ParseXML(path.Join(testutils.TEST_DATA_PATH, "example.xml"))
+		_, _ = ParseXML(path.Join(testutils.TestDataPath, "example.xml"))
 	}
 }
 

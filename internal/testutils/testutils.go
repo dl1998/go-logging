@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	TEST_DATA_PATH string
+	TestDataPath string
 )
 
 func init() {
@@ -22,7 +22,7 @@ func init() {
 
 	projectRoot := path.Dir(path.Dir(currentPath))
 
-	TEST_DATA_PATH = path.Join(projectRoot, "testdata")
+	TestDataPath = path.Join(projectRoot, "testdata")
 }
 
 // AssertEquals compares actual value with expected value.
