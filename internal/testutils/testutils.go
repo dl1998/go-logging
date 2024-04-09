@@ -33,6 +33,7 @@ func AssertEquals[T any](t *testing.T, expected T, actual T) {
 	}
 }
 
+// isNil checks if the value is nil, including the pointers.
 func isNil(value interface{}) bool {
 	if value == nil {
 		return true
