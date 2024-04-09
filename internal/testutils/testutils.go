@@ -2,9 +2,28 @@
 package testutils
 
 import (
+	"path"
 	"reflect"
+	"runtime"
 	"testing"
 )
+
+var (
+	TEST_DATA_PATH string
+)
+
+func init() {
+	_, fileName, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("No caller information")
+	}
+
+	currentPath := path.Dir(fileName)
+
+	projectRoot := path.Dir(path.Dir(currentPath))
+
+	TEST_DATA_PATH = path.Join(projectRoot, "testdata")
+}
 
 // AssertEquals compares actual value with expected value.
 func AssertEquals[T any](t *testing.T, expected T, actual T) {
