@@ -1,15 +1,89 @@
+// Package parser contains the common configuration for the loggers parser.
 package parser
 
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"gopkg.in/yaml.v3"
+	"io"
 	"os"
+	"sort"
 )
 
 var (
 	readFile = os.ReadFile
 )
+
+// KeyValue is a type that represents a key-value pair.
+type KeyValue map[string]string
+
+// UnmarshalXML unmarshal the key-value pairs from XML.
+func (keyValue *KeyValue) UnmarshalXML(decoder *xml.Decoder, _ xml.StartElement) error {
+	*keyValue = make(map[string]string)
+	for {
+		token, err := decoder.Token()
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+			return err
+		}
+		switch token := token.(type) {
+		case xml.StartElement:
+			key := token.Name.Local
+			var value string
+			err := decoder.DecodeElement(&value, &token)
+			if err != nil {
+				return err
+			}
+			(*keyValue)[key] = value
+		case xml.EndElement:
+			return nil
+		}
+	}
+}
+
+// MarshalXML marshals the key-value pairs into XML.
+func (keyValue *KeyValue) MarshalXML(encoder *xml.Encoder, start xml.StartElement) error {
+	// Start the element
+	if err := encoder.EncodeToken(start); err != nil {
+		return err
+	}
+
+	keys := make([]string, 0, len(*keyValue))
+
+	// Collect all keys
+	for key := range *keyValue {
+		keys = append(keys, key)
+	}
+
+	// Sort the keys
+	sort.Strings(keys)
+
+	// Encode each key-value pair as a separate XML element
+	for _, key := range keys {
+		value := (*keyValue)[key]
+		if err := encoder.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: key}}); err != nil {
+			return err
+		}
+	}
+
+	// End the element
+	if err := encoder.EncodeToken(start.End()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// TemplateConfiguration is a struct that represents the configuration of a template.
+type TemplateConfiguration struct {
+	// StringValue is a string value used by the logger template.
+	StringValue string `json:"string" yaml:"string" xml:"string"`
+	// MapValue is a map value used by the structure logger template.
+	MapValue KeyValue `json:"map" yaml:"map" xml:"map"`
+}
 
 // FormatterConfiguration is a struct that represents the configuration of a formatter.
 type FormatterConfiguration struct {
@@ -25,7 +99,7 @@ type FormatterConfiguration struct {
 	// pairs.
 	PairSeparator string `json:"pair-separator" yaml:"pair-separator" xml:"pair-separator"`
 	// Template is a template used by the formatter.
-	Template interface{} `json:"template" yaml:"template" xml:"template"`
+	Template TemplateConfiguration `json:"template" yaml:"template" xml:"template"`
 }
 
 // HandlerConfiguration is a struct that represents the configuration of a handler.
