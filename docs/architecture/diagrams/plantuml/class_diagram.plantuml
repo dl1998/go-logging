@@ -5,12 +5,16 @@ package pkg {
     package common {
         package configuration {
             package parser {
+                stereotype EscapedString <<string>> {
+                    ~ escapeString(value : string) : string
+                    + UnmarshalXML(decoder : *xml.Decoder, start : xml.StartElement) : error
+                }
                 stereotype KeyValue <<map[string]string>> {
                     + UnmarshalXML(decoder : *xml.Decoder, _ : xml.StartElement) : error
                     + MarshalXML(encoder : *xml.Encoder, start : xml.StartElement) : error
                 }
                 struct TemplateConfiguration {
-                    + StringValue : string
+                    + StringValue : EscapedString
                     + MapValue : KeyValue
                 }
                 struct FormatterConfiguration {
@@ -43,6 +47,7 @@ package pkg {
                     + ReadFromYAML(path : string) : (*Configuration, error)
                     + ReadFromXML(path : string) : (*Configuration, error)
                 }
+                TemplateConfiguration "1" *-- "1" EscapedString : contains
                 TemplateConfiguration "1" *-- "1" KeyValue : contains
                 FormatterConfiguration "1" *-- "1" TemplateConfiguration : contains
                 HandlerConfiguration "1" *-- "1" FormatterConfiguration : contains
