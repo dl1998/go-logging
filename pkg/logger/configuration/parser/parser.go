@@ -50,7 +50,7 @@ func ParseXML(file string) (*Parser, error) {
 // parseFormatter parses parser.FormatterConfiguration configuration and returns
 // formatter.Interface.
 func (parser *Parser) parseFormatter(configuration parser.FormatterConfiguration) formatter.Interface {
-	return formatter.New(configuration.Template.StringValue)
+	return formatter.New(string(configuration.Template.StringValue))
 }
 
 // parseHandler parses parser.HandlerConfiguration configuration and returns

@@ -90,7 +90,7 @@ func createHandlerConfiguration(handlerType string, file string) parser.HandlerC
 		Formatter: parser.FormatterConfiguration{
 			Type: "formatterType",
 			Template: parser.TemplateConfiguration{
-				StringValue: template,
+				StringValue: parser.EscapedString(template),
 			},
 		},
 	}

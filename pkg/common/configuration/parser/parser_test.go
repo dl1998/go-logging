@@ -14,6 +14,53 @@ var (
 	xmlString = "<key>value</key>"
 )
 
+// TestEscapedString_escapeString tests that EscapedString.escapeString unescapes
+// the string.
+func TestEscapedString_escapeString(t *testing.T) {
+	var escapedString EscapedString
+	value := "\\t"
+
+	expected := "\t"
+	actual := escapedString.escapeString(value)
+
+	testutils.AssertEquals(t, expected, actual)
+}
+
+// BenchmarkEscapedString_escapeString benchmarks the EscapedString.escapeString
+// function.
+func BenchmarkEscapedString_escapeString(b *testing.B) {
+	escapedString := EscapedString("\\t")
+
+	b.ResetTimer()
+
+	for index := 0; index < b.N; index++ {
+		_ = escapedString.escapeString("\\t")
+	}
+}
+
+// TestEscapedString_UnmarshalXML tests that EscapedString.UnmarshalXML unmarshal
+// the XML data correctly for escaped sequences.
+func TestEscapedString_UnmarshalXML(t *testing.T) {
+	var actual EscapedString
+
+	err := xml.Unmarshal([]byte("<string>\\t</string>"), &actual)
+
+	expected := EscapedString("\t")
+
+	testutils.AssertNil(t, err)
+	testutils.AssertEquals(t, expected, actual)
+}
+
+// BenchmarkEscapedString_UnmarshalXML benchmarks the EscapedString.UnmarshalXML
+// function.
+func BenchmarkEscapedString_UnmarshalXML(b *testing.B) {
+	var escapedString EscapedString
+
+	for index := 0; index < b.N; index++ {
+		_ = xml.Unmarshal([]byte("<string>\\t</string>"), &escapedString)
+	}
+}
+
 // TestKeyValue_UnmarshalXML tests that KeyValue.UnmarshalXML unmarshal the XML
 // data correctly.
 func TestKeyValue_UnmarshalXML(t *testing.T) {

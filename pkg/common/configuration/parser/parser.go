@@ -9,11 +9,36 @@ import (
 	"io"
 	"os"
 	"sort"
+	"strconv"
 )
 
 var (
 	readFile = os.ReadFile
 )
+
+// EscapedString is a type that represents a string that needs to be unescaped.
+type EscapedString string
+
+// escapeString unescapes the string.
+func (escapedString *EscapedString) escapeString(value string) string {
+	originalString := value
+	unquoted, err := strconv.Unquote(`"` + originalString + `"`)
+	if err != nil {
+		return originalString
+	}
+	return unquoted
+}
+
+// UnmarshalXML unmarshal the escaped string from XML.
+func (escapedString *EscapedString) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+	var value string
+	err := decoder.DecodeElement(&value, &start)
+	if err != nil {
+		return err
+	}
+	*escapedString = EscapedString(escapedString.escapeString(value))
+	return nil
+}
 
 // KeyValue is a type that represents a key-value pair.
 type KeyValue map[string]string
@@ -80,7 +105,7 @@ func (keyValue *KeyValue) MarshalXML(encoder *xml.Encoder, start xml.StartElemen
 // TemplateConfiguration is a struct that represents the configuration of a template.
 type TemplateConfiguration struct {
 	// StringValue is a string value used by the logger template.
-	StringValue string `json:"string" yaml:"string" xml:"string"`
+	StringValue EscapedString `json:"string" yaml:"string" xml:"string"`
 	// MapValue is a map value used by the structure logger template.
 	MapValue KeyValue `json:"map" yaml:"map" xml:"map"`
 }
