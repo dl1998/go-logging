@@ -595,11 +595,3 @@ To create a logger from the configuration file, you need to:
     // Async Logger
     newLogger := newParser.GetAsyncLogger("example-logger")
     ```
-
-## Class Diagram
-
-![Class Diagram](./docs/architecture/diagrams/png/class_diagram.png)
-
-## Sequence Diagram - Create A New Logger
-
-![Sequence Diagram](./docs/architecture/diagrams/png/create_new_logger.png)
