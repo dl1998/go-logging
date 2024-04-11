@@ -1,0 +1,71 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant main
+participant parser
+participant common.parser
+participant logger
+participant level
+participant formatter
+participant handler
+
+main -> parser: ParseJSON(file)
+activate main
+activate parser
+parser -> parser: parseFile(file, parserFunction)
+
+parser -> common.parser: ReadFromJSON(path)
+activate common.parser
+common.parser -> common.parser: readFromFile(path, unmarshal)
+common.parser -> parser
+deactivate common.parser
+
+parser -> parser: NewParser(configuration)
+parser -> main
+deactivate parser
+
+main -> parser: GetLogger(name)
+activate parser
+parser -> parser: parseLogger(configuration)
+
+parser -> logger: New(name, timeFormat)
+activate logger
+logger -> parser
+deactivate logger
+
+parser -> parser: parseHandler(configuration)
+
+parser -> level: ParseLevel(level)
+activate level
+level -> parser
+deactivate level
+
+parser -> level: ParseLevel(level)
+activate level
+level -> parser
+deactivate level
+
+parser -> parser: parseFormatter(configuration)
+
+parser -> formatter: New(template)
+activate formatter
+formatter -> parser
+deactivate formatter
+
+parser -> handler: NewConsoleHandler(fromLevel, toLevel, newFormatter)
+activate handler
+handler -> parser
+deactivate handler
+
+parser -> logger: AddHandler(handler)
+activate logger
+logger -> parser
+deactivate logger
+
+parser -> main
+deactivate parser
+deactivate main
+
+@enduml
