@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <loggers>
+        <logger>
+            <name>example-logger</name>
+            <time-format>2006-01-02 15:04:05</time-format>
+            <message-queue-size>100</message-queue-size>
+            <handlers>
+                <handler>
+                    <type>stdout</type>
+                    <from-level>all</from-level>
+                    <to-level>severe</to-level>
+                    <formatter>
+                        <type>json</type>
+                        <pretty-print>true</pretty-print>
+                        <template>
+                            <string>%(datetime)\t[%(level)]\t%(message)</string>
+                            <map>
+                                <timestamp>%(datetime)</timestamp>
+                                <level>%(level)</level>
+                                <name>%(name)</name>
+                            </map>
+                        </template>
+                    </formatter>
+                </handler>
+                <handler>
+                    <type>stderr</type>
+                    <from-level>error</from-level>
+                    <to-level>null</to-level>
+                    <formatter>
+                        <type>key-value</type>
+                        <pair-separator> </pair-separator>
+                        <key-value-delimiter>:</key-value-delimiter>
+                        <template>
+                            <string>%(datetime)\t[%(level)]\t%(message)</string>
+                            <map>
+                                <timestamp>%(datetime)</timestamp>
+                                <level>%(level)</level>
+                                <name>%(name)</name>
+                            </map>
+                        </template>
+                    </formatter>
+                </handler>
+                <handler>
+                    <type>file</type>
+                    <from-level>all</from-level>
+                    <to-level>null</to-level>
+                    <file>./example.log</file>
+                    <formatter>
+                        <type>json</type>
+                        <pretty-print>false</pretty-print>
+                        <template>
+                            <string>%(datetime)\t[%(level)]\t%(message)</string>
+                            <map>
+                                <timestamp>%(datetime)</timestamp>
+                                <level>%(level)</level>
+                                <name>%(name)</name>
+                            </map>
+                        </template>
+                    </formatter>
+                </handler>
+            </handlers>
+        </logger>
+    </loggers>
+</root>

@@ -1,0 +1,46 @@
+{
+  "loggers": [
+    {
+      "name": "test-logger",
+      "time-format": "2006-01-02 15:04:05",
+      "message-queue-size": 100,
+      "handlers": [
+        {
+          "type": "stdout",
+          "from-level": "all",
+          "to-level": "severe",
+          "formatter": {
+            "type": "json",
+            "pretty-print": false,
+            "template": {
+              "string": "%(datetime) - %(level) - %(message)",
+              "map": {
+                "timestamp": "%(datetime)",
+                "level": "%(level)",
+                "name": "%(name)"
+              }
+            }
+          }
+        },
+        {
+          "type": "stderr",
+          "from-level": "error",
+          "to-level": "null",
+          "formatter": {
+            "type": "key-value",
+            "pair-separator": " ",
+            "key-value-delimiter": ":",
+            "template": {
+              "string": "%(datetime) - %(level) - %(message)",
+              "map": {
+                "timestamp": "%(datetime)",
+                "level": "%(level)",
+                "name": "%(name)"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

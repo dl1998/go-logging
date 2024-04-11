@@ -3,6 +3,59 @@ top to bottom direction
 
 package pkg {
     package common {
+        package configuration {
+            package parser {
+                stereotype EscapedString <<string>> {
+                    ~ escapeString(value : string) : string
+                    + UnmarshalXML(decoder : *xml.Decoder, start : xml.StartElement) : error
+                }
+                stereotype KeyValue <<map[string]string>> {
+                    + UnmarshalXML(decoder : *xml.Decoder, _ : xml.StartElement) : error
+                    + MarshalXML(encoder : *xml.Encoder, start : xml.StartElement) : error
+                }
+                struct TemplateConfiguration {
+                    + StringValue : EscapedString
+                    + MapValue : KeyValue
+                }
+                struct FormatterConfiguration {
+                    + Type : string
+                    + PrettyPrint : bool
+                    + KeyValueDelimiter : string
+                    + PairSeparator : string
+                    + Template : TemplateConfiguration
+                }
+                struct HandlerConfiguration {
+                    + Type : string
+                    + FromLevel : string
+                    + ToLevel : string
+                    + File : string
+                    + Formatter : FormatterConfiguration
+                }
+                struct LoggerConfiguration {
+                    + Name : string
+                    + TimeFormat : string
+                    + MessageQueueSize : int
+                    + Handlers : []HandlerConfiguration
+                }
+                struct Configuration {
+                    + Loggers : []LoggerConfiguration
+                }
+                class "<<module>>" {
+                    ~ readFile : func(name : string) : ([]byte, error)
+                    ~ readFromFile(path : string, unmarshal : func([]byte, any) : error) : (*Configuration, error)
+                    + ReadFromJSON(path : string) : (*Configuration, error)
+                    + ReadFromYAML(path : string) : (*Configuration, error)
+                    + ReadFromXML(path : string) : (*Configuration, error)
+                }
+                TemplateConfiguration "1" *-- "1" EscapedString : contains
+                TemplateConfiguration "1" *-- "1" KeyValue : contains
+                FormatterConfiguration "1" *-- "1" TemplateConfiguration : contains
+                HandlerConfiguration "1" *-- "1" FormatterConfiguration : contains
+                LoggerConfiguration "1" *-- "many" HandlerConfiguration : contains
+                Configuration "1" *-- "many" LoggerConfiguration : contains
+                "<<module>>" ..> Configuration : uses
+            }
+        }
         package formatter {
             class "<<module>>" {
                 + ParseKey(key : string, record : logrecord.Interface) : interface{}
@@ -91,6 +144,27 @@ package pkg {
         }
     }
     package logger {
+        package configuration {
+            package parser {
+                struct Parser {
+                    ~ configuration : *parser.Configuration
+                    ~ parseFormatter(configuration : parser.FormatterConfiguration) : formatter.Interface
+                    ~ parseHandler(configuration : parser.HandlerConfiguration) : handler.Interface
+                    ~ parseLogger(configuration : parser.LoggerConfiguration) : *logger.Logger
+                    ~ parseAsyncLogger(configuration : parser.LoggerConfiguration) : *logger.AsyncLogger
+                    + GetLogger(name : string) : *logger.Logger
+                    + GetAsyncLogger(name : string) : *logger.AsyncLogger
+                }
+                class "<<module>>" {
+                    ~ parseFile(file : string, parserFunction : func(string) : (*parser.Configuration, error)) : (*Parser, error)
+                    + NewParser(configuration : parser.Configuration) : *Parser
+                    + ParseJSON(file : string) : (*Parser, error)
+                    + ParseYAML(file : string) : (*Parser, error)
+                    + ParseXML(file : string) : (*Parser, error)
+                }
+                "<<module>>" ..> Parser : uses
+            }
+        }
         package formatter {
             interface Interface {
                 + Template() : string
@@ -301,6 +375,27 @@ package pkg {
         Option ..> Configuration : uses
     }
     package structuredlogger {
+        package configuration {
+            package parser {
+                struct Parser {
+                    ~ configuration : *parser.Configuration
+                    ~ parseFormatter(configuration : parser.FormatterConfiguration) : formatter.Interface
+                    ~ parseHandler(configuration : parser.HandlerConfiguration) : handler.Interface
+                    ~ parseLogger(configuration : parser.LoggerConfiguration) : *structuredlogger.Logger
+                    ~ parseAsyncLogger(configuration : parser.LoggerConfiguration) : *structuredlogger.AsyncLogger
+                    + GetLogger(name : string) : *structuredlogger.Logger
+                    + GetAsyncLogger(name : string) : *structuredlogger.AsyncLogger
+                }
+                class "<<module>>" {
+                    ~ parseFile(file : string, parserFunction : func(string) : (*parser.Configuration, error)) : (*Parser, error)
+                    + NewParser(configuration : parser.Configuration) : *Parser
+                    + ParseJSON(file : string) : (*Parser, error)
+                    + ParseYAML(file : string) : (*Parser, error)
+                    + ParseXML(file : string) : (*Parser, error)
+                }
+                "<<module>>" ..> Parser : uses
+            }
+        }
         package formatter {
             struct baseFormatter {
                 ~ template : map[string]string
@@ -539,6 +634,12 @@ package pkg {
     }
 }
 
+pkg.logger.configuration.parser.Parser *-- pkg.common.configuration.parser.Configuration : contains
+pkg.structuredlogger.configuration.parser.Parser *-- pkg.common.configuration.parser.Configuration : contains
+pkg.logger.configuration.parser.Parser ..> pkg.logger.Logger : uses
+pkg.logger.configuration.parser.Parser ..> pkg.logger.AsyncLogger : uses
+pkg.structuredlogger.configuration.parser.Parser ..> pkg.structuredlogger.Logger : uses
+pkg.structuredlogger.configuration.parser.Parser ..> pkg.structuredlogger.AsyncLogger : uses
 "pkg.common.formatter.<<module>>" ..> "pkg.common.logrecord.Interface" : uses
 pkg.common.handler.Handler *-- pkg.common.level.Level : contains
 pkg.logger.handler.Handler *-- pkg.common.handler.Handler : contains

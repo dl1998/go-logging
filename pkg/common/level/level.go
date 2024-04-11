@@ -37,6 +37,16 @@ var mapping = map[Level]string{
 	Null:      "null",
 }
 
+// ParseLevel returns Level from string.
+func ParseLevel(level string) Level {
+	for levelType, levelName := range mapping {
+		if levelName == level {
+			return levelType
+		}
+	}
+	return Null
+}
+
 // String returns string representation of the Level.
 func (level Level) String() string {
 	return mapping[level]

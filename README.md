@@ -311,7 +311,7 @@ applicationLogger.Close()
 
 // Open the logger with a new message queue size.
 if err := applicationLogger.Open(100); err != nil {
-	panic(err)
+    panic(err)
 }
 ```
 
@@ -319,10 +319,279 @@ if err := applicationLogger.Open(100); err != nil {
 will add messages to the queue until it is not full, then it will wait (blocking the process) until the message from the
 queue will be processed and free up the space in the message queue.*
 
-## Class Diagram
+### Reading Configuration from File
 
-![Class Diagram](./docs/architecture/diagrams/png/class_diagram.png)
+You could also read configuration from a file. Configuration file should be in one of the following formats: `*.json`,
+`*.yaml`, `*.xml`. Configuration file should contain the following fields:
 
-## Sequence Diagram - Create A New Logger
+```text
+- Loggers (array of loggers)
+  - Name (string)
+  - Time Format (string)
+  - Message Queue Size (int)
+  - Handlers (array of handlers)
+    - Type (string)
+    - From Level (string)
+    - To Level (string)
+    - File (string)
+    - Formatter (string)
+      - Type (string)
+      - Pretty Print (bool)
+      - Pair Separator (string)
+      - Key Value Delimiter (string)
+      - Template (template)
+        - String Value (string)
+        - Map Value (map of string to string)
+```
 
-![Sequence Diagram](./docs/architecture/diagrams/png/create_new_logger.png)
+Example of the configuration files:
+
+- JSON
+
+  ```json
+  {
+    "loggers": [
+      {
+        "name": "example-logger",
+        "time-format": "2006-01-02 15:04:05",
+        "message-queue-size": 100,
+        "handlers": [
+          {
+            "type": "stdout",
+            "from-level": "all",
+            "to-level": "severe",
+            "formatter": {
+              "type": "json",
+              "pretty-print": false,
+              "template": {
+                "string": "%(datetime) - %(level) - %(message)",
+                "map": {
+                  "timestamp": "%(datetime)",
+                  "level": "%(level)",
+                  "name": "%(name)"
+                }
+              }
+            }
+          },
+          {
+            "type": "stderr",
+            "from-level": "error",
+            "to-level": "null",
+            "formatter": {
+              "type": "key-value",
+              "pair-separator": " ",
+              "key-value-delimiter": ":",
+              "template": {
+                "string": "%(datetime) - %(level) - %(message)",
+                "map": {
+                  "timestamp": "%(datetime)",
+                  "level": "%(level)",
+                  "name": "%(name)"
+                }
+              }
+            }
+          },
+          {
+            "type": "file",
+            "from-level": "all",
+            "to-level": "null",
+            "file": "example.log",
+            "formatter": {
+              "type": "json",
+              "pretty-print": true,
+              "template": {
+                "string": "%(datetime) - %(level) - %(message)",
+                "map": {
+                  "timestamp": "%(datetime)",
+                  "level": "%(level)",
+                  "name": "%(name)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+- YAML
+
+  ```yaml
+  loggers:
+    - name: example-logger
+      time-format: "2006-01-02 15:04:05"
+      message-queue-size: 100
+      handlers:
+        - type: stdout
+          from-level: all
+          to-level: severe
+          formatter:
+            type: json
+            pretty-print: false
+            template:
+            string: "%(datetime) - %(level) - %(message)"
+            map:
+              timestamp: "%(datetime)"
+              level: "%(level)"
+              name: "%(name)"
+        - type: stderr
+          from-level: error
+          to-level: "null"
+          formatter:
+            type: key-value
+            pair-separator: " "
+            key-value-delimiter: ":"
+            template:
+            string: "%(datetime) - %(level) - %(message)"
+            map:
+              timestamp: "%(datetime)"
+              level: "%(level)"
+              name: "%(name)"
+        - type: file
+          from-level: all
+          to-level: "null"
+          file: example.log
+          formatter:
+            type: json
+            pretty-print: true
+            template:
+            string: "%(datetime) - %(level) - %(message)"
+            map:
+              timestamp: "%(datetime)"
+              level: "%(level)"
+              name: "%(name)"
+  ```
+  
+- XML
+
+  ```xml
+  <root>
+    <loggers>
+      <logger>
+        <name>example-logger</name>
+        <time-format>2006-01-02 15:04:05</time-format>
+        <message-queue-size>100</message-queue-size>
+        <handlers>
+          <handler>
+            <type>stdout</type>
+            <from-level>all</from-level>
+            <to-level>severe</to-level>
+            <formatter>
+              <type>json</type>
+              <pretty-print>false</pretty-print>
+              <template>
+                <string>%(datetime) - %(level) - %(message)</string>
+                <map>
+                  <timestamp>%(datetime)</timestamp>
+                  <level>%(level)</level>
+                  <name>%(name)</name>
+                </map>
+              </template>
+            </formatter>
+          </handler>
+          <handler>
+            <type>stderr</type>
+            <from-level>error</from-level>
+            <to-level>null</to-level>
+            <formatter>
+              <type>key-value</type>
+              <pair-separator> </pair-separator>
+              <key-value-delimiter>:</key-value-delimiter>
+              <template>
+                <string>%(datetime) - %(level) - %(message)</string>
+                <map>
+                  <timestamp>%(datetime)</timestamp>
+                  <level>%(level)</level>
+                  <name>%(name)</name>
+                </map>
+              </template>
+            </formatter>
+          </handler>
+          <handler>
+            <type>file</type>
+            <from-level>all</from-level>
+            <to-level>null</to-level>
+            <file>example.log</file>
+            <formatter>
+              <type>json</type>
+              <pretty-print>true</pretty-print>
+              <template>
+                <string>%(datetime) - %(level) - %(message)</string>
+                <map>
+                  <timestamp>%(datetime)</timestamp>
+                  <level>%(level)</level>
+                  <name>%(name)</name>
+                </map>
+              </template>
+            </formatter>
+          </handler>
+        </handlers>
+      </logger>
+    </loggers>
+  </root>
+  ```
+
+To create a logger from the configuration file, you need to:
+
+1. Create a new Parser with the Configuration object. You shall use parser from the `logger` or `structuredlogger`.
+   1. Create a new Configuration object manually and initialize parser with it.
+      1. Parse configuration file to receive the Configuration. You could do this by calling the `ReadFromJSON`,
+      `ReadFromYAML`, `ReadFromXML` methods respectively, it will return the Configuration object.
+
+          ```go
+          // Parse configuration from JSON file.
+          newConfiguration, err := parser.ReadFromJSON("path/to/configuration/file.json")
+          if err != nil {
+              panic(err)
+          }
+          
+          // Parse configuration from YAML file.
+          newConfiguration, err := parser.ReadFromYAML("path/to/configuration/file.yaml")
+          if err != nil {
+              panic(err)
+          }
+          
+          // Parse configuration from XML file.
+          newConfiguration, err := parser.ReadFromXML("path/to/configuration/file.xml")
+          if err != nil {
+              panic(err)
+          }
+          ```
+      2. Create a new Parser with the Configuration object. You shall use parser from the `logger` or `structuredlogger`
+      packages respectively, depending on which one you need.
+
+          ```go
+          newParser := parser.NewParser(newConfiguration)
+          ```
+   2. Create Parser from the configuration file directly.
+
+      ```go
+      // Create a new Parser from JSON configuration file.
+      newParser, err := parser.ParseJSON("path/to/configuration/file.json")
+      if err != nil {
+          panic(err)
+      }
+      
+      // Create a new Parser from YAML configuration file.
+	  newParser, err := parser.ParseYAML("path/to/configuration/file.yaml")
+      if err != nil {
+          panic(err)
+      }
+		
+      // Create a new Parser from XML configuration file.
+	  newParser, err := parser.ParseXML("path/to/configuration/file.xml")
+      if err != nil {
+          panic(err)
+      }
+      ```
+
+2. Get a logger from the Parser.
+
+    ```go
+    // Standard Logger
+    newLogger := newParser.GetLogger("example-logger")
+    
+    // Async Logger
+    newLogger := newParser.GetAsyncLogger("example-logger")
+    ```

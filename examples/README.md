@@ -2,6 +2,12 @@
 
 This package contains examples how to use logger.
 
+## configurationfile
+
+Demonstrates how to use logger with configuration file.
+
+It creates different loggers from the configuration file and writes messages on the console and to the file.
+
 ## customasynclogger
 
 Demonstrates how to create a new custom logger for the application.
