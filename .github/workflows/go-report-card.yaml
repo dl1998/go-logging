@@ -1,0 +1,13 @@
+name: Go Report Card
+
+on:
+  release:
+    types: [ "published" ]
+
+jobs:
+  go-report-card:
+    runs-on: ubuntu-latest
+    name: Update Go Report Card
+    steps:
+      - name: Update Go Report Card
+        uses: creekorful/goreportcard-action@v1.0
