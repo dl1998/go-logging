@@ -3,13 +3,11 @@ name: Go Report Card
 on:
   release:
     types: [ "published" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   go-report-card:
     runs-on: ubuntu-latest
-    name: A job to run go report card
+    name: Update Go Report Card
     steps:
       - name: Update Go Report Card
         uses: creekorful/goreportcard-action@v1.0
