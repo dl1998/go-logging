@@ -355,6 +355,8 @@ Example of the configuration files:
       {
         "name": "example-logger",
         "time-format": "2006-01-02 15:04:05",
+        "error-level": "error",
+        "panic-level": "critical",
         "message-queue-size": 100,
         "handlers": [
           {
@@ -422,6 +424,8 @@ Example of the configuration files:
   loggers:
     - name: example-logger
       time-format: "2006-01-02 15:04:05"
+      error-level: error
+      panic-level: critical
       message-queue-size: 100
       handlers:
         - type: stdout
@@ -472,6 +476,8 @@ Example of the configuration files:
       <logger>
         <name>example-logger</name>
         <time-format>2006-01-02 15:04:05</time-format>
+        <error-level>error</error-level>
+        <panic-level>critical</panic-level>
         <message-queue-size>100</message-queue-size>
         <handlers>
           <handler>

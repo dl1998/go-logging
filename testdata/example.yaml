@@ -1,6 +1,8 @@
 loggers:
   - name: test-logger
     time-format: '2006-01-02 15:04:05'
+    error-level: error
+    panic-level: critical
     message-queue-size: 100
     handlers:
       - type: stdout
