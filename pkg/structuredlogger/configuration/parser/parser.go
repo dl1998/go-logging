@@ -85,6 +85,8 @@ func (parser *Parser) parseHandler(configuration parser.HandlerConfiguration) ha
 // structuredlogger.Logger.
 func (parser *Parser) parseLogger(configuration parser.LoggerConfiguration) *structuredlogger.Logger {
 	newLogger := structuredlogger.New(configuration.Name, configuration.TimeFormat)
+	newLogger.SetErrorLevel(level.ParseLevel(strings.ToLower(configuration.ErrorLevel)))
+	newLogger.SetPanicLevel(level.ParseLevel(strings.ToLower(configuration.PanicLevel)))
 	for _, handlerConfiguration := range configuration.Handlers {
 		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}
@@ -95,6 +97,8 @@ func (parser *Parser) parseLogger(configuration parser.LoggerConfiguration) *str
 // structuredlogger.AsyncLogger.
 func (parser *Parser) parseAsyncLogger(configuration parser.LoggerConfiguration) *structuredlogger.AsyncLogger {
 	newLogger := structuredlogger.NewAsyncLogger(configuration.Name, configuration.TimeFormat, configuration.MessageQueueSize)
+	newLogger.SetErrorLevel(level.ParseLevel(strings.ToLower(configuration.ErrorLevel)))
+	newLogger.SetPanicLevel(level.ParseLevel(strings.ToLower(configuration.PanicLevel)))
 	for _, handlerConfiguration := range configuration.Handlers {
 		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}

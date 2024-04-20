@@ -2,6 +2,7 @@
 package structuredlogger
 
 import (
+	"fmt"
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
@@ -18,6 +19,8 @@ func TestNew(t *testing.T) {
 	handlersSize := len(newLogger.Handlers())
 
 	testutils.AssertEquals(t, 0, handlersSize)
+	testutils.AssertEquals(t, level.Error, newLogger.ErrorLevel())
+	testutils.AssertEquals(t, level.Critical, newLogger.PanicLevel())
 }
 
 // BenchmarkNew perform benchmarking of the New().
@@ -391,7 +394,253 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 	}
 }
 
-// TestWithFromLevel tests that WithFromLevel sets the from level in the Configuration.
+// TestLogger_ErrorLevel tests that Logger.ErrorLevel returns the error level of
+// the logger.
+func TestLogger_ErrorLevel(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	testutils.AssertEquals(t, level.Error, newLogger.ErrorLevel())
+}
+
+// BenchmarkLogger_ErrorLevel perform benchmarking of the Logger.ErrorLevel().
+func BenchmarkLogger_ErrorLevel(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.ErrorLevel()
+	}
+}
+
+// TestLogger_SetErrorLevel tests that Logger.SetErrorLevel sets the error level
+// of the logger.
+func TestLogger_SetErrorLevel(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newLogger.SetErrorLevel(level.Warning)
+
+	testutils.AssertEquals(t, level.Warning, newLogger.ErrorLevel())
+}
+
+// BenchmarkLogger_SetErrorLevel perform benchmarking of the Logger.SetErrorLevel().
+func BenchmarkLogger_SetErrorLevel(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.SetErrorLevel(level.Warning)
+	}
+}
+
+// TestLogger_PanicLevel tests that Logger.PanicLevel returns the panic level of
+// the logger.
+func TestLogger_PanicLevel(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	testutils.AssertEquals(t, level.Critical, newLogger.PanicLevel())
+}
+
+// BenchmarkLogger_PanicLevel perform benchmarking of the Logger.PanicLevel().
+func BenchmarkLogger_PanicLevel(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.PanicLevel()
+	}
+}
+
+// TestLogger_SetPanicLevel tests that Logger.SetPanicLevel sets the panic level
+// of the logger.
+func TestLogger_SetPanicLevel(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newLogger.SetPanicLevel(level.Warning)
+
+	testutils.AssertEquals(t, level.Warning, newLogger.PanicLevel())
+}
+
+// BenchmarkLogger_SetPanicLevel perform benchmarking of the Logger.SetPanicLevel().
+func BenchmarkLogger_SetPanicLevel(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.SetPanicLevel(level.Warning)
+	}
+}
+
+// TestLogger_RaiseError tests that Logger.RaiseError logs message with
+// parameters on error level.
+func TestLogger_RaiseError(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "error message"
+
+	newParameters := []any{"error", message}
+	newParameters = append(newParameters, parameters...)
+
+	err := newLogger.RaiseError(message, parameters...)
+
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, message, err.Error())
+}
+
+// BenchmarkLogger_RaiseError perform benchmarking of the Logger.RaiseError().
+func BenchmarkLogger_RaiseError(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "error message"
+
+	for index := 0; index < b.N; index++ {
+		_ = newLogger.RaiseError(message, parameters...)
+	}
+}
+
+// TestLogger_CaptureError tests that Logger.CaptureError logs message with
+// parameters on error level.
+func TestLogger_CaptureError(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newError := fmt.Errorf("error message")
+
+	newParameters := []any{"error", newError.Error()}
+	newParameters = append(newParameters, parameters...)
+
+	newLogger.CaptureError(newError, parameters...)
+
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+}
+
+// BenchmarkLogger_CaptureError perform benchmarking of the
+// Logger.CaptureError().
+func BenchmarkLogger_CaptureError(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newError := fmt.Errorf("error message")
+
+	for index := 0; index < b.N; index++ {
+		newLogger.CaptureError(newError, parameters...)
+	}
+}
+
+// TestLogger_Panic tests that Logger.Panic logs message with parameters on panic
+// level.
+func TestLogger_Panic(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "panic message"
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatalf("The code did not panic")
+		} else {
+			testutils.AssertEquals(t, message, r.(string))
+		}
+	}()
+
+	newParameters := []any{"panic", message}
+	newParameters = append(newParameters, parameters...)
+
+	newLogger.Panic(message, parameters...)
+
+	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+}
+
+// BenchmarkLogger_Panic perform benchmarking of the Logger.Panic().
+func BenchmarkLogger_Panic(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "panic message"
+
+	for index := 0; index < b.N; index++ {
+		func() {
+			defer func() {
+				if r := recover(); r == nil {
+					b.Fatalf("The code did not panic")
+				}
+			}()
+			newLogger.Panic(message, parameters...)
+		}()
+	}
+}
+
+// TestWithErrorLevel tests that WithErrorLevel sets the error level in the
+// Configuration.
+func TestWithErrorLevel(t *testing.T) {
+	configuration := NewConfiguration()
+
+	option := WithErrorLevel(level.Warning)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.errorLevel, level.Warning)
+}
+
+// BenchmarkWithErrorLevel perform benchmarking of the WithErrorLevel().
+func BenchmarkWithErrorLevel(b *testing.B) {
+	configuration := NewConfiguration()
+
+	option := WithErrorLevel(level.Warning)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithPanicLevel tests that WithPanicLevel sets the panic level in the
+// Configuration.
+func TestWithPanicLevel(t *testing.T) {
+	configuration := NewConfiguration()
+
+	option := WithPanicLevel(level.Warning)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, configuration.panicLevel, level.Warning)
+}
+
+// BenchmarkWithPanicLevel perform benchmarking of the WithPanicLevel().
+func BenchmarkWithPanicLevel(b *testing.B) {
+	configuration := NewConfiguration()
+
+	option := WithPanicLevel(level.Warning)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithFromLevel tests that WithFromLevel sets the from level in the
+// Configuration.
 func TestWithFromLevel(t *testing.T) {
 	configuration := NewConfiguration()
 
@@ -652,6 +901,8 @@ func BenchmarkWithTimeFormat(b *testing.B) {
 func TestNewConfiguration(t *testing.T) {
 	tests := map[string]struct {
 		options            []Option
+		expectedErrorLevel level.Level
+		expectedPanicLevel level.Level
 		expectedFromLevel  level.Level
 		expectedToLevel    level.Level
 		expectedTemplate   map[string]string
@@ -661,6 +912,8 @@ func TestNewConfiguration(t *testing.T) {
 	}{
 		"Empty": {
 			options:            []Option{},
+			expectedErrorLevel: level.Error,
+			expectedPanicLevel: level.Critical,
 			expectedFromLevel:  level.Warning,
 			expectedToLevel:    level.Null,
 			expectedTemplate:   template,
@@ -670,6 +923,8 @@ func TestNewConfiguration(t *testing.T) {
 		},
 		"Non Standard": {
 			options: []Option{
+				WithErrorLevel(level.Warning),
+				WithPanicLevel(level.Error),
 				WithFromLevel(level.All),
 				WithToLevel(level.Emergency),
 				WithTemplate(map[string]string{
@@ -680,8 +935,10 @@ func TestNewConfiguration(t *testing.T) {
 				WithName("test"),
 				WithTimeFormat(time.DateTime),
 			},
-			expectedFromLevel: level.All,
-			expectedToLevel:   level.Emergency,
+			expectedErrorLevel: level.Warning,
+			expectedPanicLevel: level.Error,
+			expectedFromLevel:  level.All,
+			expectedToLevel:    level.Emergency,
 			expectedTemplate: map[string]string{
 				"level-number": "%(levelnr)",
 				"name":         "%(name)",
@@ -695,6 +952,8 @@ func TestNewConfiguration(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			newConfiguration := NewConfiguration(configuration.options...)
 
+			testutils.AssertEquals(t, configuration.expectedErrorLevel, newConfiguration.errorLevel)
+			testutils.AssertEquals(t, configuration.expectedPanicLevel, newConfiguration.panicLevel)
 			testutils.AssertEquals(t, configuration.expectedFromLevel, newConfiguration.fromLevel)
 			testutils.AssertEquals(t, configuration.expectedToLevel, newConfiguration.toLevel)
 			testutils.AssertEquals(t, configuration.expectedTemplate, newConfiguration.template)
@@ -1122,5 +1381,187 @@ func BenchmarkEmergency(b *testing.B) {
 
 	for index := 0; index < b.N; index++ {
 		Emergency(parameters...)
+	}
+}
+
+// TestErrorLevel tests that ErrorLevel returns the error level of the default
+// logger.
+func TestErrorLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, level.Error, ErrorLevel())
+}
+
+// BenchmarkErrorLevel perform benchmarking of the ErrorLevel().
+func BenchmarkErrorLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		ErrorLevel()
+	}
+}
+
+// TestSetErrorLevel tests that SetErrorLevel sets the error level of the default
+// logger.
+func TestSetErrorLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	SetErrorLevel(level.Warning)
+
+	testutils.AssertEquals(t, level.Warning, ErrorLevel())
+}
+
+// BenchmarkSetErrorLevel perform benchmarking of the SetErrorLevel().
+func BenchmarkSetErrorLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		SetErrorLevel(level.Warning)
+	}
+}
+
+// TestPanicLevel tests that PanicLevel returns the panic level of the default
+// logger.
+func TestPanicLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	testutils.AssertEquals(t, level.Critical, PanicLevel())
+}
+
+// BenchmarkPanicLevel perform benchmarking of the PanicLevel().
+func BenchmarkPanicLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		PanicLevel()
+	}
+}
+
+// TestSetPanicLevel tests that SetPanicLevel sets the panic level of the default
+// logger.
+func TestSetPanicLevel(t *testing.T) {
+	Configure(NewConfiguration())
+
+	SetPanicLevel(level.Warning)
+
+	testutils.AssertEquals(t, level.Warning, PanicLevel())
+}
+
+// BenchmarkSetPanicLevel perform benchmarking of the SetPanicLevel().
+func BenchmarkSetPanicLevel(b *testing.B) {
+	Configure(NewConfiguration())
+
+	for index := 0; index < b.N; index++ {
+		SetPanicLevel(level.Warning)
+	}
+}
+
+// TestRaiseError tests that RaiseError logs message with parameters on error
+// level using default logger.
+func TestRaiseError(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "error message"
+
+	newParameters := []any{"error", message}
+	newParameters = append(newParameters, parameters...)
+
+	err := RaiseError(message, parameters...)
+
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertNotNil(t, err)
+	testutils.AssertEquals(t, message, err.Error())
+}
+
+// BenchmarkRaiseError perform benchmarking of the RaiseError().
+func BenchmarkRaiseError(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "error message"
+
+	for index := 0; index < b.N; index++ {
+		_ = RaiseError(message, parameters...)
+	}
+}
+
+// TestCaptureError tests that CaptureError logs message with parameters on error
+// level using default logger.
+func TestCaptureError(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newError := fmt.Errorf("error message")
+
+	newParameters := []any{"error", newError.Error()}
+	newParameters = append(newParameters, parameters...)
+
+	CaptureError(newError, parameters...)
+
+	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+}
+
+// BenchmarkCaptureError perform benchmarking of the CaptureError().
+func BenchmarkCaptureError(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	newError := fmt.Errorf("error message")
+
+	for index := 0; index < b.N; index++ {
+		CaptureError(newError, parameters...)
+	}
+}
+
+// TestPanic tests that Panic logs message with parameters on panic level using
+// default logger.
+func TestPanic(t *testing.T) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "panic message"
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatalf("The code did not panic")
+		} else {
+			testutils.AssertEquals(t, message, r.(string))
+		}
+	}()
+
+	newParameters := []any{"panic", message}
+	newParameters = append(newParameters, parameters...)
+
+	Panic(message, parameters...)
+
+	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+}
+
+// BenchmarkPanic perform benchmarking of the Panic().
+func BenchmarkPanic(b *testing.B) {
+	mockLogger := &MockLogger{}
+
+	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+
+	message := "panic message"
+
+	for index := 0; index < b.N; index++ {
+		func() {
+			defer func() {
+				if r := recover(); r == nil {
+					b.Fatalf("The code did not panic")
+				}
+			}()
+			Panic(message, parameters...)
+		}()
 	}
 }
