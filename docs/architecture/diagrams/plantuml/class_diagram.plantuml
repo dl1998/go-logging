@@ -284,9 +284,18 @@ package pkg {
             + Alert(message : string, parameters : ...any)
             + Critical(message : string, parameters : ...any)
             + Emergency(message : string, parameters : ...any)
+            + ErrorLevel() : level.Level
+            + SetErrorLevel(newLevel : level.Level)
+            + PanicLevel() : level.Level
+            + SetPanicLevel(newLevel : level.Level)
+            + RaiseError(message : string, parameters : ...any) : error
+            + CaptureError(message : error)
+            + Panic(message : string, parameters : ...any)
         }
         struct Logger implements Interface {
             ~ baseLogger : baseLoggerInterface
+            + errorLevel : level.Level
+            + panicLevel : level.Level
             + Name() : string
             + Handlers() : []handler.Interface
             + AddHandler(handlerInterface : handler.Interface)
@@ -302,6 +311,13 @@ package pkg {
             + Alert(message : string, parameters : ...any)
             + Critical(message : string, parameters : ...any)
             + Emergency(message : string, parameters : ...any)
+            + ErrorLevel() : level.Level
+            + SetErrorLevel(newLevel : level.Level)
+            + PanicLevel() : level.Level
+            + SetPanicLevel(newLevel : level.Level)
+            + RaiseError(message : string, parameters : ...any) : error
+            + CaptureError(message : error)
+            + Panic(message : string, parameters : ...any)
         }
         struct baseAsyncLogger implements baseLoggerInterface {
             ~ *baseLogger
@@ -327,6 +343,8 @@ package pkg {
             + Close()
         }
         struct Configuration {
+            ~ errorLevel : level.Level
+            ~ panicLevel : level.Level
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
             ~ template : string
@@ -343,6 +361,8 @@ package pkg {
             ~ init()
             + New(name : string, timeFormat : string) : *Logger
             + NewAsyncLogger(name : string, timeFormat : string, queueSize : int) : *AsyncLogger
+            + WithErrorLevel(errorLevel : level.Level) : Option
+            + WithPanicLevel(panicLevel : level.Level) : Option
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : string) : Option
@@ -366,6 +386,13 @@ package pkg {
             + Alert(message : string, parameters : ...any)
             + Critical(message : string, parameters : ...any)
             + Emergency(message : string, parameters : ...any)
+            + ErrorLevel() : level.Level
+            + SetErrorLevel(newLevel : level.Level)
+            + PanicLevel() : level.Level
+            + SetPanicLevel(newLevel : level.Level)
+            + RaiseError(message : string, parameters : ...any) : error
+            + CaptureError(message : error)
+            + Panic(message : string, parameters : ...any)
         }
 
         baseAsyncLogger *-- baseLogger

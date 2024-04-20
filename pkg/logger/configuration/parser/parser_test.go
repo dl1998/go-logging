@@ -35,6 +35,8 @@ var (
 				{
 					Name:             "test-logger",
 					TimeFormat:       time.DateTime,
+					ErrorLevel:       level.Error.String(),
+					PanicLevel:       level.Critical.String(),
 					MessageQueueSize: 100,
 					Handlers: []parser.HandlerConfiguration{
 						{

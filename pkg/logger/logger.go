@@ -2,6 +2,7 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
@@ -34,11 +35,20 @@ type Interface interface {
 	Alert(message string, parameters ...any)
 	Critical(message string, parameters ...any)
 	Emergency(message string, parameters ...any)
+	ErrorLevel() level.Level
+	SetErrorLevel(newLevel level.Level)
+	PanicLevel() level.Level
+	SetPanicLevel(newLevel level.Level)
+	RaiseError(message string, parameters ...any) error
+	CaptureError(message error)
+	Panic(message string, parameters ...any)
 }
 
 // Logger struct encapsulates baseLogger implementation.
 type Logger struct {
 	baseLogger baseLoggerInterface
+	errorLevel level.Level
+	panicLevel level.Level
 }
 
 // New creates a new instance of the Logger.
@@ -49,6 +59,8 @@ func New(name string, timeFormat string) *Logger {
 			timeFormat: timeFormat,
 			handlers:   make([]handler.Interface, 0),
 		},
+		errorLevel: level.Error,
+		panicLevel: level.Critical,
 	}
 }
 
@@ -128,8 +140,53 @@ func (logger *Logger) Emergency(message string, parameters ...any) {
 	logger.baseLogger.Log(level.Emergency, message, parameters...)
 }
 
+// ErrorLevel returns errorLevel for the Logger.
+func (logger *Logger) ErrorLevel() level.Level {
+	return logger.errorLevel
+}
+
+// SetErrorLevel sets errorLevel in the Logger that is used in the RaiseError and
+// CaptureError methods.
+func (logger *Logger) SetErrorLevel(newLevel level.Level) {
+	if newLevel > level.All && newLevel < level.Null {
+		logger.errorLevel = newLevel
+	}
+}
+
+// PanicLevel returns panicLevel for the Logger.
+func (logger *Logger) PanicLevel() level.Level {
+	return logger.panicLevel
+}
+
+// SetPanicLevel sets panicLevel in the Logger that is used in the Panic method.
+func (logger *Logger) SetPanicLevel(newLevel level.Level) {
+	if newLevel > level.All && newLevel < level.Null {
+		logger.panicLevel = newLevel
+	}
+}
+
+// RaiseError logs a new message using Logger and returns a new error with logged
+// error message.
+func (logger *Logger) RaiseError(message string, parameters ...any) error {
+	logger.baseLogger.Log(logger.errorLevel, message, parameters...)
+	return fmt.Errorf(message, parameters...)
+}
+
+// CaptureError logs a new message from the error using Logger.
+func (logger *Logger) CaptureError(message error) {
+	logger.baseLogger.Log(logger.errorLevel, message.Error())
+}
+
+// Panic logs a new message using Logger and panics with the message.
+func (logger *Logger) Panic(message string, parameters ...any) {
+	logger.baseLogger.Log(logger.panicLevel, message, parameters...)
+	panic(fmt.Sprintf(message, parameters...))
+}
+
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
+	errorLevel level.Level
+	panicLevel level.Level
 	fromLevel  level.Level
 	toLevel    level.Level
 	template   string
@@ -140,6 +197,20 @@ type Configuration struct {
 
 // Option represents option for the Configuration.
 type Option func(*Configuration)
+
+// WithErrorLevel sets errorLevel for the Configuration.
+func WithErrorLevel(errorLevel level.Level) Option {
+	return func(configuration *Configuration) {
+		configuration.errorLevel = errorLevel
+	}
+}
+
+// WithPanicLevel sets panicLevel for the Configuration.
+func WithPanicLevel(panicLevel level.Level) Option {
+	return func(configuration *Configuration) {
+		configuration.panicLevel = panicLevel
+	}
+}
 
 // WithFromLevel sets fromLevel for the Configuration.
 func WithFromLevel(fromLevel level.Level) Option {
@@ -186,6 +257,8 @@ func WithTimeFormat(timeFormat string) Option {
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
+		errorLevel: level.Error,
+		panicLevel: level.Critical,
 		fromLevel:  level.Warning,
 		toLevel:    level.Null,
 		template:   "%(level):%(name):%(message)",
@@ -212,6 +285,8 @@ func Configure(configuration *Configuration) {
 	template = configuration.template
 
 	newLogger := New(configuration.name, configuration.timeFormat)
+	newLogger.SetErrorLevel(configuration.errorLevel)
+	newLogger.SetPanicLevel(configuration.panicLevel)
 
 	defaultFormatter := formatter.New(configuration.template)
 
@@ -318,4 +393,44 @@ func Critical(message string, parameters ...any) {
 // Emergency logs a new message using default logger with level.Emergency level.
 func Emergency(message string, parameters ...any) {
 	rootLogger.Emergency(message, parameters...)
+}
+
+// ErrorLevel returns errorLevel in the default logger that is used in the
+// RaiseError and CaptureError methods.
+func ErrorLevel() level.Level {
+	return rootLogger.ErrorLevel()
+}
+
+// SetErrorLevel sets errorLevel in the default logger that is used in the
+// RaiseError and CaptureError methods.
+func SetErrorLevel(newLevel level.Level) {
+	rootLogger.SetErrorLevel(newLevel)
+}
+
+// PanicLevel returns panicLevel in the default logger that is used in the Panic
+// method.
+func PanicLevel() level.Level {
+	return rootLogger.PanicLevel()
+}
+
+// SetPanicLevel sets panicLevel in the default logger that is used in the Panic
+// method.
+func SetPanicLevel(newLevel level.Level) {
+	rootLogger.SetPanicLevel(newLevel)
+}
+
+// RaiseError logs a new message using default logger and returns a new error
+// with logged error message.
+func RaiseError(message string, parameters ...any) error {
+	return rootLogger.RaiseError(message, parameters...)
+}
+
+// CaptureError logs a new message from the error using default logger.
+func CaptureError(message error) {
+	rootLogger.CaptureError(message)
+}
+
+// Panic logs a new message using default logger and panics with the message.
+func Panic(message string, parameters ...any) {
+	rootLogger.Panic(message, parameters...)
 }
