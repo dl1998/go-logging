@@ -38,6 +38,10 @@ It creates a simple logger that writes messages on the console in structured for
 
 Demonstrates how to use default logger (root) without creating a new logger.
 
+## errorpanicwrappers
+
+Demonstrates how to use error and panic wrappers.
+
 ## jsonlogger
 
 Demonstrates how to use default logger (root) that writes messages in JSON format.

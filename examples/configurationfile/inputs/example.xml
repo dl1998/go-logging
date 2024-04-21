@@ -4,6 +4,8 @@
         <logger>
             <name>example-logger</name>
             <time-format>2006-01-02 15:04:05</time-format>
+            <error-level>error</error-level>
+            <panic-level>critical</panic-level>
             <message-queue-size>100</message-queue-size>
             <handlers>
                 <handler>

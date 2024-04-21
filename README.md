@@ -92,6 +92,8 @@ All options available for the configuration are:
 
   | Method         |            Default            | Description                                                                        |
   |----------------|:-----------------------------:|------------------------------------------------------------------------------------|
+  | WithErrorLevel |          level.Error          | Set logging level used to log raised or captured error.                            |
+  | WithPanicLevel |        level.Critical         | Set logging level used to log panic.                                               |
   | WithFromLevel  |         level.Warning         | Set logging level from which logger should log messages.                           |
   | WithToLevel    |          level.Null           | Set logging level till which logger should log messages.                           |
   | WithTemplate   | "%(level):%(name):%(message)" | Set template for logging message.                                                  |
@@ -103,6 +105,8 @@ All options available for the configuration are:
 
   | Method                |                                                       Default                                                       | Description                                                                                                                           |
   |-----------------------|:-------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
+  | WithErrorLevel        |                                                     level.Error                                                     | Set logging level used to log raised or captured error.                                                                               |
+  | WithPanicLevel        |                                                   level.Critical                                                    | Set logging level used to log panic.                                                                                                  |
   | WithFromLevel         |                                                    level.Warning                                                    | Set logging level from which logger should log messages.                                                                              |
   | WithToLevel           |                                                     level.Null                                                      | Set logging level till which logger should log messages.                                                                              |
   | WithTemplate          | map[string]string {<br/>"timestamp": "%(timestamp)",<br/>"level":     "%(level)",<br/>"name":      "%(name)",<br/>} | Set template for logging structure.                                                                                                   |
@@ -320,6 +324,64 @@ if err := applicationLogger.Open(100); err != nil {
 will add messages to the queue until it is not full, then it will wait (blocking the process) until the message from the
 queue will be processed and free up the space in the message queue.*
 
+### Error / Panic Wrapper
+
+You could wrap error or raise a new error and log error message using the logger. By default, it will log error message
+using the `level.Error` level. However, it could be changed by setting the error level in the logger configuration.
+
+- Standard logger
+
+  ```go
+  var err error
+  
+  // Raise Error with default error level (level.Error)
+  err = applicationLogger.RaiseError("exit code: %d", 1)
+  
+  // Change error level
+  applicationLogger.SetErrorLevel(level.Alert)
+  
+  // Capture Error with new error level (level.Alert)
+  applicationLogger.CaptureError(err)
+  ```
+
+- Structured logger
+
+  ```go
+  var err error
+  
+  // Raise Error with default error level (level.Error) and additional fields
+  err = applicationLogger.RaiseError("exit code: 1", "hostname", "localhost")
+  
+  // Change error level
+  applicationLogger.SetErrorLevel(level.Alert)
+  
+  // Capture Error with new error level (level.Alert) and additional fields
+  applicationLogger.CaptureError(err, "hostname", "localhost")
+  ```
+  
+Similarly, you could panic and log panic message using the logger. By default, it will log panic message using the
+`level.Critical` level. However, it could be changed by setting the panic level in the logger configuration.
+
+- Standard logger
+
+  ```go
+  // Change panic level
+  applicationLogger.SetPanicLevel(level.Emergency)
+
+  // Raise Panic with new panic level (level.Emergency)
+  applicationLogger.Panic("exit code: %d", 1)
+  ```
+
+- Structured logger
+
+  ```go
+  // Change panic level
+  applicationLogger.SetPanicLevel(level.Emergency)
+  
+  // Raise Panic with new panic level (level.Emergency) and additional fields
+  applicationLogger.Panic("exit code: 1", "hostname", "localhost")
+  ```
+
 ### Reading Configuration from File
 
 You could also read configuration from a file. Configuration file should be in one of the following formats: `*.json`,
@@ -329,6 +391,8 @@ You could also read configuration from a file. Configuration file should be in o
 - Loggers (array of loggers)
   - Name (string)
   - Time Format (string)
+  - Error Level (string)
+  - Panic Level (string)
   - Message Queue Size (int)
   - Handlers (array of handlers)
     - Type (string)
@@ -355,6 +419,8 @@ Example of the configuration files:
       {
         "name": "example-logger",
         "time-format": "2006-01-02 15:04:05",
+        "error-level": "error",
+        "panic-level": "critical",
         "message-queue-size": 100,
         "handlers": [
           {
@@ -422,6 +488,8 @@ Example of the configuration files:
   loggers:
     - name: example-logger
       time-format: "2006-01-02 15:04:05"
+      error-level: error
+      panic-level: critical
       message-queue-size: 100
       handlers:
         - type: stdout
@@ -472,6 +540,8 @@ Example of the configuration files:
       <logger>
         <name>example-logger</name>
         <time-format>2006-01-02 15:04:05</time-format>
+        <error-level>error</error-level>
+        <panic-level>critical</panic-level>
         <message-queue-size>100</message-queue-size>
         <handlers>
           <handler>

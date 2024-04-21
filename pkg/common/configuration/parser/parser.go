@@ -148,6 +148,10 @@ type LoggerConfiguration struct {
 	Name string `json:"name" yaml:"name" xml:"name"`
 	// TimeFormat is the time format used by the logger.
 	TimeFormat string `json:"time-format" yaml:"time-format" xml:"time-format"`
+	// ErrorLevel is the error level used by the logger for raise/capture error.
+	ErrorLevel string `json:"error-level" yaml:"error-level" xml:"error-level"`
+	// PanicLevel is the panic level used by the logger for panic.
+	PanicLevel string `json:"panic-level" yaml:"panic-level" xml:"panic-level"`
 	// MessageQueueSize is the size of the message queue used by async logger.
 	MessageQueueSize int `json:"message-queue-size" yaml:"message-queue-size" xml:"message-queue-size"`
 	// Handlers is the list of handlers used by the logger.
