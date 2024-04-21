@@ -46,7 +46,7 @@ func convertParametersToMap(parameters ...any) map[string]interface{} {
 func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
 	var parametersMap = convertParametersToMap(parameters...)
 
-	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 3)
+	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 4)
 
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(logRecord)
