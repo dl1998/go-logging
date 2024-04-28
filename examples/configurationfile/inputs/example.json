@@ -5,6 +5,16 @@
       "time-format": "2006-01-02 15:04:05",
       "error-level": "error",
       "panic-level": "critical",
+      "request-template": "Request: [{Method}] {URL}",
+      "response-template": "Response: [{StatusCode}] {Status}",
+      "request-mapping": {
+        "method": "Method",
+        "url": "URL"
+      },
+      "response-mapping": {
+        "status-code": "StatusCode",
+        "status": "Status"
+      },
       "message-queue-size": 100,
       "handlers": [
         {
