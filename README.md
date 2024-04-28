@@ -393,6 +393,10 @@ You could also read configuration from a file. Configuration file should be in o
   - Time Format (string)
   - Error Level (string)
   - Panic Level (string)
+  - Request Template (string)
+  - Response Template (string)
+  - Request Mapping (map of string to string)
+  - Response Mapping (map of string to string)
   - Message Queue Size (int)
   - Handlers (array of handlers)
     - Type (string)
@@ -421,6 +425,16 @@ Example of the configuration files:
         "time-format": "2006-01-02 15:04:05",
         "error-level": "error",
         "panic-level": "critical",
+        "request-template": "Request: [{Method}] {URL}",
+        "response-template": "Response: [{StatusCode}] {Status}",
+        "request-mapping": {
+          "method": "Method",
+          "url": "URL"
+        },
+        "response-mapping": {
+          "status-code": "StatusCode",
+          "status": "Status"
+        },
         "message-queue-size": 100,
         "handlers": [
           {
@@ -490,6 +504,14 @@ Example of the configuration files:
       time-format: "2006-01-02 15:04:05"
       error-level: error
       panic-level: critical
+      request-template: "Request: [{Method}] {URL}"
+      response-template: "Response: [{StatusCode}] {Status}"
+      request-mapping:
+        method: Method
+        url: URL
+      response-mapping:
+        status-code: StatusCode
+        status: Status
       message-queue-size: 100
       handlers:
         - type: stdout
@@ -542,6 +564,16 @@ Example of the configuration files:
         <time-format>2006-01-02 15:04:05</time-format>
         <error-level>error</error-level>
         <panic-level>critical</panic-level>
+        <request-template>Request: [{Method}] {URL}</request-template>
+        <response-template>Response: [{StatusCode}] {Status}</response-template>
+        <request-mapping>
+          <method>Method</method>
+          <url>URL</url>
+        </request-mapping>
+        <response-mapping>
+          <status-code>StatusCode</status-code>
+          <status>Status</status>
+        </response-mapping>
         <message-queue-size>100</message-queue-size>
         <handlers>
           <handler>
