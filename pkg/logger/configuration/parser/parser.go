@@ -79,6 +79,8 @@ func (parser *Parser) parseLogger(configuration parser.LoggerConfiguration) *log
 	newLogger := logger.New(configuration.Name, configuration.TimeFormat)
 	newLogger.SetErrorLevel(level.ParseLevel(strings.ToLower(configuration.ErrorLevel)))
 	newLogger.SetPanicLevel(level.ParseLevel(strings.ToLower(configuration.PanicLevel)))
+	newLogger.SetRequestTemplate(configuration.RequestTemplate)
+	newLogger.SetResponseTemplate(configuration.ResponseTemplate)
 	for _, handlerConfiguration := range configuration.Handlers {
 		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}
@@ -91,6 +93,8 @@ func (parser *Parser) parseAsyncLogger(configuration parser.LoggerConfiguration)
 	newLogger := logger.NewAsyncLogger(configuration.Name, configuration.TimeFormat, configuration.MessageQueueSize)
 	newLogger.SetErrorLevel(level.ParseLevel(strings.ToLower(configuration.ErrorLevel)))
 	newLogger.SetPanicLevel(level.ParseLevel(strings.ToLower(configuration.PanicLevel)))
+	newLogger.SetRequestTemplate(configuration.RequestTemplate)
+	newLogger.SetResponseTemplate(configuration.ResponseTemplate)
 	for _, handlerConfiguration := range configuration.Handlers {
 		newLogger.AddHandler(parser.parseHandler(handlerConfiguration))
 	}

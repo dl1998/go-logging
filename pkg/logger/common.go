@@ -8,7 +8,7 @@ import (
 
 // baseLoggerInterface defines low level logging interface.
 type baseLoggerInterface interface {
-	Log(level level.Level, message string, parameters ...any)
+	Log(level level.Level, skipCaller int, message string, parameters ...any)
 	Name() string
 	SetName(name string)
 	Handlers() []handler.Interface
@@ -24,8 +24,8 @@ type baseLogger struct {
 }
 
 // Log logs interpolated message with the provided level.Level.
-func (logger *baseLogger) Log(level level.Level, message string, parameters ...any) {
-	record := logrecord.New(logger.name, level, logger.timeFormat, message, parameters, 4)
+func (logger *baseLogger) Log(level level.Level, skipCaller int, message string, parameters ...any) {
+	record := logrecord.New(logger.name, level, logger.timeFormat, message, parameters, skipCaller)
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(record)
 	}

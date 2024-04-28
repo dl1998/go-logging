@@ -121,7 +121,7 @@ func TestBaseAsyncLogger_Log(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
-	newBaseAsyncLogger.Log(logLevel, message, parameters...)
+	newBaseAsyncLogger.Log(logLevel, skipCallers, message, parameters...)
 	record := <-newBaseAsyncLogger.messageQueue
 
 	testutils.AssertEquals(t, logLevel, record.Level())
@@ -137,7 +137,7 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	b.ResetTimer()
 
 	for index := 0; index < b.N; index++ {
-		newBaseAsyncLogger.Log(logLevel, message, parameters...)
+		newBaseAsyncLogger.Log(logLevel, skipCallers, message, parameters...)
 	}
 }
 

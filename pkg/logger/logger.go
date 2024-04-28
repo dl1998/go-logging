@@ -4,15 +4,25 @@ package logger
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/level"
+	"github.com/dl1998/go-logging/pkg/common/utils"
 	"github.com/dl1998/go-logging/pkg/logger/formatter"
 	"github.com/dl1998/go-logging/pkg/logger/handler"
+	"net/http"
+	"strings"
 	"time"
 )
 
-var rootLogger Interface
-var fromLevel level.Level
-var toLevel level.Level
-var template string
+var (
+	rootLogger Interface
+	fromLevel  level.Level
+	toLevel    level.Level
+	template   string
+
+	defaultErrorLevel       = level.Error
+	defaultPanicLevel       = level.Critical
+	defaultRequestTemplate  = "Request: [{Method}] {URL}"
+	defaultResponseTemplate = "Response: [{StatusCode}] {Status}"
+)
 
 func init() {
 	Configure(NewConfiguration())
@@ -42,13 +52,23 @@ type Interface interface {
 	RaiseError(message string, parameters ...any) error
 	CaptureError(message error)
 	Panic(message string, parameters ...any)
+	WrapStruct(logLevel level.Level, template string, structObject interface{})
+	RequestTemplate() string
+	SetRequestTemplate(newTemplate string)
+	ResponseTemplate() string
+	SetResponseTemplate(newTemplate string)
+	WrapRequest(logLevel level.Level, request *http.Request)
+	WrapResponse(logLevel level.Level, response *http.Response)
 }
 
 // Logger struct encapsulates baseLogger implementation.
 type Logger struct {
-	baseLogger baseLoggerInterface
-	errorLevel level.Level
-	panicLevel level.Level
+	baseLogger       baseLoggerInterface
+	skipCallers      int
+	errorLevel       level.Level
+	panicLevel       level.Level
+	requestTemplate  string
+	responseTemplate string
 }
 
 // New creates a new instance of the Logger.
@@ -59,8 +79,11 @@ func New(name string, timeFormat string) *Logger {
 			timeFormat: timeFormat,
 			handlers:   make([]handler.Interface, 0),
 		},
-		errorLevel: level.Error,
-		panicLevel: level.Critical,
+		skipCallers:      4,
+		errorLevel:       defaultErrorLevel,
+		panicLevel:       defaultPanicLevel,
+		requestTemplate:  defaultRequestTemplate,
+		responseTemplate: defaultResponseTemplate,
 	}
 }
 
@@ -87,57 +110,57 @@ func (logger *Logger) RemoveHandler(handlerInterface handler.Interface) {
 
 // Trace logs a new message using Logger with level.Trace level.
 func (logger *Logger) Trace(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Trace, message, parameters...)
+	logger.baseLogger.Log(level.Trace, logger.skipCallers, message, parameters...)
 }
 
 // Debug logs a new message using Logger with level.Debug level.
 func (logger *Logger) Debug(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Debug, message, parameters...)
+	logger.baseLogger.Log(level.Debug, logger.skipCallers, message, parameters...)
 }
 
 // Verbose logs a new message using Logger with level.Verbose level.
 func (logger *Logger) Verbose(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Verbose, message, parameters...)
+	logger.baseLogger.Log(level.Verbose, logger.skipCallers, message, parameters...)
 }
 
 // Info logs a new message using Logger with level.Info level.
 func (logger *Logger) Info(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Info, message, parameters...)
+	logger.baseLogger.Log(level.Info, logger.skipCallers, message, parameters...)
 }
 
 // Notice logs a new message using Logger with level.Notice level.
 func (logger *Logger) Notice(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Notice, message, parameters...)
+	logger.baseLogger.Log(level.Notice, logger.skipCallers, message, parameters...)
 }
 
 // Warning logs a new message using Logger with level.Warning level.
 func (logger *Logger) Warning(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Warning, message, parameters...)
+	logger.baseLogger.Log(level.Warning, logger.skipCallers, message, parameters...)
 }
 
 // Severe logs a new message using Logger with level.Severe level.
 func (logger *Logger) Severe(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Severe, message, parameters...)
+	logger.baseLogger.Log(level.Severe, logger.skipCallers, message, parameters...)
 }
 
 // Error logs a new message using Logger with level.Error level.
 func (logger *Logger) Error(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Error, message, parameters...)
+	logger.baseLogger.Log(level.Error, logger.skipCallers, message, parameters...)
 }
 
 // Alert logs a new message using Logger with level.Alert level.
 func (logger *Logger) Alert(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Alert, message, parameters...)
+	logger.baseLogger.Log(level.Alert, logger.skipCallers, message, parameters...)
 }
 
 // Critical logs a new message using Logger with level.Critical level.
 func (logger *Logger) Critical(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Critical, message, parameters...)
+	logger.baseLogger.Log(level.Critical, logger.skipCallers, message, parameters...)
 }
 
 // Emergency logs a new message using Logger with level.Emergency level.
 func (logger *Logger) Emergency(message string, parameters ...any) {
-	logger.baseLogger.Log(level.Emergency, message, parameters...)
+	logger.baseLogger.Log(level.Emergency, logger.skipCallers, message, parameters...)
 }
 
 // ErrorLevel returns errorLevel for the Logger.
@@ -168,31 +191,81 @@ func (logger *Logger) SetPanicLevel(newLevel level.Level) {
 // RaiseError logs a new message using Logger and returns a new error with logged
 // error message.
 func (logger *Logger) RaiseError(message string, parameters ...any) error {
-	logger.baseLogger.Log(logger.errorLevel, message, parameters...)
+	logger.baseLogger.Log(logger.errorLevel, logger.skipCallers, message, parameters...)
 	return fmt.Errorf(message, parameters...)
 }
 
 // CaptureError logs a new message from the error using Logger.
 func (logger *Logger) CaptureError(message error) {
-	logger.baseLogger.Log(logger.errorLevel, message.Error())
+	logger.baseLogger.Log(logger.errorLevel, logger.skipCallers, message.Error())
 }
 
 // Panic logs a new message using Logger and panics with the message.
 func (logger *Logger) Panic(message string, parameters ...any) {
-	logger.baseLogger.Log(logger.panicLevel, message, parameters...)
+	logger.baseLogger.Log(logger.panicLevel, logger.skipCallers, message, parameters...)
 	panic(fmt.Sprintf(message, parameters...))
+}
+
+// wrapStruct wraps the struct, it wraps only public fields.
+func (logger *Logger) wrapStruct(logLevel level.Level, skipCaller int, template string, structObject interface{}) {
+	if logLevel > level.All && logLevel < level.Null {
+		mapping := utils.StructToMap(structObject)
+		message := template
+		for key, value := range mapping {
+			message = strings.ReplaceAll(message, "{"+key+"}", fmt.Sprintf("%v", value))
+		}
+		logger.baseLogger.Log(logLevel, skipCaller, message)
+	}
+}
+
+// WrapStruct wraps the struct, it wraps only public fields of the basic types:
+// int, float, bool, string.
+func (logger *Logger) WrapStruct(logLevel level.Level, template string, structObject interface{}) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, template, structObject)
+}
+
+// RequestTemplate returns requestTemplate for the Logger.
+func (logger *Logger) RequestTemplate() string {
+	return logger.requestTemplate
+}
+
+// SetRequestTemplate sets requestTemplate for the Logger.
+func (logger *Logger) SetRequestTemplate(newTemplate string) {
+	logger.requestTemplate = newTemplate
+}
+
+// ResponseTemplate returns responseTemplate for the Logger.
+func (logger *Logger) ResponseTemplate() string {
+	return logger.responseTemplate
+}
+
+// SetResponseTemplate sets responseTemplate for the Logger.
+func (logger *Logger) SetResponseTemplate(newTemplate string) {
+	logger.responseTemplate = newTemplate
+}
+
+// WrapRequest wraps the HTTP Request.
+func (logger *Logger) WrapRequest(logLevel level.Level, request *http.Request) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, logger.requestTemplate, *request)
+}
+
+// WrapResponse wraps the HTTP Response.
+func (logger *Logger) WrapResponse(logLevel level.Level, response *http.Response) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, logger.responseTemplate, *response)
 }
 
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
-	errorLevel level.Level
-	panicLevel level.Level
-	fromLevel  level.Level
-	toLevel    level.Level
-	template   string
-	file       string
-	name       string
-	timeFormat string
+	errorLevel       level.Level
+	panicLevel       level.Level
+	requestTemplate  string
+	responseTemplate string
+	fromLevel        level.Level
+	toLevel          level.Level
+	template         string
+	file             string
+	name             string
+	timeFormat       string
 }
 
 // Option represents option for the Configuration.
@@ -209,6 +282,20 @@ func WithErrorLevel(errorLevel level.Level) Option {
 func WithPanicLevel(panicLevel level.Level) Option {
 	return func(configuration *Configuration) {
 		configuration.panicLevel = panicLevel
+	}
+}
+
+// WithRequestTemplate sets requestTemplate for the Configuration.
+func WithRequestTemplate(requestTemplate string) Option {
+	return func(configuration *Configuration) {
+		configuration.requestTemplate = requestTemplate
+	}
+}
+
+// WithResponseTemplate sets responseTemplate for the Configuration.
+func WithResponseTemplate(responseTemplate string) Option {
+	return func(configuration *Configuration) {
+		configuration.responseTemplate = responseTemplate
 	}
 }
 
@@ -257,14 +344,16 @@ func WithTimeFormat(timeFormat string) Option {
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
-		errorLevel: level.Error,
-		panicLevel: level.Critical,
-		fromLevel:  level.Warning,
-		toLevel:    level.Null,
-		template:   "%(level):%(name):%(message)",
-		file:       "",
-		name:       "root",
-		timeFormat: time.RFC3339,
+		errorLevel:       defaultErrorLevel,
+		panicLevel:       defaultPanicLevel,
+		requestTemplate:  defaultRequestTemplate,
+		responseTemplate: defaultResponseTemplate,
+		fromLevel:        level.Warning,
+		toLevel:          level.Null,
+		template:         "%(level):%(name):%(message)",
+		file:             "",
+		name:             "root",
+		timeFormat:       time.RFC3339,
 	}
 
 	for _, option := range options {
@@ -285,8 +374,11 @@ func Configure(configuration *Configuration) {
 	template = configuration.template
 
 	newLogger := New(configuration.name, configuration.timeFormat)
+	newLogger.skipCallers = 5
 	newLogger.SetErrorLevel(configuration.errorLevel)
 	newLogger.SetPanicLevel(configuration.panicLevel)
+	newLogger.SetRequestTemplate(configuration.requestTemplate)
+	newLogger.SetResponseTemplate(configuration.responseTemplate)
 
 	defaultFormatter := formatter.New(configuration.template)
 
@@ -433,4 +525,39 @@ func CaptureError(message error) {
 // Panic logs a new message using default logger and panics with the message.
 func Panic(message string, parameters ...any) {
 	rootLogger.Panic(message, parameters...)
+}
+
+// WrapStruct wraps the struct using default logger, it wraps only public fields.
+func WrapStruct(logLevel level.Level, template string, structObject interface{}) {
+	rootLogger.WrapStruct(logLevel, template, structObject)
+}
+
+// RequestTemplate returns requestTemplate of the default logger.
+func RequestTemplate() string {
+	return rootLogger.RequestTemplate()
+}
+
+// SetRequestTemplate sets requestTemplate of the default logger.
+func SetRequestTemplate(newTemplate string) {
+	rootLogger.SetRequestTemplate(newTemplate)
+}
+
+// ResponseTemplate returns responseTemplate of the default logger.
+func ResponseTemplate() string {
+	return rootLogger.ResponseTemplate()
+}
+
+// SetResponseTemplate sets responseTemplate of the default logger.
+func SetResponseTemplate(newTemplate string) {
+	rootLogger.SetResponseTemplate(newTemplate)
+}
+
+// WrapRequest wraps the HTTP Request using default logger.
+func WrapRequest(logLevel level.Level, request *http.Request) {
+	rootLogger.WrapRequest(logLevel, request)
+}
+
+// WrapResponse wraps the HTTP Response using default logger.
+func WrapResponse(logLevel level.Level, response *http.Response) {
+	rootLogger.WrapResponse(logLevel, response)
 }
