@@ -121,7 +121,7 @@ func TestBaseAsyncLogger_Log(t *testing.T) {
 	mockHandler := &MockHandler{}
 	newBaseAsyncLogger := createBaseAsyncLogger([]handler.Interface{mockHandler}, messageQueueSize, true)
 
-	newBaseAsyncLogger.Log(level.Trace, parametersWithMap)
+	newBaseAsyncLogger.Log(level.Trace, skipCallers, parametersWithMap)
 
 	record := <-newBaseAsyncLogger.messageQueue
 
@@ -138,7 +138,7 @@ func BenchmarkBaseAsyncLogger_Log(b *testing.B) {
 	b.ResetTimer()
 
 	for index := 0; index < b.N; index++ {
-		newBaseAsyncLogger.Log(level.Trace, parametersWithMap)
+		newBaseAsyncLogger.Log(level.Trace, skipCallers, parametersWithMap)
 	}
 }
 

@@ -6,8 +6,63 @@ import (
 	"github.com/dl1998/go-logging/internal/testutils"
 	"github.com/dl1998/go-logging/pkg/common/level"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"net/http"
+	"net/url"
 	"testing"
 	"time"
+)
+
+var (
+	testStructMapping = map[string]string{
+		"private": "privateField",
+		"public":  "PublicString",
+		"int":     "PublicInt",
+		"float":   "PublicFloat",
+		"bool":    "PublicBoolean",
+	}
+	testStructEvaluated = map[string]interface{}{
+		"public": "public",
+		"int":    1,
+		"float":  1.1,
+		"bool":   true,
+	}
+	testStruct = struct {
+		privateField  string
+		PublicString  string
+		PublicInt     int
+		PublicFloat   float64
+		PublicBoolean bool
+	}{
+		privateField:  "private",
+		PublicString:  "public",
+		PublicInt:     1,
+		PublicFloat:   1.1,
+		PublicBoolean: true,
+	}
+	testRequestMapping = map[string]string{
+		"test-method": "Method",
+		"test-url":    "URL",
+	}
+	testResponseMapping = map[string]string{
+		"test-status": "Status",
+		"test-code":   "StatusCode",
+	}
+	testDefaultRequestMapping = map[string]string{
+		"method": "Method",
+		"url":    "URL",
+	}
+	testDefaultResponseMapping = map[string]string{
+		"status":      "Status",
+		"status-code": "StatusCode",
+	}
+	testRequest = &http.Request{
+		Method: http.MethodGet,
+		URL:    &url.URL{Scheme: "https", Host: "example.com", Path: "/test"},
+	}
+	testResponse = &http.Response{
+		StatusCode: http.StatusOK,
+		Status:     "OK",
+	}
 )
 
 // TestNew tests that New creates a new logger.
@@ -130,24 +185,52 @@ func BenchmarkLogger_RemoveHandler(b *testing.B) {
 	}
 }
 
+// createMockedLogger creates a new Logger with a MockLogger as a base logger.
+func createMockedLogger() (*MockLogger, *Logger) {
+	mockLogger := &MockLogger{}
+
+	newLogger := New(loggerName, timeFormat)
+	newLogger.baseLogger = mockLogger
+	newLogger.skipCallers = skipCallers
+
+	newLogger.requestMapping = testRequestMapping
+	newLogger.responseMapping = testResponseMapping
+
+	return mockLogger, newLogger
+}
+
+// assertLog asserts that the log was called with the provided parameters.
+func assertLog(t *testing.T, mockLogger *MockLogger, logLevel level.Level) {
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, parameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
+}
+
+// testLoggerLogMethod tests that the log method logs message with parameters on
+// the provided log level.
+func testLoggerLogMethod(t *testing.T, logLevel level.Level, logMethod func(testedLogger *Logger, parameters ...any)) {
+	mockLogger, newLogger := createMockedLogger()
+
+	logMethod(newLogger, parameters...)
+
+	assertLog(t, mockLogger, logLevel)
+}
+
 // TestLogger_Trace tests that Logger.Trace logs message with parameters on trace
 // level.
 func TestLogger_Trace(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Trace(parameters...)
-
-	testutils.AssertEquals(t, level.Trace, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Trace,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Trace(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Trace perform benchmarking of the Logger.Trace().
 func BenchmarkLogger_Trace(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Trace(parameters...)
@@ -157,21 +240,18 @@ func BenchmarkLogger_Trace(b *testing.B) {
 // TestLogger_Debug tests that Logger.Debug logs message with parameters on debug
 // level.
 func TestLogger_Debug(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Debug(parameters...)
-
-	testutils.AssertEquals(t, level.Debug, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Debug,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Debug(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Debug perform benchmarking of the Logger.Debug().
 func BenchmarkLogger_Debug(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Debug(parameters...)
@@ -181,21 +261,18 @@ func BenchmarkLogger_Debug(b *testing.B) {
 // TestLogger_Verbose tests that Logger.Verbose logs message with parameters on
 // verbose level.
 func TestLogger_Verbose(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Verbose(parameters...)
-
-	testutils.AssertEquals(t, level.Verbose, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Verbose,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Verbose(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Verbose perform benchmarking of the Logger.Verbose().
 func BenchmarkLogger_Verbose(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Verbose(parameters...)
@@ -205,21 +282,18 @@ func BenchmarkLogger_Verbose(b *testing.B) {
 // TestLogger_Info tests that Logger.Info logs message with parameters on info
 // level.
 func TestLogger_Info(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Info(parameters...)
-
-	testutils.AssertEquals(t, level.Info, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Info,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Info(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Info perform benchmarking of the Logger.Info().
 func BenchmarkLogger_Info(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Info(parameters...)
@@ -229,21 +303,18 @@ func BenchmarkLogger_Info(b *testing.B) {
 // TestLogger_Notice tests that Logger.Notice logs message with parameters on
 // notice level.
 func TestLogger_Notice(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Notice(parameters...)
-
-	testutils.AssertEquals(t, level.Notice, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Notice,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Notice(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Notice perform benchmarking of the Logger.Notice().
 func BenchmarkLogger_Notice(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Notice(parameters...)
@@ -253,21 +324,18 @@ func BenchmarkLogger_Notice(b *testing.B) {
 // TestLogger_Warning tests that Logger.Warning logs message with parameters on
 // warning level.
 func TestLogger_Warning(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Warning(parameters...)
-
-	testutils.AssertEquals(t, level.Warning, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Warning,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Warning(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Warning perform benchmarking of the Logger.Warning().
 func BenchmarkLogger_Warning(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Warning(parameters...)
@@ -277,21 +345,18 @@ func BenchmarkLogger_Warning(b *testing.B) {
 // TestLogger_Severe tests that Logger.Severe logs message with parameters on
 // severe level.
 func TestLogger_Severe(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Severe(parameters...)
-
-	testutils.AssertEquals(t, level.Severe, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Severe,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Severe(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Severe perform benchmarking of the Logger.Severe().
 func BenchmarkLogger_Severe(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Severe(parameters...)
@@ -301,21 +366,18 @@ func BenchmarkLogger_Severe(b *testing.B) {
 // TestLogger_Error tests that Logger.Error logs message with parameters on error
 // level.
 func TestLogger_Error(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Error(parameters...)
-
-	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Error,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Error(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Error perform benchmarking of the Logger.Error().
 func BenchmarkLogger_Error(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Error(parameters...)
@@ -325,21 +387,18 @@ func BenchmarkLogger_Error(b *testing.B) {
 // TestLogger_Alert tests that Logger.Alert logs message with parameters on alert
 // level.
 func TestLogger_Alert(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Alert(parameters...)
-
-	testutils.AssertEquals(t, level.Alert, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Alert,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Alert(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Alert perform benchmarking of the Logger.Alert().
 func BenchmarkLogger_Alert(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Alert(parameters...)
@@ -349,21 +408,18 @@ func BenchmarkLogger_Alert(b *testing.B) {
 // TestLogger_Critical tests that Logger.Critical logs message with parameters on
 // critical level.
 func TestLogger_Critical(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Critical(parameters...)
-
-	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Critical,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Critical(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Critical perform benchmarking of the Logger.Critical().
 func BenchmarkLogger_Critical(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Critical(parameters...)
@@ -373,21 +429,18 @@ func BenchmarkLogger_Critical(b *testing.B) {
 // TestLogger_Emergency tests that Logger.Emergency logs message with parameters
 // on emergency level.
 func TestLogger_Emergency(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
-
-	newLogger.Emergency(parameters...)
-
-	testutils.AssertEquals(t, level.Emergency, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Emergency,
+		func(testedLogger *Logger, parameters ...any) {
+			testedLogger.Emergency(parameters...)
+		},
+	)
 }
 
 // BenchmarkLogger_Emergency perform benchmarking of the Logger.Emergency().
 func BenchmarkLogger_Emergency(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.Emergency(parameters...)
@@ -397,18 +450,14 @@ func BenchmarkLogger_Emergency(b *testing.B) {
 // TestLogger_ErrorLevel tests that Logger.ErrorLevel returns the error level of
 // the logger.
 func TestLogger_ErrorLevel(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	testutils.AssertEquals(t, level.Error, newLogger.ErrorLevel())
 }
 
 // BenchmarkLogger_ErrorLevel perform benchmarking of the Logger.ErrorLevel().
 func BenchmarkLogger_ErrorLevel(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.ErrorLevel()
@@ -418,9 +467,7 @@ func BenchmarkLogger_ErrorLevel(b *testing.B) {
 // TestLogger_SetErrorLevel tests that Logger.SetErrorLevel sets the error level
 // of the logger.
 func TestLogger_SetErrorLevel(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	newLogger.SetErrorLevel(level.Warning)
 
@@ -429,9 +476,7 @@ func TestLogger_SetErrorLevel(t *testing.T) {
 
 // BenchmarkLogger_SetErrorLevel perform benchmarking of the Logger.SetErrorLevel().
 func BenchmarkLogger_SetErrorLevel(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.SetErrorLevel(level.Warning)
@@ -441,18 +486,14 @@ func BenchmarkLogger_SetErrorLevel(b *testing.B) {
 // TestLogger_PanicLevel tests that Logger.PanicLevel returns the panic level of
 // the logger.
 func TestLogger_PanicLevel(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	testutils.AssertEquals(t, level.Critical, newLogger.PanicLevel())
 }
 
 // BenchmarkLogger_PanicLevel perform benchmarking of the Logger.PanicLevel().
 func BenchmarkLogger_PanicLevel(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.PanicLevel()
@@ -462,9 +503,7 @@ func BenchmarkLogger_PanicLevel(b *testing.B) {
 // TestLogger_SetPanicLevel tests that Logger.SetPanicLevel sets the panic level
 // of the logger.
 func TestLogger_SetPanicLevel(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	newLogger.SetPanicLevel(level.Warning)
 
@@ -473,9 +512,7 @@ func TestLogger_SetPanicLevel(t *testing.T) {
 
 // BenchmarkLogger_SetPanicLevel perform benchmarking of the Logger.SetPanicLevel().
 func BenchmarkLogger_SetPanicLevel(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	for index := 0; index < b.N; index++ {
 		newLogger.SetPanicLevel(level.Warning)
@@ -485,9 +522,7 @@ func BenchmarkLogger_SetPanicLevel(b *testing.B) {
 // TestLogger_RaiseError tests that Logger.RaiseError logs message with
 // parameters on error level.
 func TestLogger_RaiseError(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	mockLogger, newLogger := createMockedLogger()
 
 	message := "error message"
 
@@ -496,17 +531,17 @@ func TestLogger_RaiseError(t *testing.T) {
 
 	err := newLogger.RaiseError(message, parameters...)
 
+	testutils.AssertNotNil(t, mockLogger.Parameters)
 	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 	testutils.AssertNotNil(t, err)
 	testutils.AssertEquals(t, message, err.Error())
 }
 
 // BenchmarkLogger_RaiseError perform benchmarking of the Logger.RaiseError().
 func BenchmarkLogger_RaiseError(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	message := "error message"
 
@@ -518,9 +553,7 @@ func BenchmarkLogger_RaiseError(b *testing.B) {
 // TestLogger_CaptureError tests that Logger.CaptureError logs message with
 // parameters on error level.
 func TestLogger_CaptureError(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	mockLogger, newLogger := createMockedLogger()
 
 	newError := fmt.Errorf("error message")
 
@@ -530,15 +563,14 @@ func TestLogger_CaptureError(t *testing.T) {
 	newLogger.CaptureError(newError, parameters...)
 
 	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
 
 // BenchmarkLogger_CaptureError perform benchmarking of the
 // Logger.CaptureError().
 func BenchmarkLogger_CaptureError(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	newError := fmt.Errorf("error message")
 
@@ -550,9 +582,7 @@ func BenchmarkLogger_CaptureError(b *testing.B) {
 // TestLogger_Panic tests that Logger.Panic logs message with parameters on panic
 // level.
 func TestLogger_Panic(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	mockLogger, newLogger := createMockedLogger()
 
 	message := "panic message"
 
@@ -569,15 +599,14 @@ func TestLogger_Panic(t *testing.T) {
 
 	newLogger.Panic(message, parameters...)
 
+	testutils.AssertNotNil(t, mockLogger.Parameters)
 	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
 	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
 }
 
 // BenchmarkLogger_Panic perform benchmarking of the Logger.Panic().
 func BenchmarkLogger_Panic(b *testing.B) {
-	mockLogger := &MockLogger{}
-
-	newLogger := &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	_, newLogger := createMockedLogger()
 
 	message := "panic message"
 
@@ -590,6 +619,199 @@ func BenchmarkLogger_Panic(b *testing.B) {
 			}()
 			newLogger.Panic(message, parameters...)
 		}()
+	}
+}
+
+// TestLogger_WrapStruct tests that Logger.WrapStruct wraps a struct with the
+// logger.
+func TestLogger_WrapStruct(t *testing.T) {
+	tests := map[string]struct {
+		logLevel  level.Level
+		assertion func(t *testing.T, mockLogger *MockLogger)
+	}{
+		"TestWrapStructWithNullLevel": {
+			logLevel: level.Null,
+			assertion: func(t *testing.T, mockLogger *MockLogger) {
+				testutils.AssertEquals(t, false, mockLogger.Called)
+			},
+		},
+		"TestWrapStructWithAllLevel": {
+			logLevel: level.All,
+			assertion: func(t *testing.T, mockLogger *MockLogger) {
+				testutils.AssertEquals(t, false, mockLogger.Called)
+			},
+		},
+		"TestWrapStructWithTraceLevel": {
+			logLevel: level.Trace,
+			assertion: func(t *testing.T, mockLogger *MockLogger) {
+				testutils.AssertEquals(t, level.Trace, mockLogger.Parameters[0].(level.Level))
+				testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+				testutils.AssertEquals(t, testStructEvaluated, mockLogger.Parameters[2].(map[string]interface{}))
+			},
+		},
+		"TestWrapStructWithEmergencyLevel": {
+			logLevel: level.Emergency,
+			assertion: func(t *testing.T, mockLogger *MockLogger) {
+				testutils.AssertEquals(t, level.Emergency, mockLogger.Parameters[0].(level.Level))
+				testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+				testutils.AssertEquals(t, testStructEvaluated, mockLogger.Parameters[2].(map[string]interface{}))
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			mockLogger, newLogger := createMockedLogger()
+
+			newLogger.WrapStruct(test.logLevel, testStructMapping, testStruct)
+			test.assertion(t, mockLogger)
+		})
+	}
+}
+
+// BenchmarkLogger_WrapStruct perform benchmarking of the Logger.WrapStruct().
+func BenchmarkLogger_WrapStruct(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	for index := 0; index < b.N; index++ {
+		newLogger.WrapStruct(level.Trace, testStructMapping, testStruct)
+	}
+}
+
+// TestLogger_RequestMapping tests that Logger.RequestMapping returns the request
+// mapping of the logger.
+func TestLogger_RequestMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	testutils.AssertEquals(t, testRequestMapping, newLogger.RequestMapping())
+}
+
+// BenchmarkLogger_RequestMapping perform benchmarking of the
+// Logger.RequestMapping().
+func BenchmarkLogger_RequestMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	for index := 0; index < b.N; index++ {
+		newLogger.RequestMapping()
+	}
+}
+
+// TestLogger_SetRequestMapping tests that Logger.SetRequestMapping sets the
+// request mapping of the logger.
+func TestLogger_SetRequestMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	newMapping := map[string]string{}
+
+	newLogger.SetRequestMapping(newMapping)
+
+	testutils.AssertEquals(t, newMapping, newLogger.RequestMapping())
+}
+
+// BenchmarkLogger_SetRequestMapping perform benchmarking of the
+// Logger.SetRequestMapping().
+func BenchmarkLogger_SetRequestMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	newMapping := map[string]string{}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.SetRequestMapping(newMapping)
+	}
+}
+
+// TestLogger_ResponseMapping tests that Logger.ResponseMapping returns the
+// response mapping of the logger.
+func TestLogger_ResponseMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	testutils.AssertEquals(t, testResponseMapping, newLogger.ResponseMapping())
+}
+
+// BenchmarkLogger_ResponseMapping perform benchmarking of the
+// Logger.ResponseMapping().
+func BenchmarkLogger_ResponseMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	for index := 0; index < b.N; index++ {
+		newLogger.ResponseMapping()
+	}
+}
+
+// TestLogger_SetResponseMapping tests that Logger.SetResponseMapping sets the
+// response mapping of the logger.
+func TestLogger_SetResponseMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	newMapping := map[string]string{}
+
+	newLogger.SetResponseMapping(newMapping)
+
+	testutils.AssertEquals(t, newMapping, newLogger.ResponseMapping())
+}
+
+// BenchmarkLogger_SetResponseMapping perform benchmarking of the
+// Logger.SetResponseMapping().
+func BenchmarkLogger_SetResponseMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	newMapping := map[string]string{}
+
+	for index := 0; index < b.N; index++ {
+		newLogger.SetResponseMapping(newMapping)
+	}
+}
+
+// TestLogger_WrapRequest tests that Logger.WrapRequest wraps a request with the
+// logger.
+func TestLogger_WrapRequest(t *testing.T) {
+	mockLogger, newLogger := createMockedLogger()
+
+	expectedParameters := map[string]interface{}{
+		"test-method": testRequest.Method,
+		"test-url":    testRequest.URL.String(),
+	}
+
+	newLogger.WrapRequest(logLevel, testRequest)
+
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, expectedParameters, mockLogger.Parameters[2].(map[string]interface{}))
+}
+
+// BenchmarkLogger_WrapRequest perform benchmarking of the Logger.WrapRequest().
+func BenchmarkLogger_WrapRequest(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	for index := 0; index < b.N; index++ {
+		newLogger.WrapRequest(logLevel, testRequest)
+	}
+}
+
+// TestLogger_WrapResponse tests that Logger.WrapResponse wraps a response with
+// the logger.
+func TestLogger_WrapResponse(t *testing.T) {
+	mockLogger, newLogger := createMockedLogger()
+
+	expectedParameters := map[string]interface{}{
+		"test-status": testResponse.Status,
+		"test-code":   testResponse.StatusCode,
+	}
+
+	newLogger.WrapResponse(logLevel, testResponse)
+
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, expectedParameters, mockLogger.Parameters[2].(map[string]interface{}))
+}
+
+// BenchmarkLogger_WrapResponse perform benchmarking of the
+// Logger.WrapResponse().
+func BenchmarkLogger_WrapResponse(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	for index := 0; index < b.N; index++ {
+		newLogger.WrapResponse(logLevel, testResponse)
 	}
 }
 
@@ -633,6 +855,52 @@ func BenchmarkWithPanicLevel(b *testing.B) {
 	configuration := NewConfiguration()
 
 	option := WithPanicLevel(level.Warning)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithRequestMapping tests that WithRequestMapping sets the request mapping
+// in the Configuration.
+func TestWithRequestMapping(t *testing.T) {
+	configuration := NewConfiguration()
+
+	option := WithRequestMapping(testRequestMapping)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, testRequestMapping, configuration.requestMapping)
+}
+
+// BenchmarkWithRequestMapping perform benchmarking of the WithRequestMapping().
+func BenchmarkWithRequestMapping(b *testing.B) {
+	configuration := NewConfiguration()
+
+	option := WithRequestMapping(testRequestMapping)
+
+	for index := 0; index < b.N; index++ {
+		option(configuration)
+	}
+}
+
+// TestWithResponseMapping tests that WithResponseMapping sets the response
+// mapping in the Configuration.
+func TestWithResponseMapping(t *testing.T) {
+	configuration := NewConfiguration()
+
+	option := WithResponseMapping(testResponseMapping)
+
+	option(configuration)
+
+	testutils.AssertEquals(t, testResponseMapping, configuration.responseMapping)
+}
+
+// BenchmarkWithResponseMapping perform benchmarking of the WithResponseMapping().
+func BenchmarkWithResponseMapping(b *testing.B) {
+	configuration := NewConfiguration()
+
+	option := WithResponseMapping(testResponseMapping)
 
 	for index := 0; index < b.N; index++ {
 		option(configuration)
@@ -900,31 +1168,37 @@ func BenchmarkWithTimeFormat(b *testing.B) {
 // TestNewConfiguration tests that NewConfiguration creates a new Configuration.
 func TestNewConfiguration(t *testing.T) {
 	tests := map[string]struct {
-		options            []Option
-		expectedErrorLevel level.Level
-		expectedPanicLevel level.Level
-		expectedFromLevel  level.Level
-		expectedToLevel    level.Level
-		expectedTemplate   map[string]string
-		expectedFile       string
-		expectedName       string
-		expectedTimeFormat string
+		options                 []Option
+		expectedErrorLevel      level.Level
+		expectedPanicLevel      level.Level
+		expectedRequestMapping  map[string]string
+		expectedResponseMapping map[string]string
+		expectedFromLevel       level.Level
+		expectedToLevel         level.Level
+		expectedTemplate        map[string]string
+		expectedFile            string
+		expectedName            string
+		expectedTimeFormat      string
 	}{
 		"Empty": {
-			options:            []Option{},
-			expectedErrorLevel: level.Error,
-			expectedPanicLevel: level.Critical,
-			expectedFromLevel:  level.Warning,
-			expectedToLevel:    level.Null,
-			expectedTemplate:   template,
-			expectedFile:       "",
-			expectedName:       "root",
-			expectedTimeFormat: time.RFC3339,
+			options:                 []Option{},
+			expectedErrorLevel:      level.Error,
+			expectedPanicLevel:      level.Critical,
+			expectedRequestMapping:  testDefaultRequestMapping,
+			expectedResponseMapping: testDefaultResponseMapping,
+			expectedFromLevel:       level.Warning,
+			expectedToLevel:         level.Null,
+			expectedTemplate:        template,
+			expectedFile:            "",
+			expectedName:            "root",
+			expectedTimeFormat:      time.RFC3339,
 		},
 		"Non Standard": {
 			options: []Option{
 				WithErrorLevel(level.Warning),
 				WithPanicLevel(level.Error),
+				WithRequestMapping(testRequestMapping),
+				WithResponseMapping(testResponseMapping),
 				WithFromLevel(level.All),
 				WithToLevel(level.Emergency),
 				WithTemplate(map[string]string{
@@ -935,10 +1209,12 @@ func TestNewConfiguration(t *testing.T) {
 				WithName("test"),
 				WithTimeFormat(time.DateTime),
 			},
-			expectedErrorLevel: level.Warning,
-			expectedPanicLevel: level.Error,
-			expectedFromLevel:  level.All,
-			expectedToLevel:    level.Emergency,
+			expectedErrorLevel:      level.Warning,
+			expectedPanicLevel:      level.Error,
+			expectedRequestMapping:  testRequestMapping,
+			expectedResponseMapping: testResponseMapping,
+			expectedFromLevel:       level.All,
+			expectedToLevel:         level.Emergency,
 			expectedTemplate: map[string]string{
 				"level-number": "%(levelnr)",
 				"name":         "%(name)",
@@ -954,6 +1230,8 @@ func TestNewConfiguration(t *testing.T) {
 
 			testutils.AssertEquals(t, configuration.expectedErrorLevel, newConfiguration.errorLevel)
 			testutils.AssertEquals(t, configuration.expectedPanicLevel, newConfiguration.panicLevel)
+			testutils.AssertEquals(t, configuration.expectedRequestMapping, newConfiguration.requestMapping)
+			testutils.AssertEquals(t, configuration.expectedResponseMapping, newConfiguration.responseMapping)
 			testutils.AssertEquals(t, configuration.expectedFromLevel, newConfiguration.fromLevel)
 			testutils.AssertEquals(t, configuration.expectedToLevel, newConfiguration.toLevel)
 			testutils.AssertEquals(t, configuration.expectedTemplate, newConfiguration.template)
@@ -975,6 +1253,10 @@ func BenchmarkNewConfiguration(b *testing.B) {
 // JSON logger.
 func TestConfigure_JSON(t *testing.T) {
 	configuration := NewConfiguration(
+		WithErrorLevel(level.Critical),
+		WithPanicLevel(level.Emergency),
+		WithRequestMapping(testRequestMapping),
+		WithResponseMapping(testResponseMapping),
 		WithFromLevel(level.All),
 		WithToLevel(level.Emergency),
 		WithTemplate(template),
@@ -986,12 +1268,20 @@ func TestConfigure_JSON(t *testing.T) {
 
 	testutils.AssertEquals(t, "test", rootLogger.baseLogger.Name())
 	testutils.AssertEquals(t, 2, len(rootLogger.baseLogger.Handlers()))
+	testutils.AssertEquals(t, level.Critical, rootLogger.ErrorLevel())
+	testutils.AssertEquals(t, level.Emergency, rootLogger.PanicLevel())
+	testutils.AssertEquals(t, testRequestMapping, rootLogger.RequestMapping())
+	testutils.AssertEquals(t, testResponseMapping, rootLogger.ResponseMapping())
 }
 
 // TestConfigure_KeyValue tests that Configure sets the configuration for the default
 // KeyValue logger.
 func TestConfigure_KeyValue(t *testing.T) {
 	configuration := NewConfiguration(
+		WithErrorLevel(level.Critical),
+		WithPanicLevel(level.Emergency),
+		WithRequestMapping(testRequestMapping),
+		WithResponseMapping(testResponseMapping),
 		WithFromLevel(level.All),
 		WithToLevel(level.Emergency),
 		WithTemplate(template),
@@ -1004,6 +1294,10 @@ func TestConfigure_KeyValue(t *testing.T) {
 
 	testutils.AssertEquals(t, "test", rootLogger.baseLogger.Name())
 	testutils.AssertEquals(t, 2, len(rootLogger.baseLogger.Handlers()))
+	testutils.AssertEquals(t, level.Critical, rootLogger.ErrorLevel())
+	testutils.AssertEquals(t, level.Emergency, rootLogger.PanicLevel())
+	testutils.AssertEquals(t, testRequestMapping, rootLogger.RequestMapping())
+	testutils.AssertEquals(t, testResponseMapping, rootLogger.ResponseMapping())
 }
 
 // TestConfigure_IncorrectFormat tests that Configure panics when receive an incorrect format.
@@ -1123,21 +1417,21 @@ func BenchmarkToLevel(b *testing.B) {
 // TestTrace tests that Trace logs message with parameters on trace level using
 // default logger.
 func TestTrace(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Trace(parameters...)
-
-	testutils.AssertEquals(t, level.Trace, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Trace,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Trace(parameters...)
+		},
+	)
 }
 
 // BenchmarkTrace perform benchmarking of the Trace().
 func BenchmarkTrace(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Trace(parameters...)
@@ -1147,21 +1441,21 @@ func BenchmarkTrace(b *testing.B) {
 // TestDebug tests that Debug logs message with parameters on debug level using
 // default logger.
 func TestDebug(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Debug(parameters...)
-
-	testutils.AssertEquals(t, level.Debug, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Debug,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Debug(parameters...)
+		},
+	)
 }
 
 // BenchmarkDebug perform benchmarking of the Debug().
 func BenchmarkDebug(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Debug(parameters...)
@@ -1171,21 +1465,21 @@ func BenchmarkDebug(b *testing.B) {
 // TestVerbose tests that Verbose logs message with parameters on verbose level
 // using default logger.
 func TestVerbose(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Verbose(parameters...)
-
-	testutils.AssertEquals(t, level.Verbose, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Verbose,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Verbose(parameters...)
+		},
+	)
 }
 
 // BenchmarkVerbose perform benchmarking of the Verbose().
 func BenchmarkVerbose(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Verbose(parameters...)
@@ -1195,21 +1489,21 @@ func BenchmarkVerbose(b *testing.B) {
 // TestInfo tests that Info logs message with parameters on info level using
 // default logger.
 func TestInfo(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Info(parameters...)
-
-	testutils.AssertEquals(t, level.Info, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Info,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Info(parameters...)
+		},
+	)
 }
 
 // BenchmarkInfo perform benchmarking of the Info().
 func BenchmarkInfo(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Info(parameters...)
@@ -1219,21 +1513,21 @@ func BenchmarkInfo(b *testing.B) {
 // TestNotice tests that Notice logs message with parameters on notice level
 // using default logger.
 func TestNotice(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Notice(parameters...)
-
-	testutils.AssertEquals(t, level.Notice, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Notice,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Notice(parameters...)
+		},
+	)
 }
 
 // BenchmarkNotice perform benchmarking of the Notice().
 func BenchmarkNotice(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Notice(parameters...)
@@ -1243,21 +1537,21 @@ func BenchmarkNotice(b *testing.B) {
 // TestWarning tests that Warning logs message with parameters on warning level
 // using default logger.
 func TestWarning(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Warning(parameters...)
-
-	testutils.AssertEquals(t, level.Warning, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Warning,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Warning(parameters...)
+		},
+	)
 }
 
 // BenchmarkWarning perform benchmarking of the Warning().
 func BenchmarkWarning(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Warning(parameters...)
@@ -1267,21 +1561,21 @@ func BenchmarkWarning(b *testing.B) {
 // TestSevere tests that Severe logs message with parameters on severe level
 // using default logger.
 func TestSevere(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Severe(parameters...)
-
-	testutils.AssertEquals(t, level.Severe, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Severe,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Severe(parameters...)
+		},
+	)
 }
 
 // BenchmarkSevere perform benchmarking of the Severe().
 func BenchmarkSevere(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Severe(parameters...)
@@ -1291,21 +1585,21 @@ func BenchmarkSevere(b *testing.B) {
 // TestError tests that Error logs message with parameters on error level using
 // default logger.
 func TestError(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Error(parameters...)
-
-	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Error,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Error(parameters...)
+		},
+	)
 }
 
 // BenchmarkError perform benchmarking of the Error().
 func BenchmarkError(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Error(parameters...)
@@ -1315,21 +1609,21 @@ func BenchmarkError(b *testing.B) {
 // TestAlert tests that Alert logs message with parameters on alert level using
 // default logger.
 func TestAlert(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Alert(parameters...)
-
-	testutils.AssertEquals(t, level.Alert, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Alert,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Alert(parameters...)
+		},
+	)
 }
 
 // BenchmarkAlert perform benchmarking of the Alert().
 func BenchmarkAlert(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Alert(parameters...)
@@ -1339,21 +1633,21 @@ func BenchmarkAlert(b *testing.B) {
 // TestCritical tests that Critical logs message with parameters on critical
 // level using default logger.
 func TestCritical(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Critical(parameters...)
-
-	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Critical,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Critical(parameters...)
+		},
+	)
 }
 
 // BenchmarkCritical perform benchmarking of the Critical().
 func BenchmarkCritical(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Critical(parameters...)
@@ -1363,21 +1657,21 @@ func BenchmarkCritical(b *testing.B) {
 // TestEmergency tests that Emergency logs message with parameters on emergency
 // level using default logger.
 func TestEmergency(t *testing.T) {
-	mockLogger := &MockLogger{}
-
-	rootLogger = &Logger{baseLogger: mockLogger}
-
-	Emergency(parameters...)
-
-	testutils.AssertEquals(t, level.Emergency, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, parameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testLoggerLogMethod(
+		t,
+		level.Emergency,
+		func(testedLogger *Logger, parameters ...any) {
+			rootLogger = testedLogger
+			Emergency(parameters...)
+		},
+	)
 }
 
 // BenchmarkEmergency perform benchmarking of the Emergency().
 func BenchmarkEmergency(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger}
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		Emergency(parameters...)
@@ -1387,14 +1681,18 @@ func BenchmarkEmergency(b *testing.B) {
 // TestErrorLevel tests that ErrorLevel returns the error level of the default
 // logger.
 func TestErrorLevel(t *testing.T) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	testutils.AssertEquals(t, level.Error, ErrorLevel())
 }
 
 // BenchmarkErrorLevel perform benchmarking of the ErrorLevel().
 func BenchmarkErrorLevel(b *testing.B) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		ErrorLevel()
@@ -1404,7 +1702,9 @@ func BenchmarkErrorLevel(b *testing.B) {
 // TestSetErrorLevel tests that SetErrorLevel sets the error level of the default
 // logger.
 func TestSetErrorLevel(t *testing.T) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	SetErrorLevel(level.Warning)
 
@@ -1423,14 +1723,18 @@ func BenchmarkSetErrorLevel(b *testing.B) {
 // TestPanicLevel tests that PanicLevel returns the panic level of the default
 // logger.
 func TestPanicLevel(t *testing.T) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	testutils.AssertEquals(t, level.Critical, PanicLevel())
 }
 
 // BenchmarkPanicLevel perform benchmarking of the PanicLevel().
 func BenchmarkPanicLevel(b *testing.B) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		PanicLevel()
@@ -1440,7 +1744,9 @@ func BenchmarkPanicLevel(b *testing.B) {
 // TestSetPanicLevel tests that SetPanicLevel sets the panic level of the default
 // logger.
 func TestSetPanicLevel(t *testing.T) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	SetPanicLevel(level.Warning)
 
@@ -1449,7 +1755,9 @@ func TestSetPanicLevel(t *testing.T) {
 
 // BenchmarkSetPanicLevel perform benchmarking of the SetPanicLevel().
 func BenchmarkSetPanicLevel(b *testing.B) {
-	Configure(NewConfiguration())
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
 
 	for index := 0; index < b.N; index++ {
 		SetPanicLevel(level.Warning)
@@ -1459,9 +1767,9 @@ func BenchmarkSetPanicLevel(b *testing.B) {
 // TestRaiseError tests that RaiseError logs message with parameters on error
 // level using default logger.
 func TestRaiseError(t *testing.T) {
-	mockLogger := &MockLogger{}
+	mockLogger, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	message := "error message"
 
@@ -1471,16 +1779,17 @@ func TestRaiseError(t *testing.T) {
 	err := RaiseError(message, parameters...)
 
 	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 	testutils.AssertNotNil(t, err)
 	testutils.AssertEquals(t, message, err.Error())
 }
 
 // BenchmarkRaiseError perform benchmarking of the RaiseError().
 func BenchmarkRaiseError(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	message := "error message"
 
@@ -1492,9 +1801,9 @@ func BenchmarkRaiseError(b *testing.B) {
 // TestCaptureError tests that CaptureError logs message with parameters on error
 // level using default logger.
 func TestCaptureError(t *testing.T) {
-	mockLogger := &MockLogger{}
+	mockLogger, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	newError := fmt.Errorf("error message")
 
@@ -1504,14 +1813,15 @@ func TestCaptureError(t *testing.T) {
 	CaptureError(newError, parameters...)
 
 	testutils.AssertEquals(t, level.Error, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
 
 // BenchmarkCaptureError perform benchmarking of the CaptureError().
 func BenchmarkCaptureError(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	newError := fmt.Errorf("error message")
 
@@ -1523,9 +1833,9 @@ func BenchmarkCaptureError(b *testing.B) {
 // TestPanic tests that Panic logs message with parameters on panic level using
 // default logger.
 func TestPanic(t *testing.T) {
-	mockLogger := &MockLogger{}
+	mockLogger, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	message := "panic message"
 
@@ -1542,15 +1852,17 @@ func TestPanic(t *testing.T) {
 
 	Panic(message, parameters...)
 
+	testutils.AssertNotNil(t, mockLogger.Parameters)
 	testutils.AssertEquals(t, level.Critical, mockLogger.Parameters[0].(level.Level))
-	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[1:len(mockLogger.Parameters)])
+	testutils.AssertEquals(t, skipCallers, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, newParameters, mockLogger.Parameters[2:len(mockLogger.Parameters)])
 }
 
 // BenchmarkPanic perform benchmarking of the Panic().
 func BenchmarkPanic(b *testing.B) {
-	mockLogger := &MockLogger{}
+	_, newLogger := createMockedLogger()
 
-	rootLogger = &Logger{baseLogger: mockLogger, errorLevel: level.Error, panicLevel: level.Critical}
+	rootLogger = newLogger
 
 	message := "panic message"
 
@@ -1563,5 +1875,183 @@ func BenchmarkPanic(b *testing.B) {
 			}()
 			Panic(message, parameters...)
 		}()
+	}
+}
+
+// TestWrapStruct tests that WrapStruct wraps a struct with the default logger.
+func TestWrapStruct(t *testing.T) {
+	mockLogger, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	WrapStruct(logLevel, testStructMapping, testStruct)
+
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, testStructEvaluated, mockLogger.Parameters[2].(map[string]interface{}))
+}
+
+// BenchmarkWrapStruct perform benchmarking of the WrapStruct().
+func BenchmarkWrapStruct(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	for index := 0; index < b.N; index++ {
+		WrapStruct(logLevel, testStructMapping, testStruct)
+	}
+}
+
+// TestRequestMapping tests that RequestMapping returns the request mapping of the
+// default logger.
+func TestRequestMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	testutils.AssertEquals(t, testRequestMapping, RequestMapping())
+}
+
+// BenchmarkRequestMapping perform benchmarking of the RequestMapping().
+func BenchmarkRequestMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	for index := 0; index < b.N; index++ {
+		RequestMapping()
+	}
+}
+
+// TestSetRequestMapping tests that SetRequestMapping sets the request mapping of
+// the default logger.
+func TestSetRequestMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	newMapping := map[string]string{}
+
+	SetRequestMapping(newMapping)
+
+	testutils.AssertEquals(t, newMapping, RequestMapping())
+}
+
+// BenchmarkSetRequestMapping perform benchmarking of the SetRequestMapping().
+func BenchmarkSetRequestMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	newMapping := map[string]string{}
+
+	for index := 0; index < b.N; index++ {
+		SetRequestMapping(newMapping)
+	}
+}
+
+// TestResponseMapping tests that ResponseMapping returns the response mapping of
+// the default logger.
+func TestResponseMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	testutils.AssertEquals(t, testResponseMapping, ResponseMapping())
+}
+
+// BenchmarkResponseMapping perform benchmarking of the ResponseMapping().
+func BenchmarkResponseMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	for index := 0; index < b.N; index++ {
+		ResponseMapping()
+	}
+}
+
+// TestSetResponseMapping tests that SetResponseMapping sets the response mapping
+// of the default logger.
+func TestSetResponseMapping(t *testing.T) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	newMapping := map[string]string{}
+
+	SetResponseMapping(newMapping)
+
+	testutils.AssertEquals(t, newMapping, ResponseMapping())
+}
+
+// BenchmarkSetResponseMapping perform benchmarking of the SetResponseMapping().
+func BenchmarkSetResponseMapping(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	newMapping := map[string]string{}
+
+	for index := 0; index < b.N; index++ {
+		SetResponseMapping(newMapping)
+	}
+}
+
+// TestWrapRequest tests that WrapRequest wraps a request with the default logger.
+func TestWrapRequest(t *testing.T) {
+	mockLogger, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	expectedParameters := map[string]interface{}{
+		"test-method": testRequest.Method,
+		"test-url":    testRequest.URL.String(),
+	}
+
+	WrapRequest(logLevel, testRequest)
+
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, expectedParameters, mockLogger.Parameters[2].(map[string]interface{}))
+}
+
+// BenchmarkWrapRequest perform benchmarking of the WrapRequest().
+func BenchmarkWrapRequest(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	for index := 0; index < b.N; index++ {
+		WrapRequest(logLevel, testRequest)
+	}
+}
+
+// TestWrapResponse tests that WrapResponse wraps a response with the default logger.
+func TestWrapResponse(t *testing.T) {
+	mockLogger, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	expectedParameters := map[string]interface{}{
+		"test-status": testResponse.Status,
+		"test-code":   testResponse.StatusCode,
+	}
+
+	WrapResponse(logLevel, testResponse)
+
+	testutils.AssertEquals(t, logLevel, mockLogger.Parameters[0].(level.Level))
+	testutils.AssertEquals(t, skipCallers+1, mockLogger.Parameters[1].(int))
+	testutils.AssertEquals(t, expectedParameters, mockLogger.Parameters[2].(map[string]interface{}))
+}
+
+// BenchmarkWrapResponse perform benchmarking of the WrapResponse().
+func BenchmarkWrapResponse(b *testing.B) {
+	_, newLogger := createMockedLogger()
+
+	rootLogger = newLogger
+
+	for index := 0; index < b.N; index++ {
+		WrapResponse(logLevel, testResponse)
 	}
 }

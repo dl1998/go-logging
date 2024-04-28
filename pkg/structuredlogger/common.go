@@ -8,7 +8,7 @@ import (
 
 // baseLoggerInterface defines low level logging interface.
 type baseLoggerInterface interface {
-	Log(level level.Level, parameters ...any)
+	Log(level level.Level, skipCaller int, parameters ...any)
 	Name() string
 	SetName(name string)
 	Handlers() []handler.Interface
@@ -43,10 +43,10 @@ func convertParametersToMap(parameters ...any) map[string]interface{} {
 }
 
 // Log logs interpolated message with the provided level.Level.
-func (logger *baseLogger) Log(logLevel level.Level, parameters ...any) {
+func (logger *baseLogger) Log(logLevel level.Level, skipCaller int, parameters ...any) {
 	var parametersMap = convertParametersToMap(parameters...)
 
-	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 4)
+	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, skipCaller)
 
 	for _, registeredHandler := range logger.handlers {
 		registeredHandler.Write(logRecord)
