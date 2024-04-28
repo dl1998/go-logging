@@ -55,10 +55,10 @@ func (logger *baseAsyncLogger) Close() {
 }
 
 // Log logs interpolated message with the provided level.Level.
-func (logger *baseAsyncLogger) Log(logLevel level.Level, parameters ...any) {
+func (logger *baseAsyncLogger) Log(logLevel level.Level, skipCallers int, parameters ...any) {
 	logger.waitGroup.Add(1)
 	var parametersMap = convertParametersToMap(parameters...)
-	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, 3)
+	logRecord := logrecord.New(logger.name, logLevel, logger.timeFormat, parametersMap, skipCallers)
 	logger.messageQueue <- logRecord
 }
 

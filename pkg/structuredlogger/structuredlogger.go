@@ -4,8 +4,10 @@ package structuredlogger
 import (
 	"fmt"
 	"github.com/dl1998/go-logging/pkg/common/level"
+	"github.com/dl1998/go-logging/pkg/common/utils"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/formatter"
 	"github.com/dl1998/go-logging/pkg/structuredlogger/handler"
+	"net/http"
 	"time"
 )
 
@@ -14,10 +16,23 @@ const (
 	KeyValueFormatterType = "key-value"
 )
 
-var rootLogger *Logger
-var fromLevel level.Level
-var toLevel level.Level
-var template map[string]string
+var (
+	rootLogger *Logger
+	fromLevel  level.Level
+	toLevel    level.Level
+	template   map[string]string
+
+	defaultErrorLevel     = level.Error
+	defaultPanicLevel     = level.Critical
+	defaultRequestMapping = map[string]string{
+		"url":    "URL",
+		"method": "Method",
+	}
+	defaultResponseMapping = map[string]string{
+		"status":      "Status",
+		"status-code": "StatusCode",
+	}
+)
 
 func init() {
 	Configure(NewConfiguration())
@@ -47,13 +62,23 @@ type Interface interface {
 	RaiseError(message string, parameters ...any) error
 	CaptureError(message error, parameters ...any)
 	Panic(message string, parameters ...any)
+	WrapStruct(logLevel level.Level, fieldsMapping map[string]string, structObject interface{}, parameters ...any)
+	RequestMapping() map[string]string
+	SetRequestMapping(mapping map[string]string)
+	ResponseMapping() map[string]string
+	SetResponseMapping(mapping map[string]string)
+	WrapRequest(logLevel level.Level, request *http.Request, parameters ...any)
+	WrapResponse(logLevel level.Level, response *http.Response, parameters ...any)
 }
 
 // Logger struct encapsulates baseLogger implementation.
 type Logger struct {
-	baseLogger baseLoggerInterface
-	errorLevel level.Level
-	panicLevel level.Level
+	baseLogger      baseLoggerInterface
+	skipCallers     int
+	errorLevel      level.Level
+	panicLevel      level.Level
+	requestMapping  map[string]string
+	responseMapping map[string]string
 }
 
 // New creates a new instance of the Logger.
@@ -64,8 +89,11 @@ func New(name string, timeFormat string) *Logger {
 			timeFormat: timeFormat,
 			handlers:   make([]handler.Interface, 0),
 		},
-		errorLevel: level.Error,
-		panicLevel: level.Critical,
+		skipCallers:     4,
+		errorLevel:      defaultErrorLevel,
+		panicLevel:      defaultPanicLevel,
+		requestMapping:  defaultRequestMapping,
+		responseMapping: defaultResponseMapping,
 	}
 }
 
@@ -92,57 +120,57 @@ func (logger *Logger) RemoveHandler(handlerInterface handler.Interface) {
 
 // Trace logs a new message using Logger with level.Trace level.
 func (logger *Logger) Trace(parameters ...any) {
-	logger.baseLogger.Log(level.Trace, parameters...)
+	logger.baseLogger.Log(level.Trace, logger.skipCallers, parameters...)
 }
 
 // Debug logs a new message using Logger with level.Debug level.
 func (logger *Logger) Debug(parameters ...any) {
-	logger.baseLogger.Log(level.Debug, parameters...)
+	logger.baseLogger.Log(level.Debug, logger.skipCallers, parameters...)
 }
 
 // Verbose logs a new message using Logger with level.Verbose level.
 func (logger *Logger) Verbose(parameters ...any) {
-	logger.baseLogger.Log(level.Verbose, parameters...)
+	logger.baseLogger.Log(level.Verbose, logger.skipCallers, parameters...)
 }
 
 // Info logs a new message using Logger with level.Info level.
 func (logger *Logger) Info(parameters ...any) {
-	logger.baseLogger.Log(level.Info, parameters...)
+	logger.baseLogger.Log(level.Info, logger.skipCallers, parameters...)
 }
 
 // Notice logs a new message using Logger with level.Notice level.
 func (logger *Logger) Notice(parameters ...any) {
-	logger.baseLogger.Log(level.Notice, parameters...)
+	logger.baseLogger.Log(level.Notice, logger.skipCallers, parameters...)
 }
 
 // Warning logs a new message using Logger with level.Warning level.
 func (logger *Logger) Warning(parameters ...any) {
-	logger.baseLogger.Log(level.Warning, parameters...)
+	logger.baseLogger.Log(level.Warning, logger.skipCallers, parameters...)
 }
 
 // Severe logs a new message using Logger with level.Severe level.
 func (logger *Logger) Severe(parameters ...any) {
-	logger.baseLogger.Log(level.Severe, parameters...)
+	logger.baseLogger.Log(level.Severe, logger.skipCallers, parameters...)
 }
 
 // Error logs a new message using Logger with level.Error level.
 func (logger *Logger) Error(parameters ...any) {
-	logger.baseLogger.Log(level.Error, parameters...)
+	logger.baseLogger.Log(level.Error, logger.skipCallers, parameters...)
 }
 
 // Alert logs a new message using Logger with level.Alert level.
 func (logger *Logger) Alert(parameters ...any) {
-	logger.baseLogger.Log(level.Alert, parameters...)
+	logger.baseLogger.Log(level.Alert, logger.skipCallers, parameters...)
 }
 
 // Critical logs a new message using Logger with level.Critical level.
 func (logger *Logger) Critical(parameters ...any) {
-	logger.baseLogger.Log(level.Critical, parameters...)
+	logger.baseLogger.Log(level.Critical, logger.skipCallers, parameters...)
 }
 
 // Emergency logs a new message using Logger with level.Emergency level.
 func (logger *Logger) Emergency(parameters ...any) {
-	logger.baseLogger.Log(level.Emergency, parameters...)
+	logger.baseLogger.Log(level.Emergency, logger.skipCallers, parameters...)
 }
 
 // ErrorLevel returns errorLevel for the Logger.
@@ -173,7 +201,7 @@ func (logger *Logger) RaiseError(message string, parameters ...any) error {
 	if parameters != nil {
 		parametersArray = append(parametersArray, parameters...)
 	}
-	logger.baseLogger.Log(logger.errorLevel, parametersArray...)
+	logger.baseLogger.Log(logger.errorLevel, logger.skipCallers, parametersArray...)
 	return fmt.Errorf(message)
 }
 
@@ -183,7 +211,7 @@ func (logger *Logger) CaptureError(message error, parameters ...any) {
 	if parameters != nil {
 		parametersArray = append(parametersArray, parameters...)
 	}
-	logger.baseLogger.Log(logger.errorLevel, parametersArray...)
+	logger.baseLogger.Log(logger.errorLevel, logger.skipCallers, parametersArray...)
 }
 
 // Panic logs a new message using Logger and panics with the message.
@@ -192,14 +220,70 @@ func (logger *Logger) Panic(message string, parameters ...any) {
 	if parameters != nil {
 		parametersArray = append(parametersArray, parameters...)
 	}
-	logger.baseLogger.Log(logger.panicLevel, parametersArray...)
+	logger.baseLogger.Log(logger.panicLevel, logger.skipCallers, parametersArray...)
 	panic(message)
+}
+
+// wrapStruct wraps the struct, it wraps only public fields (int, float, bool,
+// string) based on provided mapping. Optionally additional parameters can be
+// provided.
+func (logger *Logger) wrapStruct(logLevel level.Level, skipCallers int, fieldsMapping map[string]string, structObject interface{}, parameters ...any) {
+	if logLevel > level.All && logLevel < level.Null {
+		parametersMap := convertParametersToMap(parameters...)
+		structFields := utils.StructToMap(structObject)
+		for fieldName, fieldMapping := range fieldsMapping {
+			value, ok := structFields[fieldMapping]
+			if ok {
+				parametersMap[fieldName] = value
+			}
+		}
+		logger.baseLogger.Log(logLevel, skipCallers, parametersMap)
+	}
+}
+
+// WrapStruct wraps the struct, it wraps only public fields (int, float, bool,
+// string) based on provided mapping. Optionally additional parameters can be
+// provided.
+func (logger *Logger) WrapStruct(logLevel level.Level, fieldsMapping map[string]string, structObject interface{}, parameters ...any) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, fieldsMapping, structObject, parameters...)
+}
+
+// RequestMapping returns requestMapping for the Logger.
+func (logger *Logger) RequestMapping() map[string]string {
+	return logger.requestMapping
+}
+
+// SetRequestMapping sets requestMapping for the Logger.
+func (logger *Logger) SetRequestMapping(mapping map[string]string) {
+	logger.requestMapping = mapping
+}
+
+// ResponseMapping returns responseMapping for the Logger.
+func (logger *Logger) ResponseMapping() map[string]string {
+	return logger.responseMapping
+}
+
+// SetResponseMapping sets responseMapping for the Logger.
+func (logger *Logger) SetResponseMapping(mapping map[string]string) {
+	logger.responseMapping = mapping
+}
+
+// WrapRequest wraps the HTTP Request.
+func (logger *Logger) WrapRequest(logLevel level.Level, request *http.Request, parameters ...any) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, logger.requestMapping, *request, parameters...)
+}
+
+// WrapResponse wraps the HTTP Response.
+func (logger *Logger) WrapResponse(logLevel level.Level, response *http.Response, parameters ...any) {
+	logger.wrapStruct(logLevel, logger.skipCallers+1, logger.responseMapping, *response, parameters...)
 }
 
 // Configuration struct contains configuration for the logger.
 type Configuration struct {
 	errorLevel        level.Level
 	panicLevel        level.Level
+	requestMapping    map[string]string
+	responseMapping   map[string]string
 	fromLevel         level.Level
 	toLevel           level.Level
 	template          map[string]string
@@ -226,6 +310,20 @@ func WithErrorLevel(errorLevel level.Level) Option {
 func WithPanicLevel(panicLevel level.Level) Option {
 	return func(configuration *Configuration) {
 		configuration.panicLevel = panicLevel
+	}
+}
+
+// WithRequestMapping sets requestMapping for the Configuration.
+func WithRequestMapping(mapping map[string]string) Option {
+	return func(configuration *Configuration) {
+		configuration.requestMapping = mapping
+	}
+}
+
+// WithResponseMapping sets responseMapping for the Configuration.
+func WithResponseMapping(mapping map[string]string) Option {
+	return func(configuration *Configuration) {
+		configuration.responseMapping = mapping
 	}
 }
 
@@ -302,10 +400,12 @@ func WithTimeFormat(timeFormat string) Option {
 // NewConfiguration creates a new instance of the Configuration.
 func NewConfiguration(options ...Option) *Configuration {
 	newConfiguration := &Configuration{
-		errorLevel: level.Error,
-		panicLevel: level.Critical,
-		fromLevel:  level.Warning,
-		toLevel:    level.Null,
+		errorLevel:      defaultErrorLevel,
+		panicLevel:      defaultPanicLevel,
+		requestMapping:  defaultRequestMapping,
+		responseMapping: defaultResponseMapping,
+		fromLevel:       level.Warning,
+		toLevel:         level.Null,
 		template: map[string]string{
 			"timestamp": "%(timestamp)",
 			"level":     "%(level)",
@@ -338,8 +438,11 @@ func Configure(configuration *Configuration) {
 	template = configuration.template
 
 	newLogger := New(configuration.name, configuration.timeFormat)
+	newLogger.skipCallers = 5
 	newLogger.SetErrorLevel(configuration.errorLevel)
 	newLogger.SetPanicLevel(configuration.panicLevel)
+	newLogger.SetRequestMapping(configuration.requestMapping)
+	newLogger.SetResponseMapping(configuration.responseMapping)
 
 	var defaultFormatter formatter.Interface
 
@@ -494,4 +597,40 @@ func CaptureError(message error, parameters ...any) {
 // Panic logs a new message using default logger and panics with the message.
 func Panic(message string, parameters ...any) {
 	rootLogger.Panic(message, parameters...)
+}
+
+// WrapStruct wraps the struct using default logger, it wraps only public fields.
+// Optionally additional parameters could be provided.
+func WrapStruct(logLevel level.Level, fieldsMapping map[string]string, structObject interface{}, parameters ...any) {
+	rootLogger.WrapStruct(logLevel, fieldsMapping, structObject, parameters...)
+}
+
+// RequestMapping returns requestMapping of the default logger.
+func RequestMapping() map[string]string {
+	return rootLogger.RequestMapping()
+}
+
+// SetRequestMapping sets requestMapping of the default logger.
+func SetRequestMapping(mapping map[string]string) {
+	rootLogger.SetRequestMapping(mapping)
+}
+
+// ResponseMapping returns responseMapping of the default logger.
+func ResponseMapping() map[string]string {
+	return rootLogger.ResponseMapping()
+}
+
+// SetResponseMapping sets responseMapping of the default logger.
+func SetResponseMapping(mapping map[string]string) {
+	rootLogger.SetResponseMapping(mapping)
+}
+
+// WrapRequest wraps the HTTP Request using default logger.
+func WrapRequest(logLevel level.Level, request *http.Request, parameters ...any) {
+	rootLogger.WrapRequest(logLevel, request, parameters...)
+}
+
+// WrapResponse wraps the HTTP Response using default logger.
+func WrapResponse(logLevel level.Level, response *http.Response, parameters ...any) {
+	rootLogger.WrapResponse(logLevel, response, parameters...)
 }

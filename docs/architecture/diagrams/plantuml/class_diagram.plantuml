@@ -36,6 +36,10 @@ package pkg {
                     + TimeFormat : string
                     + ErrorLevel : string
                     + PanicLevel : string
+                    + RequestTemplate : string
+                    + ResponseTemplate : string
+                    + RequestMapping : KeyValue
+                    + ResponseMapping : KeyValue
                     + MessageQueueSize : int
                     + Handlers : []HandlerConfiguration
                 }
@@ -139,10 +143,15 @@ package pkg {
                 + FileLine() : int
             }
             class "<<module>>" {
-                + New(name : string, level : level.Level, timeFormat : string, skipCaller : int) : *LogRecord
+                + New(name : string, level : level.Level, timeFormat : string, skipCallers : int) : *LogRecord
             }
 
             "<<module>>" ..> LogRecord : uses
+        }
+        package utils {
+            class "<<module>>" {
+                + StructToMap(object : interface{}) : map[string]interface{}
+            }
         }
     }
     package logger {
@@ -244,13 +253,13 @@ package pkg {
                 + Message() : string
             }
             class "<<module>>" {
-                + New(name : string, level : level.Level, timeFormat : string, message : string, parameters : []any, skipCaller : int) : *LogRecord
+                + New(name : string, level : level.Level, timeFormat : string, message : string, parameters : []any, skipCallers : int) : *LogRecord
             }
 
             "<<module>>" ..> LogRecord : uses
         }
         interface baseLoggerInterface {
-            + Log(level : level.Level, message : string, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, message : string, parameters : ...any)
             + Name() : string
             + SetName(name : string)
             + Handlers() : []handler.Interface
@@ -261,7 +270,7 @@ package pkg {
             ~ name : string
             ~ timeFormat : string
             ~ handlers : []handler.Interface
-            + Log(level : level.Level, message : string, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, message : string, parameters : ...any)
             + Name() : string
             + SetName(name : string)
             + Handlers() : []handler.Interface
@@ -291,11 +300,21 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error)
             + Panic(message : string, parameters : ...any)
+            + WrapStruct(logLevel : level.Level, template : string, structObject : interface{})
+            + RequestTemplate() : string
+            + SetRequestTemplate(newTemplate : string)
+            + ResponseTemplate() : string
+            + SetResponseTemplate(newTemplate : string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request)
+            + WrapResponse(logLevel : level.Level, response : *http.Response)
         }
         struct Logger implements Interface {
             ~ baseLogger : baseLoggerInterface
-            + errorLevel : level.Level
-            + panicLevel : level.Level
+            ~ skipCallers : int
+            ~ errorLevel : level.Level
+            ~ panicLevel : level.Level
+            ~ requestTemplate : string
+            ~ responseTemplate : string
             + Name() : string
             + Handlers() : []handler.Interface
             + AddHandler(handlerInterface : handler.Interface)
@@ -318,6 +337,14 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error)
             + Panic(message : string, parameters : ...any)
+            ~ wrapStruct(logLevel : level.Level, skipCallers : int, template : string, structObject : interface{})
+            + WrapStruct(logLevel : level.Level, template : string, structObject : interface{})
+            + RequestTemplate() : string
+            + SetRequestTemplate(newTemplate : string)
+            + ResponseTemplate() : string
+            + SetResponseTemplate(newTemplate : string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request)
+            + WrapResponse(logLevel : level.Level, response : *http.Response)
         }
         struct baseAsyncLogger implements baseLoggerInterface {
             ~ *baseLogger
@@ -328,7 +355,7 @@ package pkg {
             + WaitToFinishLogging()
             + Open(queueSize : int) : error
             + Close()
-            + Log(level : level.Level, message : string, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, message : string, parameters : ...any)
         }
         interface AsyncLoggerInterface extends Interface {
             + Interface
@@ -345,6 +372,8 @@ package pkg {
         struct Configuration {
             ~ errorLevel : level.Level
             ~ panicLevel : level.Level
+            ~ requestTemplate : string
+            ~ responseTemplate : string
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
             ~ template : string
@@ -358,11 +387,17 @@ package pkg {
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
             ~ template : string
+            ~ defaultErrorLevel : level.Level
+            ~ defaultPanicLevel : level.Level
+            ~ defaultRequestTemplate : string
+            ~ defaultResponseTemplate : string
             ~ init()
             + New(name : string, timeFormat : string) : *Logger
             + NewAsyncLogger(name : string, timeFormat : string, queueSize : int) : *AsyncLogger
             + WithErrorLevel(errorLevel : level.Level) : Option
             + WithPanicLevel(panicLevel : level.Level) : Option
+            + WithRequestTemplate(requestTemplate : string) : Option
+            + WithResponseTemplate(responseTemplate : string) : Option
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : string) : Option
@@ -393,6 +428,13 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error)
             + Panic(message : string, parameters : ...any)
+            + WrapStruct(logLevel : level.Level, template : string, structObject : interface{})
+            + RequestTemplate() : string
+            + SetRequestTemplate(newTemplate : string)
+            + ResponseTemplate() : string
+            + SetResponseTemplate(newTemplate : string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request)
+            + WrapResponse(logLevel : level.Level, response : *http.Response)
         }
 
         baseAsyncLogger *-- baseLogger
@@ -521,13 +563,13 @@ package pkg {
                 + Parameters() : map[string]interface{}
             }
             class "<<module>>" {
-                + New(name : string, level : level.Level, timeFormat : string, parameters : map[string]interface{}, skipCaller : int) : *LogRecord
+                + New(name : string, level : level.Level, timeFormat : string, parameters : map[string]interface{}, skipCallers : int) : *LogRecord
             }
 
             "<<module>>" ..> LogRecord : uses
         }
         interface baseLoggerInterface {
-            + Log(level : level.Level, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, parameters : ...any)
             + Name() : string
             + SetName(name : string)
             + Handlers() : []handler.Interface
@@ -538,7 +580,7 @@ package pkg {
             ~ name : string
             ~ timeFormat : string
             ~ handlers : []handler.Interface
-            + Log(level : level.Level, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, parameters : ...any)
             + Name() : string
             + SetName(name : string)
             + Handlers() : []handler.Interface
@@ -568,9 +610,21 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error, parameters : ...any)
             + Panic(message : string, parameters : ...any)
+            + WrapStruct(logLevel : level.Level, fieldsMapping : map[string]string, structObject : interface{}, parameters : ...any)
+            + RequestMapping() : map[string]string
+            + SetRequestMapping(mapping : map[string]string)
+            + ResponseMapping() : map[string]string
+            + SetResponseMapping(mapping : map[string]string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request, parameters : ...any)
+            + WrapResponse(logLevel : level.Level, response : *http.Response, parameters: ...any)
         }
         struct Logger implements Interface {
             ~ baseLogger : baseLoggerInterface
+            ~ skipCallers : int
+            ~ errorLevel : level.Level
+            ~ panicLevel : level.Level
+            ~ requestMapping : map[string]string
+            ~ responseMapping : map[string]string
             + Name() : string
             + Handlers() : []handler.Interface
             + AddHandler(handlerInterface : handler.Interface)
@@ -593,6 +647,14 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error, parameters : ...any)
             + Panic(message : string, parameters : ...any)
+            ~ wrapStruct(logLevel : level.Level, skipCallers : int, fieldsMapping : map[string]string, structObject : interface{}, parameters : ...any)
+            + WrapStruct(logLevel : level.Level, fieldsMapping : map[string]string, structObject : interface{}, parameters : ...any)
+            + RequestMapping() : map[string]string
+            + SetRequestMapping(mapping : map[string]string)
+            + ResponseMapping() : map[string]string
+            + SetResponseMapping(mapping : map[string]string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request, parameters : ...any)
+            + WrapResponse(logLevel : level.Level, response : *http.Response, parameters: ...any)
         }
         struct baseAsyncLogger implements baseLoggerInterface {
             ~ *baseLogger
@@ -603,7 +665,7 @@ package pkg {
             + WaitToFinishLogging()
             + Open(queueSize : int) : error
             + Close()
-            + Log(level : level.Level, parameters : ...any)
+            + Log(level : level.Level, skipCallers : int, parameters : ...any)
         }
         interface AsyncLoggerInterface extends Interface {
             + Interface
@@ -620,6 +682,8 @@ package pkg {
         struct Configuration {
             ~ errorLevel : level.Level
             ~ panicLevel : level.Level
+            ~ requestMapping : map[string]string
+            ~ responseMapping : map[string]string
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
             ~ template : map[string]string
@@ -637,11 +701,17 @@ package pkg {
             ~ fromLevel : level.Level
             ~ toLevel : level.Level
             ~ template : map[string]string
+            ~ defaultErrorLevel : level.Level
+            ~ defaultPanicLevel : level.Level
+            ~ defaultRequestMapping : map[string]string
+            ~ defaultResponseMapping : map[string]string
             ~ init()
             + New(name : string, timeFormat : string) : *Logger
             + NewAsyncLogger(name : string, timeFormat : string, queueSize : int) : *AsyncLogger
             + WithErrorLevel(errorLevel : level.Level) : Option
             + WithPanicLevel(panicLevel : level.Level) : Option
+            + WithRequestMapping(mapping : map[string]string) : Option
+            + WithResponseMapping(mapping : map[string]string) : Option
             + WithFromLevel(fromLevel : level.Level) : Option
             + WithToLevel(toLevel : level.Level) : Option
             + WithTemplate(template : map[string]string) : Option
@@ -676,6 +746,13 @@ package pkg {
             + RaiseError(message : string, parameters : ...any) : error
             + CaptureError(message : error, parameters : ...any)
             + Panic(message : string, parameters : ...any)
+            + WrapStruct(logLevel : level.Level, fieldsMapping : map[string]string, structObject : interface{}, parameters : ...any)
+            + RequestMapping() : map[string]string
+            + SetRequestMapping(mapping : map[string]string)
+            + ResponseMapping() : map[string]string
+            + SetResponseMapping(mapping : map[string]string)
+            + WrapRequest(logLevel : level.Level, request : *http.Request, parameters : ...any)
+            + WrapResponse(logLevel : level.Level, response : *http.Response, parameters: ...any)
         }
 
         baseAsyncLogger *-- baseLogger
@@ -708,6 +785,7 @@ pkg.logger.logrecord.LogRecord *-- "pkg.common.logrecord.LogRecord" : contains
 pkg.structuredlogger.logrecord.LogRecord *-- "pkg.common.logrecord.LogRecord" : contains
 pkg.logger.handler.Handler ..> pkg.logger.logrecord.Interface : uses
 pkg.structuredlogger.handler.Handler ..> pkg.structuredlogger.logrecord.Interface : uses
-
+pkg.logger.Logger ..> "pkg.common.utils.<<module>>" : uses
+pkg.structuredlogger.Logger ..> "pkg.common.utils.<<module>>" : uses
 
 @enduml

@@ -8,17 +8,17 @@ import (
 )
 
 var (
-	skipCaller = 1
-	logLevel   = level.Debug
-	name       = "test"
-	timeFormat = ""
-	message    = "Test message."
-	parameters = make([]any, 0)
+	skipCallers = 1
+	logLevel    = level.Debug
+	name        = "test"
+	timeFormat  = ""
+	message     = "Test message."
+	parameters  = make([]any, 0)
 )
 
 // TestNew tests that New function returns a new LogRecord instance.
 func TestNew(t *testing.T) {
-	record := New(name, logLevel, timeFormat, message, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, message, parameters, skipCallers)
 
 	testutils.AssertEquals(t, message, record.message)
 }
@@ -26,21 +26,21 @@ func TestNew(t *testing.T) {
 // BenchmarkNew benchmarks the New function.
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		New(name, logLevel, timeFormat, message, parameters, skipCaller)
+		New(name, logLevel, timeFormat, message, parameters, skipCallers)
 	}
 }
 
 // TestMessage tests that Message function returns the formatted message of the
 // log record.
 func TestMessage(t *testing.T) {
-	record := New(name, logLevel, timeFormat, message, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, message, parameters, skipCallers)
 
 	testutils.AssertEquals(t, message, record.Message())
 }
 
 // BenchmarkMessage benchmarks the Message function.
 func BenchmarkMessage(b *testing.B) {
-	record := New(name, logLevel, timeFormat, message, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, message, parameters, skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Message()
 	}

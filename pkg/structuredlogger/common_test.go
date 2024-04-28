@@ -40,10 +40,10 @@ type MockLogger struct {
 }
 
 // Log mocks Log from baseLogger.
-func (mock *MockLogger) Log(level level.Level, parameters ...any) {
+func (mock *MockLogger) Log(level level.Level, skipCaller int, parameters ...any) {
 	mock.CalledName = "Log"
 	mock.Called = true
-	mock.Parameters = append(make([]any, 0), level)
+	mock.Parameters = append(make([]any, 0), level, skipCaller)
 	mock.Parameters = append(mock.Parameters, parameters...)
 	mock.Return = nil
 }
@@ -231,7 +231,7 @@ func TestBaseLogger_Log(t *testing.T) {
 
 	logLevel := level.Debug
 
-	newBaseLogger.Log(logLevel, parameters...)
+	newBaseLogger.Log(logLevel, skipCallers, parameters...)
 
 	logRecord := newHandler.Parameters[0].(*logrecord.LogRecord)
 
@@ -254,7 +254,7 @@ func BenchmarkBaseLogger_Log(b *testing.B) {
 	logLevel := level.Debug
 
 	for index := 0; index < b.N; index++ {
-		newBaseLogger.Log(logLevel, parameters...)
+		newBaseLogger.Log(logLevel, skipCallers, parameters...)
 	}
 }
 

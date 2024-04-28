@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	name       = "test"
+	name       = "test-logger"
 	template   = "testTemplate"
 	fromLevel  = level.Info
 	toLevel    = level.Error
@@ -37,6 +37,16 @@ var (
 					TimeFormat:       time.DateTime,
 					ErrorLevel:       level.Error.String(),
 					PanicLevel:       level.Critical.String(),
+					RequestTemplate:  "Test Request: [{Method}] {URL}",
+					ResponseTemplate: "Test Response: [{Status}] {StatusCode}",
+					RequestMapping: parser.KeyValue{
+						"test-method": "Method",
+						"test-url":    "URL",
+					},
+					ResponseMapping: parser.KeyValue{
+						"test-status-code": "StatusCode",
+						"test-status":      "Status",
+					},
 					MessageQueueSize: 100,
 					Handlers: []parser.HandlerConfiguration{
 						{
@@ -48,7 +58,7 @@ var (
 								PrettyPrint: false,
 								Template: parser.TemplateConfiguration{
 									StringValue: "%(datetime) - %(level) - %(message)",
-									MapValue: map[string]string{
+									MapValue: parser.KeyValue{
 										"timestamp": "%(datetime)",
 										"level":     "%(level)",
 										"name":      "%(name)",
@@ -66,7 +76,7 @@ var (
 								KeyValueDelimiter: ":",
 								Template: parser.TemplateConfiguration{
 									StringValue: "%(datetime) - %(level) - %(message)",
-									MapValue: map[string]string{
+									MapValue: parser.KeyValue{
 										"timestamp": "%(datetime)",
 										"level":     "%(level)",
 										"name":      "%(name)",
@@ -301,11 +311,17 @@ func BenchmarkParser_ParseHandler(b *testing.B) {
 
 // TestParser_ParseLogger tests that Parser.parseLogger returns logger.Logger.
 func TestParser_ParseLogger(t *testing.T) {
-	logger := testParser.parseLogger(testParser.configuration.Loggers[0])
+	loggerTemplate := testDataParser.configuration.Loggers[0]
+
+	logger := testDataParser.parseLogger(loggerTemplate)
 
 	testutils.AssertNotNil(t, logger)
-	testutils.AssertEquals(t, name, logger.Name())
-	testutils.AssertEquals(t, len(testParser.configuration.Loggers), len(logger.Handlers()))
+	testutils.AssertEquals(t, loggerTemplate.Name, logger.Name())
+	testutils.AssertEquals(t, len(loggerTemplate.Handlers), len(logger.Handlers()))
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.ErrorLevel), logger.ErrorLevel())
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.PanicLevel), logger.PanicLevel())
+	testutils.AssertEquals(t, loggerTemplate.RequestTemplate, logger.RequestTemplate())
+	testutils.AssertEquals(t, loggerTemplate.ResponseTemplate, logger.ResponseTemplate())
 }
 
 // BenchmarkParser_ParseLogger benchmarks the Parser.parseLogger function.
@@ -319,11 +335,17 @@ func BenchmarkParser_ParseLogger(b *testing.B) {
 // TestParser_ParseAsyncLogger tests that Parser.parseAsyncLogger returns
 // logger.AsyncLogger.
 func TestParser_ParseAsyncLogger(t *testing.T) {
-	logger := testParser.parseAsyncLogger(testParser.configuration.Loggers[0])
+	loggerTemplate := testDataParser.configuration.Loggers[0]
+
+	logger := testDataParser.parseAsyncLogger(loggerTemplate)
 
 	testutils.AssertNotNil(t, logger)
-	testutils.AssertEquals(t, name, logger.Name())
-	testutils.AssertEquals(t, len(testParser.configuration.Loggers), len(logger.Handlers()))
+	testutils.AssertEquals(t, loggerTemplate.Name, logger.Name())
+	testutils.AssertEquals(t, len(loggerTemplate.Handlers), len(logger.Handlers()))
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.ErrorLevel), logger.ErrorLevel())
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.PanicLevel), logger.PanicLevel())
+	testutils.AssertEquals(t, loggerTemplate.RequestTemplate, logger.RequestTemplate())
+	testutils.AssertEquals(t, loggerTemplate.ResponseTemplate, logger.ResponseTemplate())
 }
 
 // BenchmarkParser_ParseAsyncLogger benchmarks the parseAsyncLogger function.
@@ -337,10 +359,17 @@ func BenchmarkParser_ParseAsyncLogger(b *testing.B) {
 // TestParser_GetLogger tests that Parser.GetLogger returns logger.Logger by name
 // from the configuration.
 func TestParser_GetLogger(t *testing.T) {
-	logger := testParser.GetLogger(name)
+	loggerTemplate := testDataParser.configuration.Loggers[0]
+
+	logger := testDataParser.GetLogger(name)
 
 	testutils.AssertNotNil(t, logger)
-	testutils.AssertEquals(t, name, logger.Name())
+	testutils.AssertEquals(t, loggerTemplate.Name, logger.Name())
+	testutils.AssertEquals(t, len(loggerTemplate.Handlers), len(logger.Handlers()))
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.ErrorLevel), logger.ErrorLevel())
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.PanicLevel), logger.PanicLevel())
+	testutils.AssertEquals(t, loggerTemplate.RequestTemplate, logger.RequestTemplate())
+	testutils.AssertEquals(t, loggerTemplate.ResponseTemplate, logger.ResponseTemplate())
 }
 
 // TestParser_GetLogger_Default tests that Parser.GetLogger returns nil if logger
@@ -361,10 +390,17 @@ func BenchmarkParser_GetLogger(b *testing.B) {
 // TestParser_GetAsyncLogger tests that Parser.GetAsyncLogger returns
 // logger.AsyncLogger by name from the configuration.
 func TestParser_GetAsyncLogger(t *testing.T) {
-	logger := testParser.GetAsyncLogger(name)
+	loggerTemplate := testDataParser.configuration.Loggers[0]
+
+	logger := testDataParser.GetAsyncLogger(name)
 
 	testutils.AssertNotNil(t, logger)
-	testutils.AssertEquals(t, name, logger.Name())
+	testutils.AssertEquals(t, loggerTemplate.Name, logger.Name())
+	testutils.AssertEquals(t, len(loggerTemplate.Handlers), len(logger.Handlers()))
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.ErrorLevel), logger.ErrorLevel())
+	testutils.AssertEquals(t, level.ParseLevel(loggerTemplate.PanicLevel), logger.PanicLevel())
+	testutils.AssertEquals(t, loggerTemplate.RequestTemplate, logger.RequestTemplate())
+	testutils.AssertEquals(t, loggerTemplate.ResponseTemplate, logger.ResponseTemplate())
 }
 
 // TestParser_GetAsyncLogger_Default tests that Parser.GetAsyncLogger returns nil

@@ -6,6 +6,16 @@
             <time-format>2006-01-02 15:04:05</time-format>
             <error-level>error</error-level>
             <panic-level>critical</panic-level>
+            <request-template>Request: [{Method}] {URL}</request-template>
+            <response-template>Response: [{StatusCode}] {Status}</response-template>
+            <request-mapping>
+                <method>Method</method>
+                <url>URL</url>
+            </request-mapping>
+            <response-mapping>
+                <status-code>StatusCode</status-code>
+                <status>Status</status>
+            </response-mapping>
             <message-queue-size>100</message-queue-size>
             <handlers>
                 <handler>

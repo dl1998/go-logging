@@ -53,3 +53,7 @@ Demonstrates how to use default logger (root) that writes messages in key-value 
 ## logtofile
 
 Demonstrates how to create a new custom logger that writes messages to the file.
+
+## structwrappers
+
+Demonstrates how to use struct, http.Request, http.Response wrappers.

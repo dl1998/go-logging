@@ -8,18 +8,18 @@ import (
 )
 
 var (
-	skipCaller = 1
-	logLevel   = level.Debug
-	name       = "test"
-	timeFormat = ""
-	parameters = map[string]interface{}{
+	skipCallers = 1
+	logLevel    = level.Debug
+	name        = "test"
+	timeFormat  = ""
+	parameters  = map[string]interface{}{
 		"message": "Test Message.",
 	}
 )
 
 // TestNew tests that New function returns a new structured LogRecord instance.
 func TestNew(t *testing.T) {
-	record := New(name, logLevel, timeFormat, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, parameters, skipCallers)
 
 	testutils.AssertEquals(t, parameters, record.parameters)
 }
@@ -27,20 +27,20 @@ func TestNew(t *testing.T) {
 // BenchmarkNew benchmarks the New function.
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		New(name, logLevel, timeFormat, parameters, skipCaller)
+		New(name, logLevel, timeFormat, parameters, skipCallers)
 	}
 }
 
 // TestParameters tests that Parameters function returns the parameters of the log record.
 func TestParameters(t *testing.T) {
-	record := New(name, logLevel, timeFormat, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, parameters, skipCallers)
 
 	testutils.AssertEquals(t, parameters, record.Parameters())
 }
 
 // BenchmarkParameters benchmarks the Parameters function.
 func BenchmarkParameters(b *testing.B) {
-	record := New(name, logLevel, timeFormat, parameters, skipCaller)
+	record := New(name, logLevel, timeFormat, parameters, skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Parameters()
 	}

@@ -18,6 +18,7 @@ const (
 	pairSeparator     = ", "
 	message           = "Test message."
 	static            = "test"
+	skipCallers       = 1
 )
 
 var template = map[string]string{
@@ -77,7 +78,7 @@ func TestJSONFormatter_Format(t *testing.T) {
 	}
 
 	for testName, parameters := range tests {
-		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, skipCallers)
 		t.Run(testName, func(t *testing.T) {
 			newFormatter := NewJSON(parameters.template, parameters.pretty)
 
@@ -90,7 +91,7 @@ func TestJSONFormatter_Format(t *testing.T) {
 func TestJSONFormatter_FormatError(t *testing.T) {
 	newFormatter := NewJSON(template, pretty)
 
-	record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"key": math.Inf(1)}, 0)
+	record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"key": math.Inf(1)}, skipCallers)
 
 	testutils.AssertEquals(t, "", newFormatter.Format(record, false))
 }
@@ -125,7 +126,7 @@ func BenchmarkJSONFormatter_Format(b *testing.B) {
 	}
 
 	for testName, parameters := range benchmarks {
-		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, skipCallers)
 		b.Run(testName, func(b *testing.B) {
 			b.ResetTimer()
 
@@ -207,7 +208,7 @@ func TestKeyValueFormatter_Format(t *testing.T) {
 	}
 
 	for testName, parameters := range tests {
-		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message, "bool": boolValue, "int": intValue, "int64": int64Value, "float64": float64Value, "float32": float32Value}, 0)
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message, "bool": boolValue, "int": intValue, "int64": int64Value, "float64": float64Value, "float32": float32Value}, skipCallers)
 		t.Run(testName, func(t *testing.T) {
 			newFormatter := NewKeyValue(parameters.template, parameters.delimiter, parameters.separator)
 
@@ -245,7 +246,7 @@ func BenchmarkKeyValueFormatter_Format(b *testing.B) {
 	}
 
 	for testName, parameters := range benchmarks {
-		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, 0)
+		record := logrecord.New(loggerName, loggingLevel, "", map[string]interface{}{"message": message}, skipCallers)
 		b.Run(testName, func(b *testing.B) {
 			b.ResetTimer()
 

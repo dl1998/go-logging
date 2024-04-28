@@ -152,6 +152,14 @@ type LoggerConfiguration struct {
 	ErrorLevel string `json:"error-level" yaml:"error-level" xml:"error-level"`
 	// PanicLevel is the panic level used by the logger for panic.
 	PanicLevel string `json:"panic-level" yaml:"panic-level" xml:"panic-level"`
+	// RequestTemplate is the template used by the logger for a request struct.
+	RequestTemplate string `json:"request-template" yaml:"request-template" xml:"request-template"`
+	// ResponseTemplate is the template used by the logger for a response struct.
+	ResponseTemplate string `json:"response-template" yaml:"response-template" xml:"response-template"`
+	// RequestMapping is the mapping used by the logger for a request struct.
+	RequestMapping KeyValue `json:"request-mapping" yaml:"request-mapping" xml:"request-mapping"`
+	// ResponseMapping is the mapping used by the logger for a response struct.
+	ResponseMapping KeyValue `json:"response-mapping" yaml:"response-mapping" xml:"response-mapping"`
 	// MessageQueueSize is the size of the message queue used by async logger.
 	MessageQueueSize int `json:"message-queue-size" yaml:"message-queue-size" xml:"message-queue-size"`
 	// Handlers is the list of handlers used by the logger.
