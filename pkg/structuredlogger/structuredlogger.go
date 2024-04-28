@@ -227,7 +227,7 @@ func (logger *Logger) Panic(message string, parameters ...any) {
 // wrapStruct wraps the struct, it wraps only public fields (int, float, bool,
 // string) based on provided mapping. Optionally additional parameters can be
 // provided.
-func (logger *Logger) wrapStruct(logLevel level.Level, skipCaller int, fieldsMapping map[string]string, structObject interface{}, parameters ...any) {
+func (logger *Logger) wrapStruct(logLevel level.Level, skipCallers int, fieldsMapping map[string]string, structObject interface{}, parameters ...any) {
 	if logLevel > level.All && logLevel < level.Null {
 		parametersMap := convertParametersToMap(parameters...)
 		structFields := utils.StructToMap(structObject)
@@ -237,7 +237,7 @@ func (logger *Logger) wrapStruct(logLevel level.Level, skipCaller int, fieldsMap
 				parametersMap[fieldName] = value
 			}
 		}
-		logger.baseLogger.Log(logLevel, skipCaller, parametersMap)
+		logger.baseLogger.Log(logLevel, skipCallers, parametersMap)
 	}
 }
 

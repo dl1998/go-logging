@@ -10,16 +10,16 @@ import (
 )
 
 var (
-	skipCaller = 1
-	logLevel   = level.Debug
-	name       = "test"
-	timeFormat = ""
+	skipCallers = 1
+	logLevel    = level.Debug
+	name        = "test"
+	timeFormat  = ""
 )
 
 // TestNew tests that New function returns a new LogRecord struct instance.
 func TestNew(t *testing.T) {
 	_, file, line, _ := runtime.Caller(0)
-	record := New(name, logLevel, timeFormat, skipCaller)
+	record := New(name, logLevel, timeFormat, skipCallers)
 
 	testutils.AssertEquals(t, name, record.name)
 	testutils.AssertEquals(t, logLevel, record.level)
@@ -32,20 +32,20 @@ func TestNew(t *testing.T) {
 // BenchmarkNew benchmarks the New function.
 func BenchmarkNew(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		New(name, logLevel, "", skipCaller)
+		New(name, logLevel, "", skipCallers)
 	}
 }
 
 // TestName tests that Name function returns the name of the log record.
 func TestName(t *testing.T) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, name, record.Name())
 }
 
 // BenchmarkName benchmarks the Name function.
 func BenchmarkName(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Name()
 	}
@@ -53,14 +53,14 @@ func BenchmarkName(b *testing.B) {
 
 // TestTime tests that Time function returns the time of the log record.
 func TestTime(t *testing.T) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, record.timestamp.Format(record.timeFormat), record.Time())
 }
 
 // BenchmarkTime benchmarks the Time function.
 func BenchmarkTime(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Time()
 	}
@@ -68,14 +68,14 @@ func BenchmarkTime(b *testing.B) {
 
 // TestTimestamp tests that Timestamp function returns the timestamp of the log record.
 func TestTimestamp(t *testing.T) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, record.timestamp.Unix(), record.Timestamp())
 }
 
 // BenchmarkTimestamp benchmarks the Timestamp function.
 func BenchmarkTimestamp(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Timestamp()
 	}
@@ -83,14 +83,14 @@ func BenchmarkTimestamp(b *testing.B) {
 
 // TestLevel tests that Level function returns the level of the log record.
 func TestLevel(t *testing.T) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, logLevel, record.Level())
 }
 
 // BenchmarkLevel benchmarks the Level function.
 func BenchmarkLevel(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.Level()
 	}
@@ -99,14 +99,14 @@ func BenchmarkLevel(b *testing.B) {
 // TestFileName tests that FileName function returns the file name of the log record.
 func TestFileName(t *testing.T) {
 	_, file, _, _ := runtime.Caller(0)
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, file, record.FileName())
 }
 
 // BenchmarkFileName benchmarks the FileName function.
 func BenchmarkFileName(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.FileName()
 	}
@@ -115,14 +115,14 @@ func BenchmarkFileName(b *testing.B) {
 // TestFileLine tests that FileLine function returns the file line of the log record.
 func TestFileLine(t *testing.T) {
 	_, _, line, _ := runtime.Caller(0)
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 
 	testutils.AssertEquals(t, line+1, record.FileLine())
 }
 
 // BenchmarkFileLine benchmarks the FileLine function.
 func BenchmarkFileLine(b *testing.B) {
-	record := New(name, logLevel, "", skipCaller)
+	record := New(name, logLevel, "", skipCallers)
 	for index := 0; index < b.N; index++ {
 		record.FileLine()
 	}

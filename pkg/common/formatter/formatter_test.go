@@ -12,12 +12,12 @@ var (
 	loggerName   = "test"
 	loggingLevel = level.Debug
 	timeFormat   = ""
-	skipCaller   = 1
+	skipCallers  = 1
 )
 
 // TestParseKey tests that ParseKey returns correct value for the key.
 func TestParseKey(t *testing.T) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, skipCallers)
 
 	tests := map[string]struct {
 		key      string
@@ -44,7 +44,7 @@ func TestParseKey(t *testing.T) {
 
 // BenchmarkParseKey performs benchmarking of the ParseKey().
 func BenchmarkParseKey(b *testing.B) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, skipCallers)
 
 	benchmarks := map[string]struct {
 		key string

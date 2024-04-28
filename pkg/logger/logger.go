@@ -207,14 +207,14 @@ func (logger *Logger) Panic(message string, parameters ...any) {
 }
 
 // wrapStruct wraps the struct, it wraps only public fields.
-func (logger *Logger) wrapStruct(logLevel level.Level, skipCaller int, template string, structObject interface{}) {
+func (logger *Logger) wrapStruct(logLevel level.Level, skipCallers int, template string, structObject interface{}) {
 	if logLevel > level.All && logLevel < level.Null {
 		mapping := utils.StructToMap(structObject)
 		message := template
 		for key, value := range mapping {
 			message = strings.ReplaceAll(message, "{"+key+"}", fmt.Sprintf("%v", value))
 		}
-		logger.baseLogger.Log(logLevel, skipCaller, message)
+		logger.baseLogger.Log(logLevel, skipCallers, message)
 	}
 }
 

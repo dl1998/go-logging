@@ -18,7 +18,7 @@ var (
 	loggingLevel    = level.Debug
 	timeFormat      = ""
 	emptyParameters = make([]any, 0)
-	skipCaller      = 1
+	skipCallers     = 1
 )
 
 // TestNew tests that New create correct Formatter instance.
@@ -85,7 +85,7 @@ func TestFormatter_Format(t *testing.T) {
 	}
 
 	for name, parameters := range tests {
-		record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+		record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 		t.Run(name, func(t *testing.T) {
 			actual := newFormatter.Format(record, parameters.colored)
@@ -99,7 +99,7 @@ func TestFormatter_Format(t *testing.T) {
 func BenchmarkFormatter_Format(b *testing.B) {
 	newFormatter := New(template)
 
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 	b.ResetTimer()
 
@@ -110,7 +110,7 @@ func BenchmarkFormatter_Format(b *testing.B) {
 
 // TestParseTemplate tests that ParseTemplate correctly replaces keys with values.
 func TestParseTemplate(t *testing.T) {
-	format := ParseTemplate(template, logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller))
+	format := ParseTemplate(template, logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers))
 
 	expected := fmt.Sprintf("%s:%s:%s", loggingLevel.String(), loggerName, message)
 
@@ -120,13 +120,13 @@ func TestParseTemplate(t *testing.T) {
 // BenchmarkParseTemplate performs benchmarking of the ParseTemplate().
 func BenchmarkParseTemplate(b *testing.B) {
 	for index := 0; index < b.N; index++ {
-		ParseTemplate(template, logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller))
+		ParseTemplate(template, logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers))
 	}
 }
 
 // TestReplaceKey tests that ReplaceKey correctly replaces key with value.
 func TestReplaceKey(t *testing.T) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 	tests := map[string]struct {
 		key      string
@@ -147,7 +147,7 @@ func TestReplaceKey(t *testing.T) {
 
 // BenchmarkReplaceKey performs benchmarking of the ReplaceKey().
 func BenchmarkReplaceKey(b *testing.B) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 	benchmarks := map[string]struct {
 		key string
@@ -169,7 +169,7 @@ func BenchmarkReplaceKey(b *testing.B) {
 
 // TestParseKey tests that ParseKey returns correct value for the key.
 func TestParseKey(t *testing.T) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 	tests := map[string]struct {
 		key      string
@@ -196,7 +196,7 @@ func TestParseKey(t *testing.T) {
 
 // BenchmarkParseKey performs benchmarking of the ParseKey().
 func BenchmarkParseKey(b *testing.B) {
-	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCaller)
+	record := logrecord.New(loggerName, loggingLevel, timeFormat, message, emptyParameters, skipCallers)
 
 	benchmarks := map[string]struct {
 		key string
