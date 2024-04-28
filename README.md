@@ -88,25 +88,29 @@ structuredlogger.Configure(logger.NewConfiguration(logger.WithFormat("key-value"
 
 All options available for the configuration are:
 
-- For Standard Logger
+ For Standard Logger
 
-  | Method         |            Default            | Description                                                                        |
-  |----------------|:-----------------------------:|------------------------------------------------------------------------------------|
-  | WithErrorLevel |          level.Error          | Set logging level used to log raised or captured error.                            |
-  | WithPanicLevel |        level.Critical         | Set logging level used to log panic.                                               |
-  | WithFromLevel  |         level.Warning         | Set logging level from which logger should log messages.                           |
-  | WithToLevel    |          level.Null           | Set logging level till which logger should log messages.                           |
-  | WithTemplate   | "%(level):%(name):%(message)" | Set template for logging message.                                                  |
-  | WithFile       |              ""               | Set file where to log messages, if not set, then logging to file will be disabled. |
-  | WithName       |            "root"             | Set logger name.                                                                   |
-  | WithTimeFormat |         time.RFC3339          | Set time format for logging message.                                               |
+  | Method               |               Default               | Description                                                                        |
+  |----------------------|:-----------------------------------:|------------------------------------------------------------------------------------|
+  | WithErrorLevel       |             level.Error             | Set logging level used to log raised or captured error.                            |
+  | WithPanicLevel       |           level.Critical            | Set logging level used to log panic.                                               |
+  | WithRequestTemplate  |     "Request: [{Method}] {URL}"     | Set template for the http.Request wrapper.                                         |
+  | WithResponseTemplate | "Response: [{StatusCode}] {Status}" | Set template for the http.Response wrapper.                                        |
+  | WithFromLevel        |            level.Warning            | Set logging level from which logger should log messages.                           |
+  | WithToLevel          |             level.Null              | Set logging level till which logger should log messages.                           |
+  | WithTemplate         |    "%(level):%(name):%(message)"    | Set template for logging message.                                                  |
+  | WithFile             |                 ""                  | Set file where to log messages, if not set, then logging to file will be disabled. |
+  | WithName             |               "root"                | Set logger name.                                                                   |
+  | WithTimeFormat       |            time.RFC3339             | Set time format for logging message.                                               |
 
-- For Structured Logger
+ For Structured Logger
 
   | Method                |                                                       Default                                                       | Description                                                                                                                           |
   |-----------------------|:-------------------------------------------------------------------------------------------------------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
   | WithErrorLevel        |                                                     level.Error                                                     | Set logging level used to log raised or captured error.                                                                               |
   | WithPanicLevel        |                                                   level.Critical                                                    | Set logging level used to log panic.                                                                                                  |
+  | WithRequestMapping    |                         map[string]string {<br/>"url": "URL",<br/>"method": "Method",<br/>}                         | Set mapping for the http.Request wrapper.                                                                                             |
+  | WithResponseMapping   |                 map[string]string {<br/>"status": "Status",<br/>"status-code": "StatusCode",<br/>}                  | Set mapping for the http.Response wrapper.                                                                                            |
   | WithFromLevel         |                                                    level.Warning                                                    | Set logging level from which logger should log messages.                                                                              |
   | WithToLevel           |                                                     level.Null                                                      | Set logging level till which logger should log messages.                                                                              |
   | WithTemplate          | map[string]string {<br/>"timestamp": "%(timestamp)",<br/>"level":     "%(level)",<br/>"name":      "%(name)",<br/>} | Set template for logging structure.                                                                                                   |
@@ -324,7 +328,9 @@ if err := applicationLogger.Open(100); err != nil {
 will add messages to the queue until it is not full, then it will wait (blocking the process) until the message from the
 queue will be processed and free up the space in the message queue.*
 
-### Error / Panic Wrapper
+### Wrappers
+
+#### Error / Panic
 
 You could wrap error or raise a new error and log error message using the logger. By default, it will log error message
 using the `level.Error` level. However, it could be changed by setting the error level in the logger configuration.
@@ -380,6 +386,88 @@ Similarly, you could panic and log panic message using the logger. By default, i
   
   // Raise Panic with new panic level (level.Emergency) and additional fields
   applicationLogger.Panic("exit code: 1", "hostname", "localhost")
+  ```
+
+#### Struct
+
+You could wrap a struct and log its public fields using the logger. To do this, you need to provide template (standard
+logger), mapping (structured logger) of the struct fields to the logger fields. Optionally, for structured logger you
+could also provide additional fields that will be logged with the struct fields.
+
+- Standard logger
+
+  ```go
+  type MyStruct struct {
+      String string
+      Int int
+  }
+  
+  myStruct := MyStruct{
+      String: "example",
+      Int: 10,
+  }
+  
+  applicationLogger.WrapStruct(level.Info, "{String}: {Int}", myStruct)
+  ```
+
+- Structured logger
+
+  ```go
+  type MyStruct struct {
+      String string
+      Int int
+  }
+  
+  myStruct := MyStruct{
+      String: "example",
+      Int: 10,
+  }
+  
+  applicationLogger.WrapStruct(level.Info, map[string]string{
+      "log-string": "String",
+      "log-int": "Int",
+  }, myStruct, "hostname", "localhost")
+  ```
+
+#### http.Request and http.Response
+
+You could wrap http.Request and http.Response and log their fields using the logger. By default, logger has predefined
+template (standard logger), mapping (structured logger) for http.Request and http.Response fields. However, you could
+change it by providing your own template / mapping. Optionally, for structured logger you could also provide additional
+fields that will be logged with the http.Request and http.Response fields.
+
+- Standard logger
+
+  ```go
+  request, _ := http.NewRequest("GET", "http://example.com", nil)
+  response, _ := http.Get("http://example.com")
+  
+  // Set custom template for http.Request and http.Response
+  applicationLogger.SetRequestTemplate("[{Method}] {URL}")
+  applicationLogger.SetResponseTemplate("[{StatusCode}] {Status}")
+  
+  applicationLogger.WrapRequest(level.Info, request)
+  applicationLogger.WrapResponse(level.Info, response)
+  ```
+
+- Structured logger
+
+  ```go
+  request, _ := http.NewRequest("GET", "http://example.com", nil)
+  response, _ := http.Get("http://example.com")
+  
+  // Set custom mapping for http.Request and http.Response
+  applicationLogger.SetRequestMapping(map[string]string{
+      "Method": "Method",
+      "Url": "URL",
+  })
+  applicationLogger.SetResponseMapping(map[string]string{
+      "StatusCode": "StatusCode",
+      "Status": "Status",
+  })
+  
+  applicationLogger.WrapRequest(level.Info, request, "hostname", "localhost")
+  applicationLogger.WrapResponse(level.Info, response, "hostname", "localhost")
   ```
 
 ### Reading Configuration from File
