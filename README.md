@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/dl1998/go-logging.svg)](https://pkg.go.dev/github.com/dl1998/go-logging)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dl1998/go-logging)](https://goreportcard.com/report/github.com/dl1998/go-logging)
+[![Coverage Status](https://coveralls.io/repos/github/dl1998/go-logging/badge.svg)](https://coveralls.io/github/dl1998/go-logging)
 
 Go logger implements logger for Golang, current implementation is majorly inspired by Python logger.
 
