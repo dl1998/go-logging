@@ -44,6 +44,8 @@ jobs:
       - name: Run Unit tests
         run: |
           go test -race -covermode atomic -coverprofile=covprofile ./...
+      - name: Exclude paths from test coverage
+        run: ./exclude_from_tests.sh covprofile examples/* cmd/* internal/*
       - name: Install goveralls
         run: go install github.com/mattn/goveralls@latest
       - name: Send coverage
